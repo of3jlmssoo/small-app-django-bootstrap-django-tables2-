@@ -1,3 +1,33 @@
+### 
+![代替テキスト](./deitalpanel1.drawio.svg)
+
+```text
+class OrderProduct(models.Model):
+    TYPE_CANDIDATE = (
+        
+    )
+    # id(PK) djangoに任せる
+    goods = models.CharField(max_length=50, blank=False, null=False)
+    price = product_price = models.FloatField() 
+    type =
+    use = 
+    alternative =
+    expected_purchase_date = 
+    emergency = 
+    order_number = 
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+```
+
+  COUNTRY = (
+        ('A', 'Japan'),  # (DB値, 読みやすい値)
+        ('B', 'America'),
+        ('C', 'China'),
+    )
+    
+    country = models.CharField(max_length=1, choices=COUNTRY)
+
+
 ### 表示項目
 テーブル1   案件名(linkify) 更新日付　顧客名称　顧客ID　担当者
 ボタン 新規案件登録
