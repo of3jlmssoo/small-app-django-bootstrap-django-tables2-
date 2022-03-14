@@ -60,7 +60,8 @@
         </div>    
     
     </div>
-    <div class="row form-group mt-3">
+
+    <div class="row form-group mt-3 mb-0">
         <div class="col-2">
             <div class="btn-group-vertical" role="group" aria-label="Basic checkbox toggle button group">    
                 種別 : 
@@ -107,16 +108,34 @@
             </div>
         </div>
 
-    </div>
+    </div>    
+
+    <div class="row form-group mt-1 mb-0">
+        <div class="col-2">
+            <label>日付：</label>
+            <input type="text" class="form-control" id="date_sample">
+        </div>
+    </div>    
+
+
+    <div class="row form-group mt-0">
+        <div class="col-11">
+        </div>
+        <div class="col-1">
+            <button type="submit" class="btn btn-primary">申請</button>
+        </div>
+    </div>    
+
 
 
     
-    <div class="col-12">
-        <button type="submit" class="btn btn-primary">申請</button>
-    </div>
+
+
 
 
 
 </form>
 
+
 {% endblock %}
+
