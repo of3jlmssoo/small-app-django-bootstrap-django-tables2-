@@ -42,6 +42,9 @@ class OrderProduct(models.Model):
 顧客ID
 担当者
 
+### login by email
+python manage.py startapp accounts
+edit settings.py INSTALLED_APPS = ['accounts',]
 
 ### exampleのメモ
 ![table2.drawio](table2.drawio.svg)
