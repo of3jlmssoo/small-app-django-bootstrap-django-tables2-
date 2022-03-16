@@ -37,6 +37,8 @@ def register(request):
             phone_number = form.cleaned_data['phone_number']
             email = form.cleaned_data['email']
             password = form.cleaned_data['password']
+            
+            is_approver = form.cleaned_data['is_approver']
 
             username = email.split("@")[0]
 
@@ -46,8 +48,10 @@ def register(request):
                 last_name=last_name,
                 email=email,
                 username=username,
-                password=password
+                password=password,
             )
+            user.is_approver=is_approver
+
             user.phone_number = phone_number
             user.save()
 
