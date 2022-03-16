@@ -3,20 +3,30 @@
 
 ```text
 class OrderProduct(models.Model):
-    TYPE_CANDIDATE = (
-        
+    PRODUCT_TYPE = (
+        ('D', 'Daily'),
+        ('L', 'Luxury'),
+    )
+    PRODUCT_USE = (
+        ('F', 'Family'),
+        ('M', 'Me'),
+        ('G', 'Gift'),
     )
     # id(PK) djangoに任せる
     goods = models.CharField(max_length=50, blank=False, null=False)
     price = product_price = models.FloatField() 
-    type =
-    use = 
-    alternative =
-    expected_purchase_date = 
-    emergency = 
+    type_of_estimation = models.CharField(max_length=50, blank=False, null=False)
+    type = models.CharField(max_length=1, choices=PRODUCT_TYPE, blank=False, null=False) # daily or luxury
+    use =  models.CharField(max_length=1, choices=PRODUCT_USE, blank=False, null=False) # me, family or gift
+    alternative = models.BooleanField()
+
+    expected_purchase_date = models.DateTimeField()
+    
     order_number = 
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    created_on = models.DateTimeField(auto_now_add=True)
+    updated_on = models.DateTimeField(auto_now=True)
+
+class
 ```
 
   COUNTRY = (
