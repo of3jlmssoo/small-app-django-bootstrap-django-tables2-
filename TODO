@@ -1,11 +1,12 @@
 
 Todo:
   ☐ 購入予定時期
-  ☐ email login and authentication
+  ✔ email login and authentication @done(22-03-16 10:19)
   ☐ tables
+    ☐ 
   ☐ 金額根拠欄修正(現物確認、インターネット通販、見積取得)
   ☐ 金額根拠がインターネット通販だったらURLを入力するよう、見積取得であったらファイルをアップロードできるようにする
-  ☐ is_emp, is_mgr追加
+   is_emp, is_mgr追加 @done(22-03-16 10:19)
   ☐ unique ID if available
   ☐ attribute of unique ID, emp id (see transID)
   ☐ display html as read only 

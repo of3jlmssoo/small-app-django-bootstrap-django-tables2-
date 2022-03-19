@@ -163,3 +163,6 @@ greatkart/__pycache__/settings.cpython-38.pyc
 */__pycache__/
 tabletest/migrations/0001_initial.py
 accounts/migrations/0002_account_is_approver.py
+accounts/migrations/0001_initial.py
+accounts/migrations/__init__.py
+tabletest/migrations/__init__.py

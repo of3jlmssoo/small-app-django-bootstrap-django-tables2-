@@ -9,6 +9,7 @@
 <form  action="{% url 'place_order' %}" method="POST">
     {% csrf_token %}
     
+<!--
     <div class="field">
         {{ form.product_type.label_tag }}
             {% for choice in form.product_type %}
@@ -18,7 +19,8 @@
         {% if form.product_type.error %}
             <p class="help">{{ form.product_type.errors }}</p>
         {% endif %}
-    </div>
+    </div> 
+-->
 
 
 <!-- 
@@ -48,15 +50,15 @@
     <div class="row form-group">
         <div class="col-md-4">
             <label for="inputProduct" class="form-label">物品</label>
-            <input type="text" class="form-control" id="inputProduct">
+            <input type="text" class="form-control" name="inputProduct" id="inputProduct">
         </div>    
         <div class="col-md-4">
             <label for="inputPrice" class="form-label">金額</label>
-            <input type="text" class="form-control" id="inputPrice">
+            <input type="text" class="form-control" name="inputPrice" id="inputPrice">
         </div>    
         <div class="col-md-4">
             <label for="inputPriceEst" class="form-label">金額根拠</label>
-            <input type="text" class="form-control" id="inputPriceEst">
+            <input type="text" class="form-control" name="inputPriceEst" id="inputPriceEst">
         </div>    
     
     </div>
@@ -113,7 +115,7 @@
     <div class="row form-group mt-1 mb-0">
         <div class="col-2">
             <label>購入予定日 : </label>
-            <input type="text" class="form-control" id="date_sample">
+            <input type="text" class="form-control" name="date_sample" id="date_sample">
         </div>
     </div>    
 
