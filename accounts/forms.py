@@ -6,7 +6,7 @@ from .models import Account
 
 class RegistrationFrom(forms.ModelForm):
 
-    is_approver = forms.BooleanField(widget=forms.CheckboxInput(attrs={'style':'width:20px;height:20px;'}))
+    is_approver = forms.BooleanField(required=False,widget=forms.CheckboxInput(attrs={'style':'width:20px;height:20px;'}))
 
     password = forms.CharField(widget=forms.PasswordInput(attrs={
         'placeholder': 'Enter Password',
