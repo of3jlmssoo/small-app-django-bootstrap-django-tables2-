@@ -7,4 +7,5 @@ from . import views
 urlpatterns = [
     path('place_order/', views.place_order, name='place_order'),
     path('', views.index, name='index'),
+    # path('', views.indexcopy, name='indexcopy'),
 ]
