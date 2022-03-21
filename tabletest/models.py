@@ -1,6 +1,7 @@
 from django.db import models
 
 # Create your models here.
+from accounts.models import Account
 
 from django.utils.translation import gettext_lazy as _
 
@@ -36,12 +37,13 @@ class ProductOrder(models.Model):
     product_type = models.CharField(max_length=1, choices=PRODUCT_TYPE, blank=False, null=False)  # daily or luxury
     product_use = models.CharField(max_length=1, choices=PRODUCT_USE, blank=False, null=False)  # me, family or gift
     alternative = models.BooleanField()
-
     expected_purchase_date = models.DateField()
 
     # order_number =
     created_on = models.DateTimeField(auto_now_add=True)
     updated_on = models.DateTimeField(auto_now=True)
+
+    user = models.ForeignKey(Account, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         return self.goods
