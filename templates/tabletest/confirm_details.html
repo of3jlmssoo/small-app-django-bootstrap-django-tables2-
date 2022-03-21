@@ -10,7 +10,6 @@
 <h3 class="card-title mt-3">確認：お買い物申請フォーム</h3>
 <form  action="{% url 'index' %}" method="POST">
     {% csrf_token %}
-    <!-- <fieldset disabled="disabled">     -->
 
 
 
@@ -100,15 +99,29 @@
         </div>
     </div>    
 
-    <!-- <fieldset disabled="enabled">     -->
 
+    <div class="row form-group mt-5">
+        <div class="d-inline pr-1">
+            <button type="submit" class="btn btn-primary">申請</button>
+        </div>
+        
+        <div class="d-inline">
+            <button type="submit" class="btn btn-secondary" onClick="window.history.back();return false;">戻る</button>
+        </div>
+    </div>
+
+    <!--
     <div class="row form-group mt-0">
-        <div class="col-11">
+        <div class="col-10">
         </div>
         <div class="col-1">
             <button type="submit" class="btn btn-primary">申請</button>
         </div>
+        <div class="col-1">
+            <button type="submit" class="btn btn-primary" onClick="window.history.back();return false;">戻る</button>
+        </div>
     </div>    
+-->
 
 
 
