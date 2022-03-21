@@ -21,13 +21,13 @@ from django.utils.translation import gettext_lazy as _
 class ProductOrder(models.Model):
 
     PRODUCT_TYPE = [
-        ('D', 'Daily'),
-        ('L', 'Luxury'),
+        ('D', '日常品'),
+        ('L', '贅沢品'),
     ]
     PRODUCT_USE = [
-        ('F', 'Family'),
-        ('M', 'Me'),
-        ('G', 'Gift'),
+        ('F', '家族用'),
+        ('M', '自分用'),
+        ('G', '贈答用'),
     ]
 
     # id(PK) djangoに任せる

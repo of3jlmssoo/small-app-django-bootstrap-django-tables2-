@@ -76,18 +76,46 @@ def place_order(request):
 
         context = set_checkbox_choices(request, context)
 
-        print(f'=> {context=}')
+        print(f'=> before render() {context=}')
         return render(request, 'tabletest/confirm_details.html', context)
 
     # return redirect('confirm_details')
     # return render(request, 'confirm_details')
     messages.error(request, '入力が正常完了しませんでした。')
-    return redirect('/')
+    return redirect('adin/')
 
 
 def confirm_details(request):
-    # print(f'=> confirm_details {request.POST=}')
-    form = ConfirmOrderForm(request.POST, initial={'goods': 'Hi there!'})
+    print(f'=> confirm_details {request.POST=}')
+    # form = ConfirmOrderForm(request.POST, initial={'goods': 'Hi there!'})
+    print(f'=> confirm_details!')
+    if request.method == 'POST':
+
+        print(f'=> confirm_details() POST! {request.user=}')
+        for item in request.POST:
+            key = item
+            value = request.POST[key]
+            print(f'{key=} {value}')
+
+        form = ProductOrderForm(request.POST)
+
+        if form.is_valid():
+            order_product = ProductOrder(
+                goods=form.cleaned_data['goods'],
+                product_price=form.cleaned_data['product_price'],
+                type_of_estimation=form.cleaned_data['type_of_estimation'],
+                product_type=form.cleaned_data['product_type'],
+                product_use=form.cleaned_data['product_use'],
+                alternative=form.cleaned_data['alternative'],
+                expected_purchase_date=form.cleaned_data['expected_purchase_date'],
+                user=request.user,
+            )
+            order_product.save()
+            print(f'order_product.saved')
+
+    else:
+        return HttpResponse('something wrong at confirm_details()')
+
     return redirect('/')
 
 

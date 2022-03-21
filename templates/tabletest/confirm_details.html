@@ -8,7 +8,7 @@
 
 
 <h3 class="card-title mt-3">確認：お買い物申請フォーム</h3>
-<form  action="{% url 'index' %}" method="POST">
+<form action="{% url 'confirm_details' %}" method="POST">
     {% csrf_token %}
 
 
@@ -36,9 +36,21 @@
     <div class="row form-group mt-3 mb-0">
 
         <div class="col-2">
+            <label for="product_type" class="form-label">種別</label>
+            {{ form.product_type }}
+        </div>
+        <div class="col-2">
+            <label for="product_use" class="form-label">用途</label>
+            {{ form.product_use }}
+        </div>
+        <div class="form-group col-2">
+            <label for="alternative" class="form-label">代替可否</label>
+            {{ form.alternative }}
+        </div>
+        <!---
+        <div class="col-2">
             <div class="btn-group-vertical" role="group" aria-label="Basic checkbox toggle button group">    
                 種別 :
-
                     <div class="form-check form-check-inline">
                         <input disabled class="form-check-input" type="radio" name="product_type" id="product_type" value="D" {{ daily_goods }}/>
                         <label class="form-check-label" for="daily"> 生活必需品 </label>
@@ -68,11 +80,6 @@
         </div>
 
 
-        <!--
-        <div class="col-2">
-            {{ form.alternative }}
-        </div>
-    -->
 
         <div class="col-2">
             <div class="btn-group-vertical" role="group" aria-label="Basic checkbox toggle button group">    
@@ -88,13 +95,14 @@
                     </div>    
             </div>
         </div>
-
+        -->
     </div>    
 
     <div class="row form-group mt-1 mb-0">
         <div class="col-2">
             <label>購入予定日 : </label>
-            <input disabled type="text" class="form-control" name="expected_purchase_date" id="date_sample" value={{expected_purchase_date}}>
+            {{ form.expected_purchase_date }}
+            {% comment %} <input disabled type="text" class="form-control" name="expected_purchase_date" id="date_sample" value={{expected_purchase_date}}> {% endcomment %}
             <!-- <p>2022-02-22</p> -->
         </div>
     </div>    

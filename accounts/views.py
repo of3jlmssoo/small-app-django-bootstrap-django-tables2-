@@ -20,8 +20,11 @@ from .models import Account
 
 from django.http import HttpResponse
 
+
 def register(request):
     return HttpResponse('register')
+
+
 def login(request):
     return HttpResponse('login')
 
@@ -37,7 +40,7 @@ def register(request):
             phone_number = form.cleaned_data['phone_number']
             email = form.cleaned_data['email']
             password = form.cleaned_data['password']
-            
+
             is_approver = form.cleaned_data['is_approver']
 
             username = email.split("@")[0]
@@ -50,7 +53,7 @@ def register(request):
                 username=username,
                 password=password,
             )
-            user.is_approver=is_approver
+            user.is_approver = is_approver
 
             user.phone_number = phone_number
             user.save()

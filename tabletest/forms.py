@@ -5,6 +5,7 @@ from .models import ProductOrder
 
 class ProductOrderForm(forms.ModelForm):
     # goods = forms.CharField(max_length=50)
+    alternative = forms.BooleanField(required=False, widget=forms.CheckboxInput(attrs={'style': 'width:25px;height:25;'}))
 
     class Meta:
         model = ProductOrder
@@ -24,6 +25,7 @@ class ProductOrderForm(forms.ModelForm):
 
 class ConfirmOrderForm(forms.ModelForm):
     # goods = forms.CharField(max_length=50)
+    alternative = forms.BooleanField(required=False, widget=forms.CheckboxInput(attrs={'style': 'width:10px;height:10px;'}))
 
     class Meta:
         model = ProductOrder
