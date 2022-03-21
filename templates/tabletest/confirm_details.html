@@ -1,0 +1,126 @@
+
+
+{% extends 'base.html' %}
+{% block content %}
+<!-- <h2 class="mt-3">Section title from base.html</h2> -->
+
+{% load static %}
+
+
+<h3 class="card-title mt-3">確認：お買い物申請フォーム</h3>
+<form  action="{% url 'index' %}" method="POST">
+    {% csrf_token %}
+    <!-- <fieldset disabled="disabled">     -->
+
+
+
+
+    <div class="row form-group">
+        <div class="col-md-4">
+            <label  for="inputProduct" class="form-label">物品</label>
+            <!-- <input type="text" class="form-control" name="inputProduct" id="inputProduct"> -->
+            {{ form.goods }}
+        </div>    
+        <div class="col-md-4">
+            <label for="inputPrice" class="form-label">金額</label>
+            <!-- <input type="text" class="form-control" name="inputPrice" id="inputPrice"> -->
+            {{ form.product_price }}
+        </div>    
+        <div class="col-md-4">
+            <label for="inputPriceEst" class="form-label">金額根拠</label>
+            <!-- <input type="text" class="form-control" name="inputPriceEst" id="inputPriceEst"> -->
+            {{ form.type_of_estimation }}
+        </div>    
+    
+    </div>
+
+    <div class="row form-group mt-3 mb-0">
+
+        <div class="col-2">
+            <div class="btn-group-vertical" role="group" aria-label="Basic checkbox toggle button group">    
+                種別 :
+
+                    <div class="form-check form-check-inline">
+                        <input disabled class="form-check-input" type="radio" name="product_type" id="product_type" value="D" {{ daily_goods }}/>
+                        <label class="form-check-label" for="daily"> 生活必需品 </label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input disabled class="form-check-input" type="radio" name="product_type" id="product_type" value="L"  {{ luxury_goods }}/>
+                        <label class="form-check-label" for="luxury"> 贅沢品 </label>
+                    </div>    
+            </div>
+        </div>
+        <div class="col-2">
+            <div class="btn-group-vertical" role="group" aria-label="Basic checkbox toggle button group">    
+                用途 : 
+                    <div class="form-check form-check-inline">
+                        <input disabled class="form-check-input" type="radio" name="product_use" value="M" {{ personal }}>
+                        <label class="form-check-label" for="me">自分用</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input disabled class="form-check-input" type="radio" name="product_use" value="F" {{ family }}>
+                        <label class="form-check-label" for="family">家族用</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input disabled class="form-check-input" type="radio" name="product_use" value="G" {{ gift }}>
+                        <label class="form-check-label" for="gift">贈答用</label>
+                    </div>
+            </div>
+        </div>
+
+
+        <!--
+        <div class="col-2">
+            {{ form.alternative }}
+        </div>
+    -->
+
+        <div class="col-2">
+            <div class="btn-group-vertical" role="group" aria-label="Basic checkbox toggle button group">    
+                代替 : 
+
+                    <div class="form-check form-check-inline">
+                        <input disabled class="form-check-input" type="radio" name="alternative" id="altyes" value="true" {{ alt_available }}/>
+                        <label class="form-check-label" for="altyes"> 有り </label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input disabled class="form-check-input" type="radio" name="alternative" id="altno" value="false" {{ alt_unavailable }}/>
+                        <label class="form-check-label" for="altnot"> 無し </label>
+                    </div>    
+            </div>
+        </div>
+
+    </div>    
+
+    <div class="row form-group mt-1 mb-0">
+        <div class="col-2">
+            <label>購入予定日 : </label>
+            <input disabled type="text" class="form-control" name="expected_purchase_date" id="date_sample" value={{expected_purchase_date}}>
+            <!-- <p>2022-02-22</p> -->
+        </div>
+    </div>    
+
+    <!-- <fieldset disabled="enabled">     -->
+
+    <div class="row form-group mt-0">
+        <div class="col-11">
+        </div>
+        <div class="col-1">
+            <button type="submit" class="btn btn-primary">申請</button>
+        </div>
+    </div>    
+
+
+
+    
+
+
+
+
+
+</form>
+
+
+{% include 'includes/alerts.html' %}
+{% endblock %}
+
