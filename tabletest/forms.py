@@ -12,12 +12,15 @@ class ProductOrderForm(forms.ModelForm):
         #     'product_type',
         # ]
         fields = '__all__'
+        exclude = ['user']
 
     # apply bootstrap to django form
+
     def __init__(self, *args, **kwargs):
         super(ProductOrderForm, self).__init__(*args, **kwargs)
         for field in self.fields:
             self.fields[field].widget.attrs['class'] = 'form-control'
+
 
 class ConfirmOrderForm(forms.ModelForm):
     # goods = forms.CharField(max_length=50)

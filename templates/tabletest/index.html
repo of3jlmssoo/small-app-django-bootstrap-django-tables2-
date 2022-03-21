@@ -9,10 +9,6 @@
 <form  action="{% url 'place_order' %}" method="POST">
     {% csrf_token %}
     
-
-
-
-
     <div class="row form-group">
         <div class="col-md-4">
             <label for="inputProduct" class="form-label">物品</label>
@@ -39,12 +35,13 @@
                 種別 : 
 
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="product_type" id="product_type" value="D"/>
+                        <input class="form-check-input" type="radio" name="product_type" id="product_type" required value="D"/>
                         <label class="form-check-label" for="daily"> 生活必需品 </label>
                     </div>
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="product_type" id="product_type" value="L"/>
+                        <input class="form-check-input" type="radio" name="product_type" id="product_type" required value="L"/>
                         <label class="form-check-label" for="luxury"> 贅沢品 </label>
+                        {% comment %} <div class="invalid-feedback">More example invalid feedback text</div> {% endcomment %}
                     </div>    
             </div>
         </div>
@@ -52,15 +49,15 @@
             <div class="btn-group-vertical" role="group" aria-label="Basic checkbox toggle button group">    
                 用途 : 
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="product_use" value="M" >
+                        <input class="form-check-input" type="radio" name="product_use" required value="M" >
                         <label class="form-check-label" for="me">自分用</label>
                     </div>
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="product_use" value="F">
+                        <input class="form-check-input" type="radio" name="product_use" required  value="F">
                         <label class="form-check-label" for="family">家族用</label>
                     </div>
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="product_use" value="G">
+                        <input class="form-check-input" type="radio" name="product_use" required value="G">
                         <label class="form-check-label" for="gift">贈答用</label>
                     </div>
             </div>
@@ -78,11 +75,11 @@
                 代替 : 
 
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="alternative" id="altyes" value="true" />
+                        <input class="form-check-input" type="radio" name="alternative" id="altyes" required value="true" />
                         <label class="form-check-label" for="altyes"> 有り </label>
                     </div>
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="alternative" id="altno" value="false" />
+                        <input class="form-check-input" type="radio" name="alternative" id="altno" required value="false" />
                         <label class="form-check-label" for="altnot"> 無し </label>
                     </div>    
             </div>
