@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'tabletest',
     'accounts',
+    'import_export',
 ]
 
 MIDDLEWARE = [
