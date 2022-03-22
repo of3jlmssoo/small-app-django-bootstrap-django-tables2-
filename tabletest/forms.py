@@ -27,7 +27,6 @@ class ConfirmOrderForm(forms.ModelForm):
     # https://stackoverflow.com/questions/4662848/disabled-field-is-not-passed-through-workaround-needed
 
 
-    # goods = forms.CharField(max_length=50)
     alternative = forms.BooleanField(required=False, widget=forms.CheckboxInput(attrs={'style': 'width:20px;height:20px;'}))
 
     class Meta:
@@ -44,10 +43,10 @@ class ConfirmOrderForm(forms.ModelForm):
         for field in self.fields:
             print(f'=> {field=}')
             self.fields[field].widget.attrs['class'] = 'form-control'
-            self.fields['goods'].widget.attrs['readonly'] = 'readonly'
-            self.fields['product_price'].widget.attrs['readonly'] = 'readonly'
-            self.fields['type_of_estimation'].widget.attrs['readonly'] = 'readonly'
-            self.fields['product_use'].widget.attrs['readonly'] = 'readonly'
-            self.fields['product_type'].widget.attrs['readonly'] = 'readonly'
-            self.fields['alternative'].widget.attrs['readonly'] = 'readonly'
-            self.fields['expected_purchase_date'].widget.attrs['readonly'] = 'readonly'
+            self.fields['goods'].widget.attrs['disabled'] = 'disabled'
+            self.fields['product_price'].widget.attrs['disabled'] = 'disabled'
+            self.fields['type_of_estimation'].widget.attrs['disabled'] = 'disabled'
+            self.fields['product_use'].widget.attrs['disabled'] = 'disabled'
+            self.fields['product_type'].widget.attrs['disabled'] = 'disabled'
+            self.fields['alternative'].widget.attrs['disabled'] = 'disabled'
+            self.fields['expected_purchase_date'].widget.attrs['disabled'] = 'disabled'

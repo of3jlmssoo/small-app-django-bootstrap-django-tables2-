@@ -140,7 +140,13 @@
 
 
 </form>
-
+<script>
+$('form').submit(function(e) {
+    $(':disabled').each(function(e) {
+        $(this).removeAttr('disabled');
+    })
+});
+</script>
 
 {% include 'includes/alerts.html' %}
 {% endblock %}
