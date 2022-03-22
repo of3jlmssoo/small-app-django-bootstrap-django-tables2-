@@ -18,17 +18,17 @@
         <div class="col-md-4">
             <label  for="inputProduct" class="form-label">物品</label>
             <!-- <input type="text" class="form-control" name="inputProduct" id="inputProduct"> -->
-            {{ form.goods }}
+            <p class="text-muted">{{ form.goods }}</p>
         </div>    
         <div class="col-md-4">
             <label for="inputPrice" class="form-label">金額</label>
             <!-- <input type="text" class="form-control" name="inputPrice" id="inputPrice"> -->
-            {{ form.product_price }}
+            <p class="text-muted">{{ form.product_price }} </p>
         </div>    
         <div class="col-md-4">
             <label for="inputPriceEst" class="form-label">金額根拠</label>
             <!-- <input type="text" class="form-control" name="inputPriceEst" id="inputPriceEst"> -->
-            {{ form.type_of_estimation }}
+            <p class="text-muted">{{ form.type_of_estimation }}</p>
         </div>    
     
     </div>
@@ -37,15 +37,15 @@
 
         <div class="col-2">
             <label for="product_type" class="form-label">種別</label>
-            {{ form.product_type }}
+            <p class="text-muted">{{ form.product_type }}</p>
         </div>
         <div class="col-2">
             <label for="product_use" class="form-label">用途</label>
-            {{ form.product_use }}
+            <p class="text-muted">{{ form.product_use }}</p>
         </div>
         <div class="form-group col-2">
             <label for="alternative" class="form-label">代替可否</label>
-            {{ form.alternative }}
+            <p class="text-muted">{{ form.alternative }}</p>
         </div>
         <!---
         <div class="col-2">
@@ -101,7 +101,7 @@
     <div class="row form-group mt-1 mb-0">
         <div class="col-2">
             <label>購入予定日 : </label>
-            {{ form.expected_purchase_date }}
+            <p class="text-muted">{{ form.expected_purchase_date }}</p>
             {% comment %} <input disabled type="text" class="form-control" name="expected_purchase_date" id="date_sample" value={{expected_purchase_date}}> {% endcomment %}
             <!-- <p>2022-02-22</p> -->
         </div>

@@ -1,6 +1,6 @@
 
 Todo:
-  ☐ 購入予定時期
+  ✔ 購入予定時期 @done(22-03-22 13:18)
   ✔ email login and authentication @done(22-03-16 10:19)
   ☐ tables
     ☐ 
@@ -10,4 +10,4 @@ Todo:
   ☐ unique ID if available
   ☐ attribute of unique ID, emp id (see transID)
   ☐ display html as read only 
-  ☐ date created and date updated
+  ✔ date created and date updated @done(22-03-22 13:18)

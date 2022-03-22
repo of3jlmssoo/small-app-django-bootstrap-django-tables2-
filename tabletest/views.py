@@ -76,6 +76,25 @@ def place_order(request):
 
         context = set_checkbox_choices(request, context)
 
+
+
+
+        initial_dict = {
+            'goods':form.cleaned_data['goods'],
+            'product_price':form.cleaned_data['product_price'],
+            'type_of_estimation':form.cleaned_data['type_of_estimation'],
+            'product_type':form.cleaned_data['product_type'],
+            'product_use':form.cleaned_data['product_use'],
+            'alternative':form.cleaned_data['alternative'],
+            'expected_purchase_date':form.cleaned_data['expected_purchase_date'],
+        }
+
+        print(f'=> place_order {initial_dict=}')
+
+        form2 = ConfirmOrderForm(request.POST or None, initial=initial_dict)
+
+        context = {'form': form2 } #, "expected_purchase_date": request.POST['expected_purchase_date']}
+
         print(f'=> before render() {context=}')
         return render(request, 'tabletest/confirm_details.html', context)
 
@@ -92,12 +111,17 @@ def confirm_details(request):
     if request.method == 'POST':
 
         print(f'=> confirm_details() POST! {request.user=}')
+
+
         for item in request.POST:
             key = item
             value = request.POST[key]
             print(f'{key=} {value}')
 
-        form = ProductOrderForm(request.POST)
+        form = ConfirmOrderForm(request.POST)
+
+        print(f'=> confirm_details boundfield {form["goods"].initial=}')
+        print(f"=> confirm_details boundfield {form.get_initial_for_field(form.fields['goods'], 'goods')=}")
 
         if form.is_valid():
             order_product = ProductOrder(
@@ -112,7 +136,8 @@ def confirm_details(request):
             )
             order_product.save()
             print(f'order_product.saved')
-
+        else:
+            print(f'=> confirm_details form is invalid {form.cleaned_data=}')
     else:
         return HttpResponse('something wrong at confirm_details()')
 
