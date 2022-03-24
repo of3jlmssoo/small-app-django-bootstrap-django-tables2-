@@ -1,5 +1,6 @@
 from re import I
 from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
 
 # Create your views here.
@@ -7,6 +8,24 @@ from .forms import ProductOrderForm, ConfirmOrderForm
 from .models import ProductOrder
 from django.contrib import messages
 import copy
+
+from django_filters.views import FilterView
+
+from django_tables2 import MultiTableMixin, RequestConfig, SingleTableMixin, SingleTableView
+from django_tables2.export.views import ExportMixin
+from django_tables2.paginators import LazyPaginator
+
+
+from .tables import (
+    Bootstrap4Table,
+    # BootstrapTable,
+    # BootstrapTablePinnedRows,
+    # CheckboxTable,
+    # CountryTable,
+    # PersonTable,
+    # SemanticTable,
+    # ThemedCountryTable,
+)
 
 
 def set_checkbox_choices(request, context):
@@ -160,3 +179,19 @@ def index(request):
 #     # return redirect('index')
 #     form = ProductOrderForm()
 #     return render(request, 'tabletest/indexcopy.html', {'form': form})
+
+
+def bootstrap4(request):
+    """Demonstrate the use of the bootstrap4 template"""
+
+    # create_fake_data()
+    table = Bootstrap4Table(ProductOrder.objects.all(), order_by="-goods")
+    RequestConfig(request, paginate={"per_page": 5}).configure(table)
+
+    return render(request, "tabletest/bootstrap4_template.html", {"table": table})
+
+
+def productorder_detail(request, pk):
+    productorder = get_object_or_404(ProductOrder, pk=pk)
+
+    return render(request, "tabletest/index.html", {"form": productorder})

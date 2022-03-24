@@ -9,4 +9,6 @@ urlpatterns = [
     path('', views.index, name='index'),
     # path('', views.indexcopy, name='indexcopy'),
     path('confirm_details/', views.confirm_details, name='confirm_details'),
+    path("bootstrap4/", views.bootstrap4, name="bootstrap4"),
+    path("productorder_detail/<int:pk>/", views.productorder_detail, name="productorder_detail"),
 ]

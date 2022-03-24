@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.urls import reverse
 # Create your models here.
 from accounts.models import Account
 
@@ -47,3 +47,7 @@ class ProductOrder(models.Model):
 
     def __str__(self):
         return self.goods
+
+
+    def get_absolute_url(self):
+        return reverse("productorder_detail", args=(self.pk,))

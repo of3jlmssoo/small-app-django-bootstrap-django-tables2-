@@ -1,5 +1,80 @@
 ### 
-![代替テキスト](./deitalpanel1.drawio.svg)
+/home/hiroshisakuma/projects/django-tables2/example/urls.py
+/home/hiroshisakuma/projects/django-tables2/example/app/views.py
+                (reverse("bootstrap4"), "template: Bootstrap 4 (bootstrap4.html)"),
+/home/hiroshisakuma/projects/django-tables2/example/django-tables2/django_tables2/templates/django_tables2/bootstrap4.html
+
+
+/home/hiroshisakuma/projects/django-tables2/example/templates/bootstrap4_template.html was used!
+/home/hiroshisakuma/projects/django-tables2/example/app/tables.py
+
+
+
+
+
+
+### table
+    settings.py installed_appsで
+        "django_tables2",
+
+    初期ページindex.htmlの中で
+        <h2>Basic example of a table</h2>
+        {% render_table table "django_tables2/bootstrap.html" %}
+
+    views.py def index(request)
+    これは、初期ページの出だしの部分を設定している
+    Basic example of a tableのテーブルは上のrenderでrenderされている
+        def index(request):
+            create_fake_data()
+            table = PersonTable(Person.objects.all())
+            RequestConfig(request, paginate={"per_page": 5}).configure(table)
+
+            return render(
+                request,
+                "index.html",
+                {
+                    "table": table,
+                    "urls": (
+                        (reverse("tutorial"), "Tutorial"),
+                        (reverse("multiple"), "Multiple tables"),
+                        (reverse("filtertableview"), "Filtered tables (with export)"),
+                        (reverse("singletableview"), "Using SingleTableMixin"),
+                        (reverse("multitableview"), "Using MultiTableMixin"),
+                        (reverse("bootstrap"), "template: Bootstrap 3 (bootstrap.html)"),
+                        (reverse("bootstrap4"), "template: Bootstrap 4 (bootstrap4.html)"),
+                        (reverse("semantic"), "template: Semantic UI (semantic.html)"),
+                    ),
+                },
+            )
+    views.py def bootstrap(request)
+        def bootstrap(request):
+        """Demonstrate the use of the bootstrap template"""
+
+        create_fake_data()
+        table = BootstrapTable(Person.objects.all().select_related("country"), order_by="-name")
+        RequestConfig(request, paginate={"paginator_class": LazyPaginator, "per_page": 10}).configure(
+            table
+        )
+
+        return render(request, "bootstrap_template.html", {"table": table})
+
+
+        Person objectを指定している
+        Personはid name friendly country_idの4カラム
+        画面に表示されるのも4カラム
+
+
+        bootstrap.htmlに対しcontext=tableが渡される
+        bootstrap.htmlの中では、
+        まずヘッダー処理
+        その後データ本体を処理
+        最後にフッタ-を処理する
+        その後、ページネーション処理で
+        previous
+        1,2,3,4,5
+        next
+        が設定される
+        
 
 ```text
 class OrderProduct(models.Model):

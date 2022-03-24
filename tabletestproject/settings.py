@@ -48,7 +48,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'tabletest',
     'accounts',
+    "django_tables2",
     'import_export',
+    'bootstrap4',
 ]
 
 MIDDLEWARE = [
