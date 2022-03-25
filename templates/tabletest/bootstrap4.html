@@ -1,10 +1,9 @@
 {% load django_tables2 %}
 {% load i18n %}
 {% block table-wrapper %}
-<h2>xxx</h2>
-<div class="table-container table-sm">
-    {% block table  %}
-        <table {% render_attrs table.attrs class="table table-sm" %}>
+<div class="table-container">
+    {% block table %}
+        <table {% render_attrs table.attrs class="table" %}>
             {% block table.thead %}
             {% if table.show_header %}
                 <thead {{ table.attrs.thead.as_html }}>
@@ -54,7 +53,7 @@
             {% endblock table.tfoot %}
         </table>
     {% endblock table %}
-<!--
+
     {% block pagination %}
         {% if table.page and table.paginator.num_pages > 1 %}
         <nav aria-label="Table navigation">
@@ -94,6 +93,5 @@
         </nav>
         {% endif %}
     {% endblock pagination %}
-    -->
 </div>
 {% endblock table-wrapper %}

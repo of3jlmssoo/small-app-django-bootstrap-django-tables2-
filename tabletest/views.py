@@ -1,7 +1,9 @@
 from re import I
 from django.shortcuts import render, redirect
 from django.shortcuts import get_object_or_404
-from django.http import HttpResponse
+
+
+from django.http import HttpResponse,Http404
 
 # Create your views here.
 from .forms import ProductOrderForm, ConfirmOrderForm
@@ -192,6 +194,18 @@ def bootstrap4(request):
 
 
 def productorder_detail(request, pk):
-    productorder = get_object_or_404(ProductOrder, pk=pk)
+    # productorder = get_object_or_404(ProductOrder, pk=pk)
+    try:
+        productorder = get_object_or_404(ProductOrder, pk=pk)
+        # obj = MyModel.objects.get(pk=1)
+    except ProductOrder.DoesNotExist:
+        raise Http404("No MyModel matches the given query. productorder_detail()")
 
-    return render(request, "tabletest/index.html", {"form": productorder})
+    form = ProductOrderForm(instance=productorder)
+
+    return render(request, "tabletest/index.html", {"form": form})
+
+    # form = ConfirmOrderForm(instance=productorder)
+
+    # return render(request, "tabletest/confirm_details.html", {"form": form})
+
