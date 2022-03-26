@@ -1,6 +1,7 @@
 from re import I
 from django.shortcuts import render, redirect
 from django.shortcuts import get_object_or_404
+from django.contrib.auth.decorators import login_required
 
 
 from django.http import HttpResponse,Http404
@@ -60,7 +61,7 @@ def set_checkbox_choices(request, context):
 
     return new_context
 
-
+@login_required(redirect_field_name='accounts/login')
 def place_order(request):
 
     if request.method == 'POST':
@@ -126,12 +127,12 @@ def place_order(request):
 
 
 def confirm_details(request):
-    print(f'=> confirm_details {request.POST=}')
+    print(f'=> confirm_details1 {request.POST=}')
     # form = ConfirmOrderForm(request.POST, initial={'goods': 'Hi there!'})
-    print(f'=> confirm_details!')
+    print(f'=> confirm_details2!')
     if request.method == 'POST':
 
-        print(f'=> confirm_details() POST! {request.user=}')
+        print(f'=> confirm_details()3 POST! {request.user=}')
 
 
         for item in request.POST:
@@ -164,7 +165,7 @@ def confirm_details(request):
 
     return redirect('/')
 
-
+@login_required(redirect_field_name='accounts/login')
 def index(request):
 
     form = ProductOrderForm()
