@@ -102,9 +102,15 @@
         <div class="col-2">
             <label>購入予定日 : </label>
             <p class="text-muted">{{ form.expected_purchase_date }}</p>
-            {% comment %} <input disabled type="text" class="form-control" name="expected_purchase_date" id="date_sample" value={{expected_purchase_date}}> {% endcomment %}
             <!-- <p>2022-02-22</p> -->
         </div>
+        <div>
+            <label>申請ID</label>
+            <!-- <input readonly type="text" class="form-control" name="orderid" value="{{orderid}}" id="orderid"  ></input> -->
+            <p class="text-muted">{{ form.orderid }}</p>
+
+        </div>
+
     </div>    
 
 

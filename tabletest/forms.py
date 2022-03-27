@@ -6,6 +6,7 @@ from .models import ProductOrder
 class ProductOrderForm(forms.ModelForm):
     # goods = forms.CharField(max_length=50)
     alternative = forms.BooleanField(required=False, widget=forms.CheckboxInput(attrs={'style': 'width:25px;height:25;'}))
+    orderid = forms.IntegerField(required=False)
 
     class Meta:
         model = ProductOrder
@@ -28,6 +29,7 @@ class ConfirmOrderForm(forms.ModelForm):
 
 
     alternative = forms.BooleanField(required=False, widget=forms.CheckboxInput(attrs={'style': 'width:20px;height:20px;'}))
+    orderid = forms.IntegerField(required=False)
 
     class Meta:
         model = ProductOrder
@@ -50,3 +52,4 @@ class ConfirmOrderForm(forms.ModelForm):
             self.fields['product_type'].widget.attrs['disabled'] = 'disabled'
             self.fields['alternative'].widget.attrs['disabled'] = 'disabled'
             self.fields['expected_purchase_date'].widget.attrs['disabled'] = 'disabled'
+            self.fields['orderid'].widget.attrs['disabled'] = 'disabled'

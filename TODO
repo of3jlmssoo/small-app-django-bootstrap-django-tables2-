@@ -2,15 +2,19 @@
 Todo:
   ✔ 購入予定時期 @done(22-03-22 13:18)
   ✔ email login and authentication @done(22-03-16 10:19)
-  ☐ bootstrap-datetimepicker
-  ☐ django radio buttons
+  ✔ bootstrap-datetimepicker @done(22-03-27 14:08)
+  ✔ django radio buttons @done(22-03-27 14:08)
   ☐ tables
-    ☐ 組み込み
+    ✔ 組み込み @done(22-03-27 14:08)
+    ☐ データカラムの選択(created or updateどちらか)
+    ☐ テーブルページのヘッダーとか修正
+    ☐ データカラムの属性変更(幅)
+    ☐ データカラムの属性変更(alternativeの表示チェックマーク、バツマーク)
     ☐ データカラムの属性変更(left/center/rigth)
     ☐ ヘッダー表示日本語化
     ☐ DateTimeFieldのDateのみ表示
     ☐ bootstrap4以外のテーブル組み込み
-  ☐ ProductOrder.objects.get()してformで表示
+  ✔ ProductOrder.objects.get()してformで表示 @done(22-03-27 14:08)
   ☐ 金額根拠欄修正(現物確認、インターネット通販、見積取得)
   ☐ 金額根拠がインターネット通販だったらURLを入力するよう、見積取得であったらファイルをアップロードできるようにする
    is_emp, is_mgr追加 @done(22-03-16 10:19)

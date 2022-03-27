@@ -106,9 +106,9 @@
       <div class="position-sticky pt-3">
         <ul class="nav flex-column">
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="#">
+            <a class="nav-link active" aria-current="page" href="{% url 'bootstrap4' %}">
               <span data-feather="home"></span>
-              Dashboard
+              ダッシュボード
             </a>
           </li>
           <li class="nav-item">
@@ -191,13 +191,16 @@
 
 <script>
     $('#date_sample').datepicker({
-        format: 'yyyy-mm-dd'
+        format: 'yyyy-mm-dd',
+        autoclose: true,
+
     });
 </script>
+<!--
 <script>
     $('#datetimepicker1').datepicker();
 </script>
-
+-->
 
 
   </body>

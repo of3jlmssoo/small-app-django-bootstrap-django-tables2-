@@ -35,11 +35,11 @@
                 種別 : 
 
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="product_type" id="product_type" required value="D"/>
+                        <input class="form-check-input" type="radio" name="product_type" id="product_type" required value="D" {{ daily_goods }}/>
                         <label class="form-check-label" for="daily"> 生活必需品 </label>
                     </div>
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="product_type" id="product_type" required value="L"/>
+                        <input class="form-check-input" type="radio" name="product_type" id="product_type" required value="L" {{ luxury_goods }}/>
                         <label class="form-check-label" for="luxury"> 贅沢品 </label>
                         {% comment %} <div class="invalid-feedback">More example invalid feedback text</div> {% endcomment %}
                     </div>    
@@ -49,15 +49,15 @@
             <div class="btn-group-vertical" role="group" aria-label="Basic checkbox toggle button group">    
                 用途 : 
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="product_use" required value="M" >
+                        <input class="form-check-input" type="radio" name="product_use" required value="M" {{ personal }}>
                         <label class="form-check-label" for="me">自分用</label>
                     </div>
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="product_use" required  value="F">
+                        <input class="form-check-input" type="radio" name="product_use" required  value="F" {{ family }}>
                         <label class="form-check-label" for="family">家族用</label>
                     </div>
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="product_use" required value="G">
+                        <input class="form-check-input" type="radio" name="product_use" required value="G" {{ gift }}>
                         <label class="form-check-label" for="gift">贈答用</label>
                     </div>
             </div>
@@ -75,11 +75,11 @@
                 代替 : 
 
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="alternative" id="altyes" required value="true" />
+                        <input class="form-check-input" type="radio" name="alternative" id="altyes" required value="true" {{ alt_available }}/>
                         <label class="form-check-label" for="altyes"> 有り </label>
                     </div>
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="alternative" id="altno" required value="false" />
+                        <input class="form-check-input" type="radio" name="alternative" id="altno" required value="false" {{ alt_unavailable }}/>
                         <label class="form-check-label" for="altnot"> 無し </label>
                     </div>    
             </div>
@@ -90,7 +90,13 @@
     <div class="row form-group mt-1 mb-0">
         <div class="col-2">
             <label>購入予定日 : </label>
-            <input type="text" class="form-control" name="expected_purchase_date" id="date_sample">
+            <!-- <input type="text" class="form-control" name="expected_purchase_date" id="date_sample" value={{form.expected_purchase_date}}>{{form.expected_purchase_date}} -->
+
+            <input type="text" class="form-control" name="expected_purchase_date" value="{{expected_purchase_date}}" id="date_sample"  ></input>
+        </div>
+        <div>
+            <label>申請ID</label>
+            <input readonly type="text" class="form-control" name="orderid" value="{{orderid}}" id="orderid"  ></input>
         </div>
     </div>    
 
