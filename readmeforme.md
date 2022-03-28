@@ -1,3 +1,71 @@
+## 
+/home/hiroshisakuma/projects/django-tables2/example/templates/index.html
+path("", index),
+/home/hiroshisakuma/projects/django-tables2/example/app/views.py
+同じviews.pyにmultipleあり
+    example1 = CountryTable(qs, prefix="1-")
+    RequestConfig(request, paginate=False).configure(example1)
+
+    example2 = CountryTable(qs, prefix="2-")
+    RequestConfig(request, paginate={"per_page": 2}).configure(example2)
+
+    example3 = ThemedCountryTable(qs, prefix="3-")
+    RequestConfig(request, paginate={"per_page": 3}).configure(example3)
+
+    example4 = ThemedCountryTable(qs, prefix="4-")
+    RequestConfig(request, paginate={"per_page": 3}).configure(example4)
+
+    example5 = ThemedCountryTable(qs, prefix="5-")
+    example5.template = "extended_table.html"
+    RequestConfig(request, paginate={"per_page": 3}).configure(example5)
+
+    return render(
+        request,
+        "multiple.html",
+        {
+            "example1": example1,
+            "example2": example2,
+            "example3": example3,
+            "example4": example4,
+            "example5": example5,
+        },
+    )
+
+
+tables.py
+    class CountryTable(tables.Table):
+        name = tables.Column()
+        population = tables.Column()
+        tz = tables.Column(verbose_name="time zone")
+        visits = tables.Column()
+        summary = tables.Column(order_by=("name", "population"))
+
+        class Meta:
+            model = Country
+
+    class ThemedCountryTable(CountryTable):
+        class Meta:
+            attrs = {"class": "paleblue"}
+
+
+
+/home/hiroshisakuma/projects/django-tables2/example/templates/multiple.html
+    <h3>via template tag</h3>
+    <pre>{% templatetag openblock %} load django_tables2 {% templatetag closeblock %}
+    {% templatetag openblock %} render_table example3 {% templatetag closeblock %}</pre>
+    {% load django_tables2 %}
+    {% render_table example3 %}
+
+    <h2>Example 4 — QuerySet + pagination + paleblue theme</h2>
+    <h3>via <tt>as_html()</tt></h3>
+    <pre>{% templatetag openvariable %} example4.as_html {% templatetag closevariable %}</pre>
+    {{ example4.as_html }}
+
+
+
+
+
+
 ### 
 /home/hiroshisakuma/projects/django-tables2/example/urls.py
 /home/hiroshisakuma/projects/django-tables2/example/app/views.py

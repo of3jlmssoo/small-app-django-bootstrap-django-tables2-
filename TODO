@@ -7,11 +7,11 @@ Todo:
   ☐ tables
     ✔ 組み込み @done(22-03-27 14:08)
     ☐ データカラムの選択(created or updateどちらか)
-    ☐ テーブルページのヘッダーとか修正
+    ✔ テーブルページのヘッダーとか修正 @done(22-03-28 23:10)
     ☐ データカラムの属性変更(幅)
     ☐ データカラムの属性変更(alternativeの表示チェックマーク、バツマーク)
     ☐ データカラムの属性変更(left/center/rigth)
-    ☐ ヘッダー表示日本語化
+    ✔ ヘッダー表示日本語化 @done(22-03-28 23:10)
     ☐ DateTimeFieldのDateのみ表示
     ☐ bootstrap4以外のテーブル組み込み
   ✔ ProductOrder.objects.get()してformで表示 @done(22-03-27 14:08)
