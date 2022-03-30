@@ -1,18 +1,26 @@
 
-Todo:
+Todo:yuu
+  ✔ is logged in? @done(22-03-30 14:28)
+  ☐ 指しもどし理由カラム追加
+      ☐ モデル追加
+      ☐ テンプレート修正
+  ☐ ProductOrder Modelカラム追加。status 0 : saved, 1 : processing, 2 : done
+  ☐ django ファイルアップロード
+  ☐ django ポップアップウィンドウ
+  ☐ bootstrap dynamicall change pull down menu
   ✔ 購入予定時期 @done(22-03-22 13:18)
   ✔ email login and authentication @done(22-03-16 10:19)
   ✔ bootstrap-datetimepicker @done(22-03-27 14:08)
   ✔ django radio buttons @done(22-03-27 14:08)
   ☐ tables
     ✔ 組み込み @done(22-03-27 14:08)
-    ☐ データカラムの選択(created or updateどちらか)
+    ✔ データカラムの選択(created or updateどちらか) @done(22-03-29 10:03)
     ✔ テーブルページのヘッダーとか修正 @done(22-03-28 23:10)
     ☐ データカラムの属性変更(幅)
-    ☐ データカラムの属性変更(alternativeの表示チェックマーク、バツマーク)
-    ☐ データカラムの属性変更(left/center/rigth)
+    ✔ データカラムの属性変更(alternativeの表示チェックマーク、バツマーク) @done(22-03-29 10:03)
+    ✔ データカラムの属性変更(left/center/rigth) @done(22-03-29 10:04)
     ✔ ヘッダー表示日本語化 @done(22-03-28 23:10)
-    ☐ DateTimeFieldのDateのみ表示
+    ✔ DateTimeFieldのDateのみ表示 @done(22-03-29 10:04)
     ☐ bootstrap4以外のテーブル組み込み
   ✔ ProductOrder.objects.get()してformで表示 @done(22-03-27 14:08)
   ☐ 金額根拠欄修正(現物確認、インターネット通販、見積取得)
@@ -20,6 +28,6 @@ Todo:
    is_emp, is_mgr追加 @done(22-03-16 10:19)
   ☐ unique ID if available
   ☐ attribute of unique ID, emp id (see transID)
-  ☐ display html as read only 
+  ✔ display html as read only @done(22-03-30 15:07)
   ✔ date created and date updated @done(22-03-22 13:18)
   ☐ PRODUCT_USE, PRODUCT_TYPEを外だし共通化する
