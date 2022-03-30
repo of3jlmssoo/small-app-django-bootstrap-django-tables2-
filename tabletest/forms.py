@@ -14,7 +14,7 @@ class ProductOrderForm(forms.ModelForm):
         #     'product_type',
         # ]
         fields = '__all__'
-        exclude = ['user']
+        exclude = ['user', 'status', 'comment']
 
     # apply bootstrap to django form
 
@@ -37,7 +37,8 @@ class ConfirmOrderForm(forms.ModelForm):
         #     'product_type',
         # ]
         fields = '__all__'
-        exclude = ['user']
+        exclude = ['user', 'status', 'comment']
+        # exclude = ['user']
 
     # apply bootstrap to django form
     def __init__(self, *args, **kwargs):

@@ -216,13 +216,17 @@ def bootstrap4(request):
 
     # create_fake_data()
     # table = Bootstrap4Table(ProductOrder.objects.all(), order_by="-goods")
-    table_saved = Bootstrap4Table(ProductOrder.objects.filter(product_type='L'), order_by="-goods", prefix="1-")
+    # table_saved = Bootstrap4Table(ProductOrder.objects.filter(status='S'), order_by="-goods", prefix="1-")
+    table_saved = Bootstrap4Table(ProductOrder.objects.filter(status="S"), order_by="-goods")
     RequestConfig(request, paginate={"per_page": 2}).configure(table_saved)
 
-    table_proc = Bootstrap4Table(ProductOrder.objects.filter(product_type='D'), order_by="-goods", prefix="2-")
+    table_proc = Bootstrap4Table(ProductOrder.objects.filter(status='P'), order_by="-goods", prefix="2-")
     RequestConfig(request, paginate={"per_page": 2}).configure(table_proc)
 
-    return render(request, "tabletest/bootstrap4_template.html", {"table": table_saved, "table_proc": table_proc})
+    table_apro = Bootstrap4Table(ProductOrder.objects.filter(status='A'), order_by="-goods", prefix="3-")
+    RequestConfig(request, paginate={"per_page": 2}).configure(table_apro)
+
+    return render(request, "tabletest/bootstrap4_template.html", {"table": table_saved, "table_proc": table_proc, "table_apro": table_apro})
 
 
 def set_checkbox_choices(context, product_type, product_use, alternative):

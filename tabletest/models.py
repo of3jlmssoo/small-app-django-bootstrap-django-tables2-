@@ -29,6 +29,11 @@ class ProductOrder(models.Model):
         ('M', '自分用'),
         ('G', '贈答用'),
     ]
+    ORDER_STATUS = [
+        ('S','保存'),
+        ('P','申請済み'),
+        ('A','承認済み'),
+    ]
 
     # id(PK) djangoに任せる
     goods = models.CharField(max_length=50, blank=False, null=False, verbose_name="物品")
@@ -44,6 +49,9 @@ class ProductOrder(models.Model):
     updated_on = models.DateTimeField(auto_now=True, verbose_name="更新日")
 
     user = models.ForeignKey(Account, on_delete=models.SET_NULL, null=True, verbose_name="申請者")
+
+    status = models.CharField(max_length=1, choices=ORDER_STATUS, default=ORDER_STATUS[0], blank=False, null=False, verbose_name="ステータス")  # me, family or gift
+    comment = models.CharField(max_length=100, blank=True, null=True, verbose_name="コメント")
 
     def __str__(self):
         return self.goods
