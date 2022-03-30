@@ -101,6 +101,59 @@ def place_order(request):
             # )
             # order_product.save()
 
+        
+        if request.POST.get('submitsecondary') is not None:
+
+            if form.cleaned_data["orderid"] is None:
+                order_product = ProductOrder(
+                    goods=form.cleaned_data['goods'],
+                    product_price=form.cleaned_data['product_price'],
+                    type_of_estimation=form.cleaned_data['type_of_estimation'],
+                    product_type=form.cleaned_data['product_type'],
+                    product_use=form.cleaned_data['product_use'],
+                    alternative=form.cleaned_data['alternative'],
+                    expected_purchase_date=form.cleaned_data['expected_purchase_date'],
+                    user=request.user,
+                    status="S"
+                )
+            else:
+                productorder = ProductOrder.objects.get(pk=form.cleaned_data['orderid'])
+                print(f'=> confirm_details()7 {productorder.created_on=}')
+                order_product = ProductOrder(
+                    id=form.cleaned_data["orderid"],
+                    goods=form.cleaned_data['goods'],
+                    product_price=form.cleaned_data['product_price'],
+                    type_of_estimation=form.cleaned_data['type_of_estimation'],
+                    product_type=form.cleaned_data['product_type'],
+                    product_use=form.cleaned_data['product_use'],
+                    alternative=form.cleaned_data['alternative'],
+                    expected_purchase_date=form.cleaned_data['expected_purchase_date'],
+                    user=request.user,
+                    created_on=productorder.created_on,
+                    status="S"
+                )
+
+            order_product.save()
+            print(f'order_product.saved as save_as_draft ')
+            return redirect('bootstrap4')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         context = {'form': form, "expected_purchase_date": request.POST['expected_purchase_date']}
 
         # context = set_checkbox_choices(request, context)
@@ -165,6 +218,7 @@ def confirm_details(request):
                     alternative=form.cleaned_data['alternative'],
                     expected_purchase_date=form.cleaned_data['expected_purchase_date'],
                     user=request.user,
+                    status='P',
                 )
             else:
                 productorder = ProductOrder.objects.get(pk=form.cleaned_data['orderid'])
@@ -179,7 +233,8 @@ def confirm_details(request):
                     alternative=form.cleaned_data['alternative'],
                     expected_purchase_date=form.cleaned_data['expected_purchase_date'],
                     user=request.user,
-                    created_on=productorder.created_on
+                    created_on=productorder.created_on,
+                    status='P',
                 )
 
             order_product.save()
