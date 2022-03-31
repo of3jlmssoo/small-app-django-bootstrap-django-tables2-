@@ -29,10 +29,12 @@
                     </form>
                 </div>
             {% endif %}
+            {% if user.is_approver == False %}
             <div class="col-sm-10 mt-3">
                 <h4>保存済み</h4>
                 {% render_table table %}
             </div>
+            {% endif %}
             <div class="col-sm-10">
                 <h4>申請済み</h4>
                 {% render_table table_proc %}

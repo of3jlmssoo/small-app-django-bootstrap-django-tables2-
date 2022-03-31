@@ -66,6 +66,11 @@ from .tables import (
 @login_required(redirect_field_name='accounts/login')
 def place_order(request):
 
+    print(f'place_order! -1 {request.user.is_approver}')  # if a approver, True, otherwise False
+
+    if request.user.is_approver:
+        print(f'place_order() your are a approver!')
+
     if request.method == 'POST':
 
         for item in request.POST:
@@ -101,7 +106,6 @@ def place_order(request):
             # )
             # order_product.save()
 
-        
         if request.POST.get('submitsecondary') is not None:
 
             if form.cleaned_data["orderid"] is None:
@@ -136,23 +140,6 @@ def place_order(request):
             order_product.save()
             print(f'order_product.saved as save_as_draft ')
             return redirect('bootstrap4')
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
         context = {'form': form, "expected_purchase_date": request.POST['expected_purchase_date']}
 
