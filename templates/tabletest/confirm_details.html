@@ -104,12 +104,21 @@
             <p class="text-muted">{{ form.expected_purchase_date }}</p>
             <!-- <p>2022-02-22</p> -->
         </div>
-        <div>
+        <div class="col-2">
             <label>申請ID</label>
             <!-- <input readonly type="text" class="form-control" name="orderid" value="{{orderid}}" id="orderid"  ></input> -->
             <p class="text-muted">{{ form.orderid }}</p>
-
         </div>
+
+        {% if user.is_approver %}
+        <p>you're an approver!</p>
+        {% else %}
+        <div class="col-4">
+            <label>コメント</label>
+            <input readonly type="text" class="form-control" name="comment" value="{{comement}}" id="comment"  ></input>
+        </div>
+        {% endif %}
+
 
     </div>    
 

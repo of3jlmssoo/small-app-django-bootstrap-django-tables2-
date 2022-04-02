@@ -14,7 +14,8 @@ class ProductOrderForm(forms.ModelForm):
         #     'product_type',
         # ]
         fields = '__all__'
-        exclude = ['user', 'status', 'comment']
+        # exclude = ['user', 'status', 'comment']
+        exclude = ['user', 'status', ]
 
     # apply bootstrap to django form
 
@@ -26,7 +27,6 @@ class ProductOrderForm(forms.ModelForm):
 
 class ConfirmOrderForm(forms.ModelForm):
     # https://stackoverflow.com/questions/4662848/disabled-field-is-not-passed-through-workaround-needed
-
 
     alternative = forms.BooleanField(required=False, widget=forms.CheckboxInput(attrs={'style': 'width:20px;height:20px;'}))
     orderid = forms.IntegerField(required=False)

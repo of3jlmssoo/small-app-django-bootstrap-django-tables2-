@@ -95,10 +95,21 @@
 
             <input type="text" class="form-control" name="expected_purchase_date" value="{{expected_purchase_date}}" id="date_sample"  ></input>
         </div>
-        <div>
+        <div class="col-2">
             <label>申請ID</label>
             <input readonly type="text" class="form-control" name="orderid" value="{{orderid}}" id="orderid"  ></input>
         </div>
+
+        {% if user.is_approver %}
+
+        {% else %}
+        <div class="col-4">
+            <label>コメント</label>
+            <input readonly type="text" class="form-control" name="comment" value="{{comement}}" id="comment"  ></input>
+        </div>
+        {% endif %}
+
+
     </div>    
 
 
