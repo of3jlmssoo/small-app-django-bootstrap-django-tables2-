@@ -13,7 +13,7 @@ from django_tables2.export.views import ExportMixin
 from django_tables2.paginators import LazyPaginator
 
 # Create your views here.
-from .forms import ConfirmOrderForm, ProductOrderForm
+from .forms import ConfirmOrderForm, ProductOrderForm, ViewOnlyOrderForm
 from .models import ProductOrder
 # BootstrapTable,; BootstrapTablePinnedRows,; CheckboxTable,; CountryTable,; PersonTable,; SemanticTable,; ThemedCountryTable,
 from .tables import Bootstrap4Table
@@ -106,7 +106,8 @@ def place_order(request):
                     alternative=form.cleaned_data['alternative'],
                     expected_purchase_date=form.cleaned_data['expected_purchase_date'],
                     user=request.user,
-                    status="S"
+                    status="S",
+                    comment=form.cleaned_data['comment'],
                 )
             else:
                 productorder = ProductOrder.objects.get(pk=form.cleaned_data['orderid'])
@@ -122,7 +123,8 @@ def place_order(request):
                     expected_purchase_date=form.cleaned_data['expected_purchase_date'],
                     user=request.user,
                     created_on=productorder.created_on,
-                    status="S"
+                    status="S",
+                    comment=form.cleaned_data['comment'],
                 )
 
             order_product.save()
@@ -148,7 +150,8 @@ def place_order(request):
 
         form2 = ConfirmOrderForm(request.POST or None, initial=initial_dict)
 
-        context = {'form': form2}  # , "expected_purchase_date": request.POST['expected_purchase_date']}
+        # , "expected_purchase_date": request.POST['expected_purchase_date']}
+        context = {'form': form2, 'comment': form.cleaned_data['comment']}
 
         print(f'=> place_order()11 before render() {context=}')
         return render(request, 'tabletest/confirm_details.html', context)
@@ -324,6 +327,7 @@ def productorder_detail(request, pk):
     print(f'=> productorder_detail {productorder.alternative=}')
     print(f'=> productorder_detail {productorder.expected_purchase_date=}')
     print(f'=> productorder_detail {productorder.expected_purchase_date.strftime("%Y-%m-%d")=}')
+    print(f'=> productorder_detail {productorder.status=}')
     print(f'=> productorder_detail {productorder.comment=}')
 
     # initial_dict = {
@@ -355,28 +359,68 @@ def productorder_detail(request, pk):
         }
         form2 = ConfirmOrderForm(request.POST or None, initial=initial_dict)
 
-        context = {'form': form2}  # , "expected_purchase_date": request.POST['expected_purchase_date']}
+        # , "expected_purchase_date": request.POST['expected_purchase_date']}
+        context = {'form': form2, 'comment': productorder.comment, 'status': productorder.status}
         print(f'=> productorder_detail() before render() {context=}')
         return render(request, 'tabletest/confirm_details.html', context)
 
     else:
 
-        form = ProductOrderForm(instance=productorder)
-        print(f'=> {form=}')
-        # context = {'form': form, "expected_purchase_date": "2022-02-22"}
-        context = {
-            'form': form,
-            "expected_purchase_date": productorder.expected_purchase_date.strftime("%Y-%m-%d"),
-            'orderid': productorder.id,
-            'comment': productorder.comment,
-        }
+        if productorder.status == 'A':
 
-        context = set_checkbox_choices(
-            context,
-            productorder.product_type,
-            productorder.product_use,
-            productorder.alternative)
-        return render(request, "tabletest/index.html", context)
+            # form = ViewOnlyOrderForm(instance=productorder)
+            # context = {
+            #     'form': form,
+            #     "expected_purchase_date": productorder.expected_purchase_date.strftime("%Y-%m-%d"),
+            #     'orderid': productorder.id,
+            #     'comment': productorder.comment,
+            # }
 
-        # messages.error(request, '入力が正常完了しませんでした。')
-        # return redirect('/')
+            # context = set_checkbox_choices(
+            #     context,
+            #     productorder.product_type,
+            #     productorder.product_use,
+            #     productorder.alternative)
+
+            initial_dict = {
+                'goods': productorder.goods,
+                'product_price': productorder.product_price,
+                'type_of_estimation': productorder.type_of_estimation,
+                'product_type': productorder.product_type,
+                'product_use': productorder.product_use,
+                'alternative': productorder.alternative,
+                'expected_purchase_date': productorder.expected_purchase_date,
+                'orderid': productorder.id,
+                'comment': productorder.comment,
+                # 'comment': productorder.comment,
+            }
+
+            form2 = ConfirmOrderForm(request.POST or None, initial=initial_dict)
+
+            # , "expected_purchase_date": request.POST['expected_purchase_date']}
+            context = {'form': form2, 'comment': productorder.comment, 'status': productorder.status}
+
+            print(f'=> productorder_detail not approver readonly {context=}')
+            return render(request, 'tabletest/confirm_details.html', context)
+
+        else:
+            form = ProductOrderForm(instance=productorder)
+            print(f'=> {form=}')
+            # context = {'form': form, "expected_purchase_date": "2022-02-22"}
+            context = {
+                'form': form,
+                "expected_purchase_date": productorder.expected_purchase_date.strftime("%Y-%m-%d"),
+                'orderid': productorder.id,
+                'comment': productorder.comment,
+            }
+
+            context = set_checkbox_choices(
+                context,
+                productorder.product_type,
+                productorder.product_use,
+                productorder.alternative)
+            print(f'=> productorder_detail() non-approver {context=}')
+            return render(request, "tabletest/index.html", context)
+
+            # messages.error(request, '入力が正常完了しませんでした。')
+            # return redirect('/')

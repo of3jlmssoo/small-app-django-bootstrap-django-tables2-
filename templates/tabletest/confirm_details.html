@@ -110,21 +110,21 @@
             <p class="text-muted">{{ form.orderid }}</p>
         </div>
 
-        {% if user.is_approver %}
+        {% if user.is_approver and status == 'P' %}
         <div class="col-4">
-            <label>コメント</label>
-            <input type="text" class="form-control" name="comment" value="{{comement}}" id="comment"  ></input>
+            <label>コメント RW</label>
+            <input type="text" class="form-control" name="comment" value="{{comment}}" id="comment"  ></input>
         </div>
         {% comment %} <p>you're an approver!</p> {% endcomment %}
         {% else %}
         <div class="col-4">
-            <label>コメント</label>
-            <input readonly type="text" class="form-control" name="comment" value="{{comement}}" id="comment"  ></input>
+            <label>コメント RO</label>
+            <input readonly type="text" class="form-control" name="comment" value="{{comment}}" id="comment"  ></input>
         </div>
         {% endif %}
     </div>    
 
-    {% if user.is_approver %}
+    {% if user.is_approver and status == "P" %}
     <div class="row form-group mt-1 mb-0">
         <p class="text-secondary mb-0">内容を確認して、承認するか差戻してください。差戻しの場合コメントを入力してください。コメント欄以外は編集できません</p>
     </div>
@@ -140,32 +140,20 @@
     </div>
 
     {% else %}
-
     <div class="row form-group mt-5">
+
+
+        {% if status != 'A' %}
         <div class="d-inline pr-1">
             <button type="submit" class="btn btn-primary">申請</button>
         </div>
-        
+        {% endif %}
+
         <div class="d-inline">
             <button type="submit" class="btn btn-secondary" onClick="window.history.back();return false;">戻る</button>
         </div>
     </div>
-
     {% endif %}
-    <!--
-    <div class="row form-group mt-0">
-        <div class="col-10">
-        </div>
-        <div class="col-1">
-            <button type="submit" class="btn btn-primary">申請</button>
-        </div>
-        <div class="col-1">
-            <button type="submit" class="btn btn-primary" onClick="window.history.back();return false;">戻る</button>
-        </div>
-    </div>    
--->
-
-
 
     
 

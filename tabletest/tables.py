@@ -49,7 +49,7 @@ class Bootstrap4Table(tables.Table):
         model = ProductOrder    # .objects.filter(product_type='D')
         template_name = "tabletest/bootstrap4.html"
         attrs = {"class": "table table-hover table-sm"}
-        exclude = ("created_on","status","comment",)
+        exclude = ("created_on", "status", "comment",)
         # exclude = ("friendly",)
 
     # def render_number(self, value):
