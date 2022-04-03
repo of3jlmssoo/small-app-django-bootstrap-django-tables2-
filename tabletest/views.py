@@ -18,6 +18,21 @@ from .models import ProductOrder
 # BootstrapTable,; BootstrapTablePinnedRows,; CheckboxTable,; CountryTable,; PersonTable,; SemanticTable,; ThemedCountryTable,
 from .tables import Bootstrap4Table
 
+import logging
+
+logger = logging.getLogger(__name__)
+ch = logging.StreamHandler()
+formatter = logging.Formatter(
+    '%(asctime)s - %(funcName)s - %(message)s')
+ch.setFormatter(formatter)
+logger.addHandler(ch)
+logger.propagate = False
+# DEBUG INFO WARNIG ERROR CRTICAL
+logger.setLevel(logging.DEBUG)
+ch.setLevel(logging.DEBUG)
+logger.disabled = True
+
+
 # def set_checkbox_choices(request, context):
 #     new_context = copy.deepcopy(context)
 
@@ -51,6 +66,8 @@ from .tables import Bootstrap4Table
 
 @login_required(redirect_field_name='accounts/login')
 def place_order(request):
+
+    logger.debug(f'=============     hello logger ===================')
 
     print(f'place_order! -1 {request.user.is_approver}')  # if a approver, True, otherwise False
 
