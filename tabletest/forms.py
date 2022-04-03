@@ -5,7 +5,11 @@ from .models import ProductOrder
 
 class ProductOrderForm(forms.ModelForm):
     # goods = forms.CharField(max_length=50)
-    alternative = forms.BooleanField(required=False, widget=forms.CheckboxInput(attrs={'style': 'width:25px;height:25;'}))
+    alternative = forms.BooleanField(
+        required=False,
+        widget=forms.CheckboxInput(
+            attrs={
+                'style': 'width:25px;height:25;'}))
     orderid = forms.IntegerField(required=False)
 
     class Meta:
@@ -28,8 +32,13 @@ class ProductOrderForm(forms.ModelForm):
 class ConfirmOrderForm(forms.ModelForm):
     # https://stackoverflow.com/questions/4662848/disabled-field-is-not-passed-through-workaround-needed
 
-    alternative = forms.BooleanField(required=False, widget=forms.CheckboxInput(attrs={'style': 'width:20px;height:20px;'}))
+    alternative = forms.BooleanField(
+        required=False,
+        widget=forms.CheckboxInput(
+            attrs={
+                'style': 'width:20px;height:20px;'}))
     orderid = forms.IntegerField(required=False)
+    # comment = forms.CharField(required=False)
 
     class Meta:
         model = ProductOrder
@@ -37,7 +46,8 @@ class ConfirmOrderForm(forms.ModelForm):
         #     'product_type',
         # ]
         fields = '__all__'
-        exclude = ['user', 'status', 'comment']
+        # exclude = ['user', 'status', 'comment']
+        exclude = ['user', 'status', ]
         # exclude = ['user']
 
     # apply bootstrap to django form

@@ -1,36 +1,22 @@
 # from re import I
-from django.shortcuts import render, redirect
-from django.shortcuts import get_object_or_404
-from django.contrib.auth.decorators import login_required
-
-
-from django.http import HttpResponse, Http404
-
-# Create your views here.
-from .forms import ProductOrderForm, ConfirmOrderForm
-from .models import ProductOrder
-from django.contrib import messages
 import copy
 
 import django_filters
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.http import Http404, HttpResponse
+from django.shortcuts import get_object_or_404, redirect, render
 from django_filters.views import FilterView
-
-from django_tables2 import MultiTableMixin, RequestConfig, SingleTableMixin, SingleTableView
+from django_tables2 import (MultiTableMixin, RequestConfig, SingleTableMixin,
+                            SingleTableView)
 from django_tables2.export.views import ExportMixin
 from django_tables2.paginators import LazyPaginator
 
-
-from .tables import (
-    Bootstrap4Table,
-    # BootstrapTable,
-    # BootstrapTablePinnedRows,
-    # CheckboxTable,
-    # CountryTable,
-    # PersonTable,
-    # SemanticTable,
-    # ThemedCountryTable,
-)
-
+# Create your views here.
+from .forms import ConfirmOrderForm, ProductOrderForm
+from .models import ProductOrder
+# BootstrapTable,; BootstrapTablePinnedRows,; CheckboxTable,; CountryTable,; PersonTable,; SemanticTable,; ThemedCountryTable,
+from .tables import Bootstrap4Table
 
 # def set_checkbox_choices(request, context):
 #     new_context = copy.deepcopy(context)
@@ -88,8 +74,10 @@ def place_order(request):
         print(f'=> place_order() POST! 1-1 {form=}')
         print(f'=> place_order() POST! 1-2 {form.is_valid()=}')
         print(f'=> place_order() POST! 1-3 {form.cleaned_data=}')
-        print(f'=> place_order() POST! 2 {form.fields["expected_purchase_date"]=} {type(form.fields["expected_purchase_date"])=}')
-        print(f'=> place_order() POST! 3 {request.POST["expected_purchase_date"]=} {type(request.POST["expected_purchase_date"])=}')
+        print(
+            f'=> place_order() POST! 2 {form.fields["expected_purchase_date"]=} {type(form.fields["expected_purchase_date"])=}')
+        print(
+            f'=> place_order() POST! 3 {request.POST["expected_purchase_date"]=} {type(request.POST["expected_purchase_date"])=}')
 
         if form.is_valid() is False:
 
@@ -172,9 +160,11 @@ def place_order(request):
 
 
 def confirm_details(request):
+
     print(f'=> confirm_details1 {request.POST=}')
-    # form = ConfirmOrderForm(request.POST, initial={'goods': 'Hi there!'})
-    print(f'=> confirm_details2!')
+    print(f'=> confirm_details2! {request.POST.get("CDApprove")=} {request.POST.get("CDReturn")=}')
+    print(f'=> confirm_details3 {request.POST.keys()=}')
+
     if request.method == 'POST':
 
         print(f'=> confirm_details()3 POST! {request.user=}')
@@ -190,10 +180,19 @@ def confirm_details(request):
         # print(f"=> confirm_details boundfield {form.get_initial_for_field(form.fields['goods'], 'goods')=}")
 
         print(f'=> confirm_details()4 {form=}')
-        print(f'=> confirm_details()5 {form.fields["expected_purchase_date"]=} {type(form.fields["expected_purchase_date"])=}')
+        print(
+            f'=> confirm_details()5 {form.fields["expected_purchase_date"]=} {type(form.fields["expected_purchase_date"])=}')
 
         if form.is_valid():
-            print(f'=> confirm_details()6 {form.cleaned_data["orderid"]=}')
+            print(f'=> confirm_details()6 {form.cleaned_data["orderid"]=} {form.cleaned_data["comment"]=}')
+
+            if request.user.is_approver:
+                if 'CDApprove' in request.POST.keys():
+                    status = 'A'
+                elif 'CDReturn' in request.POST.keys():
+                    status = 'S'
+            else:
+                status = 'P'
 
             if form.cleaned_data["orderid"] is None:
                 order_product = ProductOrder(
@@ -205,7 +204,8 @@ def confirm_details(request):
                     alternative=form.cleaned_data['alternative'],
                     expected_purchase_date=form.cleaned_data['expected_purchase_date'],
                     user=request.user,
-                    status='P',
+                    # status='P',
+                    status=status,
                 )
             else:
                 productorder = ProductOrder.objects.get(pk=form.cleaned_data['orderid'])
@@ -221,7 +221,9 @@ def confirm_details(request):
                     expected_purchase_date=form.cleaned_data['expected_purchase_date'],
                     user=request.user,
                     created_on=productorder.created_on,
-                    status='P',
+                    # status='P',
+                    status=status,
+                    comment=form.cleaned_data['comment'],
                 )
 
             order_product.save()
@@ -253,6 +255,7 @@ def index(request):
 #     return render(request, 'tabletest/indexcopy.html', {'form': form})
 
 
+@login_required(redirect_field_name='accounts/login')
 def bootstrap4(request):
     """Demonstrate the use of the bootstrap4 template"""
 
@@ -268,7 +271,8 @@ def bootstrap4(request):
     table_apro = Bootstrap4Table(ProductOrder.objects.filter(status='A'), order_by="-goods", prefix="3-")
     RequestConfig(request, paginate={"per_page": 2}).configure(table_apro)
 
-    return render(request, "tabletest/bootstrap4_template.html", {"table": table_saved, "table_proc": table_proc, "table_apro": table_apro})
+    return render(request, "tabletest/bootstrap4_template.html",
+                  {"table": table_saved, "table_proc": table_proc, "table_apro": table_apro})
 
 
 def set_checkbox_choices(context, product_type, product_use, alternative):
@@ -320,29 +324,59 @@ def productorder_detail(request, pk):
     print(f'=> productorder_detail {productorder.alternative=}')
     print(f'=> productorder_detail {productorder.expected_purchase_date=}')
     print(f'=> productorder_detail {productorder.expected_purchase_date.strftime("%Y-%m-%d")=}')
+    print(f'=> productorder_detail {productorder.comment=}')
 
-    initial_dict = {
-        # 'goods':form.cleaned_data['goods'],
-        # 'product_price':form.cleaned_data['product_price'],
-        # 'type_of_estimation':form.cleaned_data['type_of_estimation'],
-        # 'product_type':form.cleaned_data['product_type'],
-        # 'product_use':form.cleaned_data['product_use'],
-        # 'alternative':form.cleaned_data['alternative'],
-        # 'expected_purchase_date':productorder.expected_purchase_date.strftime("%Y-%m-%d")
-        'expected_purchase_date': "placeholder='2022-02-22'",
-    }
+    # initial_dict = {
+    #     'goods': form.cleaned_data['goods'],
+    #     'product_price': form.cleaned_data['product_price'],
+    #     'type_of_estimation': form.cleaned_data['type_of_estimation'],
+    #     'product_type': form.cleaned_data['product_type'],
+    #     'product_use': form.cleaned_data['product_use'],
+    #     'alternative': form.cleaned_data['alternative'],
+    #     'expected_purchase_date': productorder.expected_purchase_date.strftime("%Y-%m-%d")
+    #     # 'expected_purchase_date': "placeholder='2022-02-22'",
+    # }
 
-    form = ProductOrderForm(instance=productorder)
-    print(f'=> {form=}')
-    # context = {'form': form, "expected_purchase_date": "2022-02-22"}
-    context = {
-        'form': form,
-        "expected_purchase_date": productorder.expected_purchase_date.strftime("%Y-%m-%d"),
-        'orderid': productorder.id
-    }
+    if request.user.is_approver:
+        pass
+        # return HttpResponse("productorder_detail() your are an approver")
 
-    context = set_checkbox_choices(context, productorder.product_type, productorder.product_use, productorder.alternative)
-    return render(request, "tabletest/index.html", context)
+        initial_dict = {
+            'orderid': productorder.id,
+            'goods': productorder.goods,
+            'product_price': productorder.product_price,
+            'type_of_estimation': productorder.type_of_estimation,
+            'product_type': productorder.product_type,
+            'product_use': productorder.product_use,
+            'alternative': productorder.alternative,
+            'expected_purchase_date': productorder.expected_purchase_date.strftime("%Y-%m-%d"),
+            # 'expected_purchase_date': productorder.expected_purchase_date.strftime("%Y-%m-%d")
+            'comment': productorder.comment,
+        }
+        form2 = ConfirmOrderForm(request.POST or None, initial=initial_dict)
 
-    # messages.error(request, '入力が正常完了しませんでした。')
-    # return redirect('/')
+        context = {'form': form2}  # , "expected_purchase_date": request.POST['expected_purchase_date']}
+        print(f'=> productorder_detail() before render() {context=}')
+        return render(request, 'tabletest/confirm_details.html', context)
+
+    else:
+
+        form = ProductOrderForm(instance=productorder)
+        print(f'=> {form=}')
+        # context = {'form': form, "expected_purchase_date": "2022-02-22"}
+        context = {
+            'form': form,
+            "expected_purchase_date": productorder.expected_purchase_date.strftime("%Y-%m-%d"),
+            'orderid': productorder.id,
+            'comment': productorder.comment,
+        }
+
+        context = set_checkbox_choices(
+            context,
+            productorder.product_type,
+            productorder.product_use,
+            productorder.alternative)
+        return render(request, "tabletest/index.html", context)
+
+        # messages.error(request, '入力が正常完了しませんでした。')
+        # return redirect('/')
