@@ -171,3 +171,4 @@ tabletest/migrations/0003_productorder_user.py
 db.sqlite3.backup
 tabletest/migrations/0004_productorder_status_alter_productorder_alternative_and_more.py
 tabletest/migrations/0005_productorder_comment.py
+tabletest/views.py

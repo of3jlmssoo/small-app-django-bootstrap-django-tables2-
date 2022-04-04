@@ -16,38 +16,31 @@ from django_tables2.paginators import LazyPaginator
 # Create your views here.
 from .forms import ConfirmOrderForm, ProductOrderForm, ViewOnlyOrderForm
 from .models import ProductOrder
-# BootstrapTable,; BootstrapTablePinnedRows,; CheckboxTable,;
-# CountryTable,; PersonTable,; SemanticTable,; ThemedCountryTable,
 from .tables import Bootstrap4Table
 
 
 class Logger():
 
-    instances = {}
+    # instances = {}
+
+    logger = logging.getLogger(__name__)
+    ch = logging.StreamHandler()
+    logger.addHandler(ch)
+    logger.propagate = False
+    # DEBUG INFO WARNIG ERROR CRTICAL
+    logger.setLevel(logging.DEBUG)
+    ch.setLevel(logging.DEBUG)
+    logger.disabled = False
 
     def __init__(self, funcname) -> None:
 
-        if funcname in Logger.instances.keys():
-            return
-
-        self.logger = logging.getLogger(__name__)
-        self.ch = logging.StreamHandler()
-        # formatter = logging.Formatter('%(asctime)s - %(funcName)s - %(message)s')
-        formatter = logging.Formatter('-> %(asctime)s - %(name)s - %(message)s')
-        self.ch.setFormatter(formatter)
-        self.logger.addHandler(self.ch)
-        self.logger.propagate = False
-        # DEBUG INFO WARNIG ERROR CRTICAL
-        self.logger.setLevel(logging.DEBUG)
-        self.ch.setLevel(logging.DEBUG)
-        self.logger.disabled = False
         self.funcname = funcname
-        Logger.instances[funcname] = self
 
     def msg(self, message):
-        # self.logger.disabled = False
-        self.logger.debug(self.funcname + ' : ' + message)
-        print(f'{Logger.instances=}')
+        # self.logger.debug(self.funcname + ' : ' + message)
+        formatter = logging.Formatter('-> %(asctime)s - %(name)s - %(message)s')
+        Logger.ch.setFormatter(formatter)
+        Logger.logger.debug(self.funcname + ' : ' + message)
 
 
 @login_required(redirect_field_name='accounts/login')
@@ -56,7 +49,7 @@ def place_order(request):
     l = Logger('place_order')
 
     if request.user.is_approver:
-        l.gmsg(f'your are a approver! {request.user.is_approver=}')
+        l.msg(f'your are a approver! {request.user.is_approver=}')
     else:
         l.msg(f'your are not a approver! {request.user.is_approver=}')
 
@@ -81,20 +74,12 @@ def place_order(request):
 
             messages.error(request, '入力が正常完了しませんでした。')
             return redirect('index')
-            # order_product = ProductOrder(
-            #     goods=form.cleaned_data['goods'],
-            #     product_price=form.cleaned_data['product_price'],
-            #     type_of_estimation=form.cleaned_data['type_of_estimation'],
-            #     product_type=form.cleaned_data['product_type'],
-            #     product_use=form.cleaned_data['product_use'],
-            #     alternative=form.cleaned_data['alternative'],
-            #     expected_purchase_date=form.cleaned_data['expected_purchase_date'],
-            # )
-            # order_product.save()
 
         if request.POST.get('submitsecondary') is not None:
+            # お買い物申請フォームで保存ボタンが押された場合
 
             if form.cleaned_data["orderid"] is None:
+                # 新規申請が保存される場合
                 order_product = ProductOrder(
                     goods=form.cleaned_data['goods'],
                     product_price=form.cleaned_data['product_price'],
@@ -108,9 +93,11 @@ def place_order(request):
                     comment=form.cleaned_data['comment'],
                 )
             else:
+                # 既存レコードが保存される場合
                 productorder = ProductOrder.objects.get(pk=form.cleaned_data['orderid'])
                 order_product = ProductOrder(
                     id=form.cleaned_data["orderid"],
+
                     goods=form.cleaned_data['goods'],
                     product_price=form.cleaned_data['product_price'],
                     type_of_estimation=form.cleaned_data['type_of_estimation'],
@@ -119,10 +106,24 @@ def place_order(request):
                     alternative=form.cleaned_data['alternative'],
                     expected_purchase_date=form.cleaned_data['expected_purchase_date'],
                     user=request.user,
-                    created_on=productorder.created_on,
                     status="S",
                     comment=form.cleaned_data['comment'],
+
+                    created_on=productorder.created_on,
                 )
+            # 共通データ
+            # order_product = ProductOrder(
+            #     goods=form.cleaned_data['goods'],
+            #     product_price=form.cleaned_data['product_price'],
+            #     type_of_estimation=form.cleaned_data['type_of_estimation'],
+            #     product_type=form.cleaned_data['product_type'],
+            #     product_use=form.cleaned_data['product_use'],
+            #     alternative=form.cleaned_data['alternative'],
+            #     expected_purchase_date=form.cleaned_data['expected_purchase_date'],
+            #     user=request.user,
+            #     status="S",
+            #     comment=form.cleaned_data['comment'],
+            # )
 
             order_product.save()
             l.msg(f'order_product.saved as save_as_draft ')
@@ -176,9 +177,6 @@ def confirm_details(request):
             l.msg(f'{key=} {value=}')
 
         form = ConfirmOrderForm(request.POST)
-
-        # print(f'=> confirm_details boundfield {form["goods"].initial=}')
-        # print(f"=> confirm_details boundfield {form.get_initial_for_field(form.fields['goods'], 'goods')=}")
 
         l.msg(f'{form=}')
         l.msg(f'{form.fields["expected_purchase_date"]=} {type(form.fields["expected_purchase_date"])=}')
@@ -240,28 +238,13 @@ def confirm_details(request):
 def index(request):
 
     form = ProductOrderForm()
-    # return redirect('index')
-    # return render(request, 'tabletest/index.html')
     return render(request, 'tabletest/index.html', {'form': form})
-
-
-# def index(request):
-#     return HttpResponse("Hello, world. You're at the polls index.")
-
-# def indexcopy(request):
-
-#     # return redirect('index')
-#     form = ProductOrderForm()
-#     return render(request, 'tabletest/indexcopy.html', {'form': form})
 
 
 @login_required(redirect_field_name='accounts/login')
 def bootstrap4(request):
     """Demonstrate the use of the bootstrap4 template"""
 
-    # create_fake_data()
-    # table = Bootstrap4Table(ProductOrder.objects.all(), order_by="-goods")
-    # table_saved = Bootstrap4Table(ProductOrder.objects.filter(status='S'), order_by="-goods", prefix="1-")
     table_saved = Bootstrap4Table(ProductOrder.objects.filter(status="S"), order_by="-goods")
     RequestConfig(request, paginate={"per_page": 2}).configure(table_saved)
 
@@ -278,8 +261,6 @@ def bootstrap4(request):
 def set_checkbox_choices(context, product_type, product_use, alternative):
     new_context = copy.deepcopy(context)
 
-    # print(f'=> {request.POST=}')
-    # 'product_type': ['D'], 'product_use': ['M'], 'alternative': ['true'],
     if product_type == 'D':
         new_context['daily_goods'] = 'checked'
     elif product_type == 'L':
@@ -328,17 +309,6 @@ def productorder_detail(request, pk):
     l.msg(f'{productorder.status=}')
     l.msg(f'{productorder.comment=}')
 
-    # initial_dict = {
-    #     'goods': form.cleaned_data['goods'],
-    #     'product_price': form.cleaned_data['product_price'],
-    #     'type_of_estimation': form.cleaned_data['type_of_estimation'],
-    #     'product_type': form.cleaned_data['product_type'],
-    #     'product_use': form.cleaned_data['product_use'],
-    #     'alternative': form.cleaned_data['alternative'],
-    #     'expected_purchase_date': productorder.expected_purchase_date.strftime("%Y-%m-%d")
-    #     # 'expected_purchase_date': "placeholder='2022-02-22'",
-    # }
-
     if request.user.is_approver:
         pass
         # return HttpResponse("productorder_detail() your are an approver")
@@ -357,7 +327,6 @@ def productorder_detail(request, pk):
         }
         form2 = ConfirmOrderForm(request.POST or None, initial=initial_dict)
 
-        # , "expected_purchase_date": request.POST['expected_purchase_date']}
         context = {'form': form2, 'comment': productorder.comment, 'status': productorder.status}
         l.msg(f'{context=}')
         return render(request, 'tabletest/confirm_details.html', context)
@@ -365,20 +334,6 @@ def productorder_detail(request, pk):
     else:
 
         if productorder.status == 'A':
-
-            # form = ViewOnlyOrderForm(instance=productorder)
-            # context = {
-            #     'form': form,
-            #     "expected_purchase_date": productorder.expected_purchase_date.strftime("%Y-%m-%d"),
-            #     'orderid': productorder.id,
-            #     'comment': productorder.comment,
-            # }
-
-            # context = set_checkbox_choices(
-            #     context,
-            #     productorder.product_type,
-            #     productorder.product_use,
-            #     productorder.alternative)
 
             initial_dict = {
                 'goods': productorder.goods,
