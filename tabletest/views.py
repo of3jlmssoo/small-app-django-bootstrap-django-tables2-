@@ -78,40 +78,59 @@ def place_order(request):
         if request.POST.get('submitsecondary') is not None:
             # お買い物申請フォームで保存ボタンが押された場合
 
-            if form.cleaned_data["orderid"] is None:
-                # 新規申請が保存される場合
-                order_product = ProductOrder(
-                    goods=form.cleaned_data['goods'],
-                    product_price=form.cleaned_data['product_price'],
-                    type_of_estimation=form.cleaned_data['type_of_estimation'],
-                    product_type=form.cleaned_data['product_type'],
-                    product_use=form.cleaned_data['product_use'],
-                    alternative=form.cleaned_data['alternative'],
-                    expected_purchase_date=form.cleaned_data['expected_purchase_date'],
-                    user=request.user,
-                    status="S",
-                    comment=form.cleaned_data['comment'],
-                )
-            else:
-                # 既存レコードが保存される場合
-                productorder = ProductOrder.objects.get(pk=form.cleaned_data['orderid'])
-                order_product = ProductOrder(
-                    id=form.cleaned_data["orderid"],
+            # if form.cleaned_data["orderid"] is None:
+            #     # 新規申請が保存される場合
+            #     order_product = ProductOrder(
+            #         goods=form.cleaned_data['goods'],
+            #         product_price=form.cleaned_data['product_price'],
+            #         type_of_estimation=form.cleaned_data['type_of_estimation'],
+            #         product_type=form.cleaned_data['product_type'],
+            #         product_use=form.cleaned_data['product_use'],
+            #         alternative=form.cleaned_data['alternative'],
+            #         expected_purchase_date=form.cleaned_data['expected_purchase_date'],
+            #         user=request.user,
+            #         status="S",
+            #         comment=form.cleaned_data['comment'],
+            #     )
+            # else:
+            #     # 既存レコードが保存される場合
+            #     productorder = ProductOrder.objects.get(pk=form.cleaned_data['orderid'])
+            #     order_product = ProductOrder(
+            #         id=form.cleaned_data["orderid"],
 
-                    goods=form.cleaned_data['goods'],
-                    product_price=form.cleaned_data['product_price'],
-                    type_of_estimation=form.cleaned_data['type_of_estimation'],
-                    product_type=form.cleaned_data['product_type'],
-                    product_use=form.cleaned_data['product_use'],
-                    alternative=form.cleaned_data['alternative'],
-                    expected_purchase_date=form.cleaned_data['expected_purchase_date'],
-                    user=request.user,
-                    status="S",
-                    comment=form.cleaned_data['comment'],
+            #         goods=form.cleaned_data['goods'],
+            #         product_price=form.cleaned_data['product_price'],
+            #         type_of_estimation=form.cleaned_data['type_of_estimation'],
+            #         product_type=form.cleaned_data['product_type'],
+            #         product_use=form.cleaned_data['product_use'],
+            #         alternative=form.cleaned_data['alternative'],
+            #         expected_purchase_date=form.cleaned_data['expected_purchase_date'],
+            #         user=request.user,
+            #         status="S",
+            #         comment=form.cleaned_data['comment'],
 
-                    created_on=productorder.created_on,
-                )
+            #         created_on=productorder.created_on,
+            #     )
+
             # 共通データ
+            order_product = ProductOrder(
+                id=form.cleaned_data["orderid"],
+
+                goods=form.cleaned_data['goods'],
+                product_price=form.cleaned_data['product_price'],
+                type_of_estimation=form.cleaned_data['type_of_estimation'],
+                product_type=form.cleaned_data['product_type'],
+                product_use=form.cleaned_data['product_use'],
+                alternative=form.cleaned_data['alternative'],
+                expected_purchase_date=form.cleaned_data['expected_purchase_date'],
+                user=request.user,
+                status="S",
+                comment=form.cleaned_data['comment'],
+            )
+            if form.cleaned_data["orderid"]:
+                productorder = ProductOrder.objects.get(pk=form.cleaned_data['orderid'])
+                order_product.created_on = productorder.created_on
+
             # order_product = ProductOrder(
             #     goods=form.cleaned_data['goods'],
             #     product_price=form.cleaned_data['product_price'],
@@ -125,13 +144,13 @@ def place_order(request):
             #     comment=form.cleaned_data['comment'],
             # )
 
+            # 保存用save()
             order_product.save()
             l.msg(f'order_product.saved as save_as_draft ')
             return redirect('bootstrap4')
 
-        context = {'form': form, "expected_purchase_date": request.POST['expected_purchase_date']}
-
-        # context = set_checkbox_choices(request, context)
+        # 申請時処理
+        # context = {'form': form, "expected_purchase_date": request.POST['expected_purchase_date']}
 
         initial_dict = {
             'goods': form.cleaned_data['goods'],
@@ -154,8 +173,6 @@ def place_order(request):
         l.msg(f'{context=}')
         return render(request, 'tabletest/confirm_details.html', context)
 
-    # return redirect('confirm_details')
-    # return render(request, 'confirm_details')
     messages.error(request, '入力が正常完了しませんでした。')
     return redirect('/')
 
