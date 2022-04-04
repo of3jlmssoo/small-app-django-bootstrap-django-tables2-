@@ -54,7 +54,7 @@ class ConfirmOrderForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(ConfirmOrderForm, self).__init__(*args, **kwargs)
         for field in self.fields:
-            print(f'=> {field=}')
+            # print(f'=> {field=}')
             self.fields[field].widget.attrs['class'] = 'form-control'
             self.fields['goods'].widget.attrs['disabled'] = 'disabled'
             self.fields['product_price'].widget.attrs['disabled'] = 'disabled'

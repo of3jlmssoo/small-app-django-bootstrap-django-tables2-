@@ -1,5 +1,6 @@
 # from re import I
 import copy
+import logging
 
 import django_filters
 from django.contrib import messages
@@ -15,86 +16,66 @@ from django_tables2.paginators import LazyPaginator
 # Create your views here.
 from .forms import ConfirmOrderForm, ProductOrderForm, ViewOnlyOrderForm
 from .models import ProductOrder
-# BootstrapTable,; BootstrapTablePinnedRows,; CheckboxTable,; CountryTable,; PersonTable,; SemanticTable,; ThemedCountryTable,
+# BootstrapTable,; BootstrapTablePinnedRows,; CheckboxTable,;
+# CountryTable,; PersonTable,; SemanticTable,; ThemedCountryTable,
 from .tables import Bootstrap4Table
 
-import logging
 
-logger = logging.getLogger(__name__)
-ch = logging.StreamHandler()
-formatter = logging.Formatter(
-    '%(asctime)s - %(funcName)s - %(message)s')
-ch.setFormatter(formatter)
-logger.addHandler(ch)
-logger.propagate = False
-# DEBUG INFO WARNIG ERROR CRTICAL
-logger.setLevel(logging.DEBUG)
-ch.setLevel(logging.DEBUG)
-logger.disabled = True
+class Logger():
 
+    instances = {}
 
-# def set_checkbox_choices(request, context):
-#     new_context = copy.deepcopy(context)
+    def __init__(self, funcname) -> None:
 
-#     # print(f'=> {request.POST=}')
-#     # 'product_type': ['D'], 'product_use': ['M'], 'alternative': ['true'],
-#     if request.POST['product_type'] == 'D':
-#         new_context['daily_goods'] = 'checked'
-#     elif request.POST['product_type'] == 'L':
-#         new_context['luxury_goods'] = 'checked'
-#     else:
-#         pass
+        if funcname in Logger.instances.keys():
+            return
 
-#     if request.POST['product_use'] == 'M':
-#         new_context['personal'] = 'checked'
-#     elif request.POST['product_use'] == 'F':
-#         new_context['family'] = 'checked'
-#     elif request.POST['product_use'] == 'G':
-#         new_context['gift'] = 'checked'
-#     else:
-#         pass
+        self.logger = logging.getLogger(__name__)
+        self.ch = logging.StreamHandler()
+        # formatter = logging.Formatter('%(asctime)s - %(funcName)s - %(message)s')
+        formatter = logging.Formatter('-> %(asctime)s - %(name)s - %(message)s')
+        self.ch.setFormatter(formatter)
+        self.logger.addHandler(self.ch)
+        self.logger.propagate = False
+        # DEBUG INFO WARNIG ERROR CRTICAL
+        self.logger.setLevel(logging.DEBUG)
+        self.ch.setLevel(logging.DEBUG)
+        self.logger.disabled = False
+        self.funcname = funcname
+        Logger.instances[funcname] = self
 
-#     if request.POST['alternative'] == 'true':
-#         new_context['alt_available'] = 'checked'
-#     elif request.POST['alternative'] == 'false':
-#         new_context['alt_unavailable'] = 'checked'
-#     else:
-#         pass
-
-#     return new_context
+    def msg(self, message):
+        # self.logger.disabled = False
+        self.logger.debug(self.funcname + ' : ' + message)
+        print(f'{Logger.instances=}')
 
 
 @login_required(redirect_field_name='accounts/login')
 def place_order(request):
 
-    logger.debug(f'=============     hello logger ===================')
-
-    print(f'place_order! -1 {request.user.is_approver}')  # if a approver, True, otherwise False
+    l = Logger('place_order')
 
     if request.user.is_approver:
-        print(f'place_order() your are a approver!')
+        l.gmsg(f'your are a approver! {request.user.is_approver=}')
+    else:
+        l.msg(f'your are not a approver! {request.user.is_approver=}')
 
     if request.method == 'POST':
 
         for item in request.POST:
             key = item
             value = request.POST[key]
-            print(f'{key=} {value}')
+            l.msg(f'{key=} {value=}')
 
-        print(f'=> place_order() POST! 0 {request.POST.get("submitprimary")=} {request.POST.get("submitsecondary")=}')
-
-        # filter = ProductOrderFilter(request.GET, queryset=ProductOrder.objects.filter(product_type='D'))
-        # print(f'=> place_order() POST! 00 {filter=}')
+        l.msg(f'{request.POST.get("submitprimary")=} {request.POST.get("submitsecondary")=}')
 
         form = ProductOrderForm(request.POST)
 
-        print(f'=> place_order() POST! 1-1 {form=}')
-        print(f'=> place_order() POST! 1-2 {form.is_valid()=}')
-        print(f'=> place_order() POST! 1-3 {form.cleaned_data=}')
-        print(
-            f'=> place_order() POST! 2 {form.fields["expected_purchase_date"]=} {type(form.fields["expected_purchase_date"])=}')
-        print(
-            f'=> place_order() POST! 3 {request.POST["expected_purchase_date"]=} {type(request.POST["expected_purchase_date"])=}')
+        l.msg(f'{form.is_valid()=}')
+        l.msg(f'{form=}')
+        l.msg(f'{form.cleaned_data=}')
+        l.msg(f'{form.fields["expected_purchase_date"]=} {type(form.fields["expected_purchase_date"])=}')
+        l.msg(f'{request.POST["expected_purchase_date"]=} {type(request.POST["expected_purchase_date"])=}')
 
         if form.is_valid() is False:
 
@@ -128,7 +109,6 @@ def place_order(request):
                 )
             else:
                 productorder = ProductOrder.objects.get(pk=form.cleaned_data['orderid'])
-                print(f'=> confirm_details()7 {productorder.created_on=}')
                 order_product = ProductOrder(
                     id=form.cleaned_data["orderid"],
                     goods=form.cleaned_data['goods'],
@@ -145,7 +125,7 @@ def place_order(request):
                 )
 
             order_product.save()
-            print(f'order_product.saved as save_as_draft ')
+            l.msg(f'order_product.saved as save_as_draft ')
             return redirect('bootstrap4')
 
         context = {'form': form, "expected_purchase_date": request.POST['expected_purchase_date']}
@@ -163,14 +143,14 @@ def place_order(request):
             'orderid': form.cleaned_data['orderid'],
         }
 
-        print(f'=> place_order()10 {initial_dict=}')
+        l.msg(f'{initial_dict=}')
 
         form2 = ConfirmOrderForm(request.POST or None, initial=initial_dict)
 
         # , "expected_purchase_date": request.POST['expected_purchase_date']}
         context = {'form': form2, 'comment': form.cleaned_data['comment']}
 
-        print(f'=> place_order()11 before render() {context=}')
+        l.msg(f'{context=}')
         return render(request, 'tabletest/confirm_details.html', context)
 
     # return redirect('confirm_details')
@@ -180,31 +160,31 @@ def place_order(request):
 
 
 def confirm_details(request):
+    l = Logger('confirm_details')
 
-    print(f'=> confirm_details1 {request.POST=}')
-    print(f'=> confirm_details2! {request.POST.get("CDApprove")=} {request.POST.get("CDReturn")=}')
-    print(f'=> confirm_details3 {request.POST.keys()=}')
+    l.msg(f'{request.POST=}')
+    l.msg(f'{request.POST.get("CDApprove")=} {request.POST.get("CDReturn")=}')
+    l.msg(f'{request.POST.keys()=}')
 
     if request.method == 'POST':
 
-        print(f'=> confirm_details()3 POST! {request.user=}')
+        l.msg(f'{request.user=}')
 
         for item in request.POST:
             key = item
             value = request.POST[key]
-            print(f'{key=} {value}')
+            l.msg(f'{key=} {value=}')
 
         form = ConfirmOrderForm(request.POST)
 
         # print(f'=> confirm_details boundfield {form["goods"].initial=}')
         # print(f"=> confirm_details boundfield {form.get_initial_for_field(form.fields['goods'], 'goods')=}")
 
-        print(f'=> confirm_details()4 {form=}')
-        print(
-            f'=> confirm_details()5 {form.fields["expected_purchase_date"]=} {type(form.fields["expected_purchase_date"])=}')
+        l.msg(f'{form=}')
+        l.msg(f'{form.fields["expected_purchase_date"]=} {type(form.fields["expected_purchase_date"])=}')
 
         if form.is_valid():
-            print(f'=> confirm_details()6 {form.cleaned_data["orderid"]=} {form.cleaned_data["comment"]=}')
+            l.msg(f'=> confirm_details()6 {form.cleaned_data["orderid"]=} {form.cleaned_data["comment"]=}')
 
             if request.user.is_approver:
                 if 'CDApprove' in request.POST.keys():
@@ -229,7 +209,7 @@ def confirm_details(request):
                 )
             else:
                 productorder = ProductOrder.objects.get(pk=form.cleaned_data['orderid'])
-                print(f'=> confirm_details()7 {productorder.created_on=}')
+                l.msg(f'{productorder.created_on=}')
                 order_product = ProductOrder(
                     id=form.cleaned_data["orderid"],
                     goods=form.cleaned_data['goods'],
@@ -247,9 +227,9 @@ def confirm_details(request):
                 )
 
             order_product.save()
-            print(f'order_product.saved')
+            l.msg(f'order_product.saved')
         else:
-            print(f'=> confirm_details form is invalid {form.cleaned_data=}')
+            l.msg(f'form is invalid {form.cleaned_data=}')
     else:
         return HttpResponse('something wrong at confirm_details()')
 
@@ -327,6 +307,7 @@ def set_checkbox_choices(context, product_type, product_use, alternative):
 
 
 def productorder_detail(request, pk):
+    l = Logger('productorder_detail')
     # productorder = get_object_or_404(ProductOrder, pk=pk)
     try:
         productorder = get_object_or_404(ProductOrder, pk=pk)
@@ -334,18 +315,18 @@ def productorder_detail(request, pk):
     except ProductOrder.DoesNotExist:
         raise Http404("No MyModel matches the given query. productorder_detail()")
 
-    print(f'=> productorder_detail {request=}')
-    print(f'=> productorder_detail {productorder.id=}')
-    print(f'=> productorder_detail {productorder.goods=}')
-    print(f'=> productorder_detail {productorder.product_price=}')
-    print(f'=> productorder_detail {productorder.type_of_estimation=}')
-    print(f'=> productorder_detail {productorder.product_type=}')
-    print(f'=> productorder_detail {productorder.product_use=}')
-    print(f'=> productorder_detail {productorder.alternative=}')
-    print(f'=> productorder_detail {productorder.expected_purchase_date=}')
-    print(f'=> productorder_detail {productorder.expected_purchase_date.strftime("%Y-%m-%d")=}')
-    print(f'=> productorder_detail {productorder.status=}')
-    print(f'=> productorder_detail {productorder.comment=}')
+    l.msg(f'{request=}')
+    l.msg(f'{productorder.id=}')
+    l.msg(f'{productorder.goods=}')
+    l.msg(f'{productorder.product_price=}')
+    l.msg(f'{productorder.type_of_estimation=}')
+    l.msg(f'{productorder.product_type=}')
+    l.msg(f'{productorder.product_use=}')
+    l.msg(f'{productorder.alternative=}')
+    l.msg(f'{productorder.expected_purchase_date=}')
+    l.msg(f'{productorder.expected_purchase_date.strftime("%Y-%m-%d")=}')
+    l.msg(f'{productorder.status=}')
+    l.msg(f'{productorder.comment=}')
 
     # initial_dict = {
     #     'goods': form.cleaned_data['goods'],
@@ -378,7 +359,7 @@ def productorder_detail(request, pk):
 
         # , "expected_purchase_date": request.POST['expected_purchase_date']}
         context = {'form': form2, 'comment': productorder.comment, 'status': productorder.status}
-        print(f'=> productorder_detail() before render() {context=}')
+        l.msg(f'{context=}')
         return render(request, 'tabletest/confirm_details.html', context)
 
     else:
@@ -417,12 +398,12 @@ def productorder_detail(request, pk):
             # , "expected_purchase_date": request.POST['expected_purchase_date']}
             context = {'form': form2, 'comment': productorder.comment, 'status': productorder.status}
 
-            print(f'=> productorder_detail not approver readonly {context=}')
+            l.msg(f'not approver readonly {context=}')
             return render(request, 'tabletest/confirm_details.html', context)
 
         else:
             form = ProductOrderForm(instance=productorder)
-            print(f'=> {form=}')
+            l.msg(f'{form=}')
             # context = {'form': form, "expected_purchase_date": "2022-02-22"}
             context = {
                 'form': form,
@@ -436,7 +417,7 @@ def productorder_detail(request, pk):
                 productorder.product_type,
                 productorder.product_use,
                 productorder.alternative)
-            print(f'=> productorder_detail() non-approver {context=}')
+            l.msg(f'non-approver {context=}')
             return render(request, "tabletest/index.html", context)
 
             # messages.error(request, '入力が正常完了しませんでした。')
