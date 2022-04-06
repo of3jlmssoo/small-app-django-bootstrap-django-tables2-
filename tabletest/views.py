@@ -201,7 +201,9 @@ def confirm_details(request):
         if form.is_valid():
             l.msg(f'=> confirm_details()6 {form.cleaned_data["orderid"]=} {form.cleaned_data["comment"]=}')
 
+            # 承認者がアクションに応じてステータスをセット
             if request.user.is_approver:
+
                 if 'CDApprove' in request.POST.keys():
                     status = 'A'
                 elif 'CDReturn' in request.POST.keys():
@@ -209,37 +211,63 @@ def confirm_details(request):
             else:
                 status = 'P'
 
-            if form.cleaned_data["orderid"] is None:
-                order_product = ProductOrder(
-                    goods=form.cleaned_data['goods'],
-                    product_price=form.cleaned_data['product_price'],
-                    type_of_estimation=form.cleaned_data['type_of_estimation'],
-                    product_type=form.cleaned_data['product_type'],
-                    product_use=form.cleaned_data['product_use'],
-                    alternative=form.cleaned_data['alternative'],
-                    expected_purchase_date=form.cleaned_data['expected_purchase_date'],
-                    user=request.user,
-                    # status='P',
-                    status=status,
-                )
-            else:
+            # if form.cleaned_data["orderid"] is None:
+            #     # 新規申請の場合
+            #     order_product = ProductOrder(
+            #         goods=form.cleaned_data['goods'],
+            #         product_price=form.cleaned_data['product_price'],
+            #         type_of_estimation=form.cleaned_data['type_of_estimation'],
+            #         product_type=form.cleaned_data['product_type'],
+            #         product_use=form.cleaned_data['product_use'],
+            #         alternative=form.cleaned_data['alternative'],
+            #         expected_purchase_date=form.cleaned_data['expected_purchase_date'],
+            #         user=request.user,
+            #         # status='P',
+            #         status=status,
+            #     )
+            # else:
+            #     # 既存申請修正の場合
+            #     productorder = ProductOrder.objects.get(pk=form.cleaned_data['orderid'])
+            #     l.msg(f'{productorder.created_on=}')
+            #     order_product = ProductOrder(
+            #         id=form.cleaned_data["orderid"],
+
+            #         goods=form.cleaned_data['goods'],
+            #         product_price=form.cleaned_data['product_price'],
+            #         type_of_estimation=form.cleaned_data['type_of_estimation'],
+            #         product_type=form.cleaned_data['product_type'],
+            #         product_use=form.cleaned_data['product_use'],
+            #         alternative=form.cleaned_data['alternative'],
+            #         expected_purchase_date=form.cleaned_data['expected_purchase_date'],
+            #         user=request.user,
+            #         status=status,
+
+            #         created_on=productorder.created_on,
+            #         # status='P',
+            #         comment=form.cleaned_data['comment'],
+            #     )
+
+            order_product = ProductOrder(
+                goods=form.cleaned_data['goods'],
+                product_price=form.cleaned_data['product_price'],
+                type_of_estimation=form.cleaned_data['type_of_estimation'],
+                product_type=form.cleaned_data['product_type'],
+                product_use=form.cleaned_data['product_use'],
+                alternative=form.cleaned_data['alternative'],
+                expected_purchase_date=form.cleaned_data['expected_purchase_date'],
+                user=request.user,
+                # status='P',
+                status=status,
+            )
+
+            if form.cleaned_data["orderid"]:
                 productorder = ProductOrder.objects.get(pk=form.cleaned_data['orderid'])
-                l.msg(f'{productorder.created_on=}')
-                order_product = ProductOrder(
-                    id=form.cleaned_data["orderid"],
-                    goods=form.cleaned_data['goods'],
-                    product_price=form.cleaned_data['product_price'],
-                    type_of_estimation=form.cleaned_data['type_of_estimation'],
-                    product_type=form.cleaned_data['product_type'],
-                    product_use=form.cleaned_data['product_use'],
-                    alternative=form.cleaned_data['alternative'],
-                    expected_purchase_date=form.cleaned_data['expected_purchase_date'],
-                    user=request.user,
-                    created_on=productorder.created_on,
-                    # status='P',
-                    status=status,
-                    comment=form.cleaned_data['comment'],
-                )
+                # id=form.cleaned_data["orderid"],
+                # created_on=productorder.created_on,
+                # comment=form.cleaned_data['comment'],
+                order_product.id = form.cleaned_data["orderid"]
+                order_product.created_on = productorder.created_on
+                order_product.comment = form.cleaned_data['comment']
 
             order_product.save()
             l.msg(f'order_product.saved')
@@ -262,13 +290,14 @@ def index(request):
 def bootstrap4(request):
     """Demonstrate the use of the bootstrap4 template"""
 
-    table_saved = Bootstrap4Table(ProductOrder.objects.filter(status="S"), order_by="-goods")
+    table_saved = Bootstrap4Table(ProductOrder.objects.filter(status="S"), order_by="-updated_on")
     RequestConfig(request, paginate={"per_page": 2}).configure(table_saved)
 
-    table_proc = Bootstrap4Table(ProductOrder.objects.filter(status='P'), order_by="-goods", prefix="2-")
+    # table_proc = Bootstrap4Table(ProductOrder.objects.filter(status='P'), order_by="-goods", prefix="2-")
+    table_proc = Bootstrap4Table(ProductOrder.objects.filter(status='P'), order_by="-updated_on", prefix="2-")
     RequestConfig(request, paginate={"per_page": 2}).configure(table_proc)
 
-    table_apro = Bootstrap4Table(ProductOrder.objects.filter(status='A'), order_by="-goods", prefix="3-")
+    table_apro = Bootstrap4Table(ProductOrder.objects.filter(status='A'), order_by="-updated_on", prefix="3-")
     RequestConfig(request, paginate={"per_page": 2}).configure(table_apro)
 
     return render(request, "tabletest/bootstrap4_template.html",
