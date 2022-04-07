@@ -21,8 +21,6 @@ from .tables import Bootstrap4Table
 
 class Logger():
 
-    # instances = {}
-
     logger = logging.getLogger(__name__)
     ch = logging.StreamHandler()
     logger.addHandler(ch)
@@ -43,6 +41,15 @@ class Logger():
         Logger.logger.debug(self.funcname + ' : ' + message)
 
 
+def display_POST_key_value(request):
+    l = Logger('display_POST_key_value')
+    for item in request.POST:
+        key = item
+        value = request.POST[key]
+        l.msg(f'{key=} {value=}')
+    del l
+
+
 @login_required(redirect_field_name='accounts/login')
 def place_order(request):
 
@@ -55,10 +62,11 @@ def place_order(request):
 
     if request.method == 'POST':
 
-        for item in request.POST:
-            key = item
-            value = request.POST[key]
-            l.msg(f'{key=} {value=}')
+        display_POST_key_value(request)
+        # for item in request.POST:
+        #     key = item
+        #     value = request.POST[key]
+        #     l.msg(f'{key=} {value=}')
 
         l.msg(f'{request.POST.get("submitprimary")=} {request.POST.get("submitsecondary")=}')
 
@@ -188,10 +196,11 @@ def confirm_details(request):
 
         l.msg(f'{request.user=}')
 
-        for item in request.POST:
-            key = item
-            value = request.POST[key]
-            l.msg(f'{key=} {value=}')
+        display_POST_key_value(request)
+        # for item in request.POST:
+        #     key = item
+        #     value = request.POST[key]
+        #     l.msg(f'{key=} {value=}')
 
         form = ConfirmOrderForm(request.POST)
 
