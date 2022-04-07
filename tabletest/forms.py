@@ -30,6 +30,7 @@ class ProductOrderForm(forms.ModelForm):
 
 
 class ConfirmOrderForm(forms.ModelForm):
+    # ROのフォーム。ただし、comment欄はテンプレート内で条件設定によりRW、ROを設定している
     # https://stackoverflow.com/questions/4662848/disabled-field-is-not-passed-through-workaround-needed
 
     alternative = forms.BooleanField(
