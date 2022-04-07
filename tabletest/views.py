@@ -334,6 +334,7 @@ def set_checkbox_choices(context, product_type, product_use, alternative):
 
 
 def productorder_detail(request, pk):
+    # ダッシュボードでIDをクリックした際にコールされる
     l = Logger('productorder_detail')
     # productorder = get_object_or_404(ProductOrder, pk=pk)
     try:
@@ -380,6 +381,8 @@ def productorder_detail(request, pk):
     else:
 
         if productorder.status == 'A':
+            # 承認済みの場合、全フィールドROで表示する。ConfirmOrderFormはコメント欄以外はRO。
+            # コメント欄はテンプレートでif user.is_approver and status == 'P'の場合のみRW、それ以外の条件ではROとなる
 
             initial_dict = {
                 'goods': productorder.goods,
@@ -403,6 +406,8 @@ def productorder_detail(request, pk):
             return render(request, 'tabletest/confirm_details.html', context)
 
         else:
+            # non-approverがダッシュボードからIDをクリックした場合、編集画面に行く。そこで中身を編集するかしないで申請か保存を選ぶことになる。
+            # 編集する可能性があるのでplace_orderにいく
             form = ProductOrderForm(instance=productorder)
             l.msg(f'{form=}')
             # context = {'form': form, "expected_purchase_date": "2022-02-22"}
