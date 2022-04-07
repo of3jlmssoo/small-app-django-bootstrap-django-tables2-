@@ -1,13 +1,14 @@
 
 Todo:yuu
   ✔ is logged in? @done(22-03-30 14:28)
+  ☐ approverの際のサイドメニューの申請をどうにかする
   ☐ 1. place_orderとconfirm_detailsのorder_product=ProductOrderのところは重複している
   ☐ 2. productorder_details()内のinitial_dict=からform2=ConfirmOrderForm()のところは重複している
   ☐ 3. initial_dictの中身が違うがplace_orderのところも同様の構成になっている
   ☐ ログ機能(更新ログ)
   ✔ django logger。細かいメッセージが出すぎるので利用を断念。pythonのloggingを使う。ただし、native pythonで問題のないdiabled機能が働かない。ただし、関数名表示が楽なので使う @done(22-04-07 11:35)
   ☐ code cleaning
-  ☐ 指しもどし理由カラム追加
+  ✔ 指しもどし理由カラム追加 @done(22-04-07 11:35)
       ✔ approverの承認済み表示時は全てROとする @done(22-04-03 15:32)
       ✔ nonapproverの承認済み表示時は全てROとする @done(22-04-03 15:15)
       ✔ 申請者ではここだけRO表示 @done(22-04-03 15:32)
