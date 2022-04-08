@@ -50,6 +50,57 @@ def display_POST_key_value(request):
     del l
 
 
+def createProductOrder(cleaned_data, user):
+    return ProductOrder(
+        id=cleaned_data['orderid'],
+        goods=cleaned_data['goods'],
+        product_price=cleaned_data['product_price'],
+        type_of_estimation=cleaned_data['type_of_estimation'],
+        product_type=cleaned_data['product_type'],
+        product_use=cleaned_data['product_use'],
+        alternative=cleaned_data['alternative'],
+        expected_purchase_date=cleaned_data['expected_purchase_date'],
+        user=user,
+    )
+
+
+def set_initialDict4ConfirmOrderForm(productorder):
+    l = Logger('set_initialDict4ConfirmOrderForm')
+    l.msg(f'{type(productorder)=}')
+
+    if isinstance(productorder, ProductOrder):
+
+        return {
+            'orderid': productorder.id,
+            'goods': productorder.goods,
+            'product_price': productorder.product_price,
+            'type_of_estimation': productorder.type_of_estimation,
+            'product_type': productorder.product_type,
+            'product_use': productorder.product_use,
+            'alternative': productorder.alternative,
+            'expected_purchase_date': productorder.expected_purchase_date.strftime("%Y-%m-%d"),
+            'comment': productorder.comment,
+        }
+
+    elif isinstance(productorder, dict):
+        return {
+            'orderid': productorder['orderid'],
+            'goods': productorder['goods'],
+            'product_price': productorder['product_price'],
+            'type_of_estimation': productorder['type_of_estimation'],
+            'product_type': productorder['product_type'],
+            'product_use': productorder['product_use'],
+            'alternative': productorder['alternative'],
+            'expected_purchase_date': productorder['expected_purchase_date'],
+        }
+
+    else:
+        l = Logger(set_initialDict4ConfirmOrderForm)
+        l.msg(f'unsupported data format {type(productorder)=} {productorder}')
+
+        return None
+
+
 @login_required(redirect_field_name='accounts/login')
 def place_order(request):
 
@@ -78,20 +129,9 @@ def place_order(request):
 
             l.msg(f'{form.cleaned_data["orderid"]=}')
             # 共通データ
-            order_product = ProductOrder(
-                # id=form.cleaned_data["orderid"],
-
-                goods=form.cleaned_data['goods'],
-                product_price=form.cleaned_data['product_price'],
-                type_of_estimation=form.cleaned_data['type_of_estimation'],
-                product_type=form.cleaned_data['product_type'],
-                product_use=form.cleaned_data['product_use'],
-                alternative=form.cleaned_data['alternative'],
-                expected_purchase_date=form.cleaned_data['expected_purchase_date'],
-                user=request.user,
-                status="S",
-                comment=form.cleaned_data['comment'],
-            )
+            order_product = createProductOrder(form.cleaned_data, request.user)
+            order_product.status = "S"
+            order_product.comment = form.cleaned_data['comment']
 
             # 既存レコードの場合
             if form.cleaned_data["orderid"]:
@@ -104,16 +144,8 @@ def place_order(request):
             return redirect('bootstrap4')
 
         # 申請時処理
-        initial_dict = {
-            'goods': form.cleaned_data['goods'],
-            'product_price': form.cleaned_data['product_price'],
-            'type_of_estimation': form.cleaned_data['type_of_estimation'],
-            'product_type': form.cleaned_data['product_type'],
-            'product_use': form.cleaned_data['product_use'],
-            'alternative': form.cleaned_data['alternative'],
-            'expected_purchase_date': form.cleaned_data['expected_purchase_date'],
-            'orderid': form.cleaned_data['orderid'],
-        }
+        l.msg(f'{type(form.cleaned_data)=}')
+        initial_dict = set_initialDict4ConfirmOrderForm(form.cleaned_data)
 
         form2 = ConfirmOrderForm(request.POST or None, initial=initial_dict)
         context = {'form': form2, 'comment': form.cleaned_data['comment']}
@@ -149,18 +181,8 @@ def confirm_details(request):
             else:
                 status = 'P'
 
-            order_product = ProductOrder(
-                goods=form.cleaned_data['goods'],
-                product_price=form.cleaned_data['product_price'],
-                type_of_estimation=form.cleaned_data['type_of_estimation'],
-                product_type=form.cleaned_data['product_type'],
-                product_use=form.cleaned_data['product_use'],
-                alternative=form.cleaned_data['alternative'],
-                expected_purchase_date=form.cleaned_data['expected_purchase_date'],
-                user=request.user,
-                # status='P',
-                status=status,
-            )
+            order_product = createProductOrder(form.cleaned_data, request.user)
+            order_product.status = status
 
             # 既存レコードの場合、orderid等をセットする
             if form.cleaned_data["orderid"]:
@@ -246,32 +268,10 @@ def productorder_detail(request, pk):
     except ProductOrder.DoesNotExist:
         raise Http404("No MyModel matches the given query. productorder_detail()")
 
-    # l.msg(f'{request=}')
-    # l.msg(f'{productorder.id=}')
-    # l.msg(f'{productorder.goods=}')
-    # l.msg(f'{productorder.product_price=}')
-    # l.msg(f'{productorder.type_of_estimation=}')
-    # l.msg(f'{productorder.product_type=}')
-    # l.msg(f'{productorder.product_use=}')
-    # l.msg(f'{productorder.alternative=}')
-    # l.msg(f'{productorder.expected_purchase_date=}')
-    # l.msg(f'{productorder.expected_purchase_date.strftime("%Y-%m-%d")=}')
-    # l.msg(f'{productorder.status=}')
-    # l.msg(f'{productorder.comment=}')
-
+    l.msg(f'{type(productorder)=}')
     if request.user.is_approver:
 
-        initial_dict = {
-            'orderid': productorder.id,
-            'goods': productorder.goods,
-            'product_price': productorder.product_price,
-            'type_of_estimation': productorder.type_of_estimation,
-            'product_type': productorder.product_type,
-            'product_use': productorder.product_use,
-            'alternative': productorder.alternative,
-            'expected_purchase_date': productorder.expected_purchase_date.strftime("%Y-%m-%d"),
-            'comment': productorder.comment,
-        }
+        initial_dict = set_initialDict4ConfirmOrderForm(productorder)
         form2 = ConfirmOrderForm(request.POST or None, initial=initial_dict)
 
         context = {'form': form2, 'comment': productorder.comment, 'status': productorder.status}
@@ -284,17 +284,7 @@ def productorder_detail(request, pk):
             # 承認済みの場合、全フィールドROで表示する。ConfirmOrderFormはコメント欄以外はRO。
             # コメント欄はテンプレートでif user.is_approver and status == 'P'の場合のみRW、それ以外の条件ではROとなる
 
-            initial_dict = {
-                'goods': productorder.goods,
-                'product_price': productorder.product_price,
-                'type_of_estimation': productorder.type_of_estimation,
-                'product_type': productorder.product_type,
-                'product_use': productorder.product_use,
-                'alternative': productorder.alternative,
-                'expected_purchase_date': productorder.expected_purchase_date,
-                'orderid': productorder.id,
-                'comment': productorder.comment,
-            }
+            initial_dict = set_initialDict4ConfirmOrderForm(productorder)
 
             form2 = ConfirmOrderForm(request.POST or None, initial=initial_dict)
 
@@ -315,6 +305,7 @@ def productorder_detail(request, pk):
                 'comment': productorder.comment,
             }
 
+            # set_checkbox_choicesでcontextに第二引数以降のエントリーを追加する
             context = set_checkbox_choices(
                 context,
                 productorder.product_type,
