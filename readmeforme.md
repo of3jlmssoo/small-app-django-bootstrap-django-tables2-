@@ -32,6 +32,8 @@ path("", index),
     )
 
 
+
+###
 tables.py
     class CountryTable(tables.Table):
         name = tables.Column()
