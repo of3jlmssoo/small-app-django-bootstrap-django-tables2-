@@ -169,7 +169,7 @@ def confirm_details(request):
         form = ConfirmOrderForm(request.POST)
 
         if form.is_valid():
-            l.msg(f'=> confirm_details()6 {form.cleaned_data["orderid"]=} {form.cleaned_data["comment"]=}')
+            l.msg(f'{form.cleaned_data["orderid"]=} {form.cleaned_data["comment"]=}')
 
             # 承認者がアクションに応じてステータスをセット
             if request.user.is_approver:
@@ -178,10 +178,16 @@ def confirm_details(request):
                     status = 'A'
                 elif 'CDReturn' in request.POST.keys():
                     status = 'S'
+
+                # 承認者なのでレコードは存在する
+                productorder = ProductOrder.objects.get(pk=form.cleaned_data['orderid'])
+                user = productorder.user
+
             else:
                 status = 'P'
-
-            order_product = createProductOrder(form.cleaned_data, request.user)
+                user = request.user
+            order_product = createProductOrder(form.cleaned_data, user)
+            # order_product = createProductOrder(form.cleaned_data, form.cleaned_data['user'])
             order_product.status = status
 
             # 既存レコードの場合、orderid等をセットする
@@ -193,6 +199,7 @@ def confirm_details(request):
                 order_product.id = form.cleaned_data["orderid"]
                 order_product.created_on = productorder.created_on
                 order_product.comment = form.cleaned_data['comment']
+                order_product.user = productorder.user
 
             order_product.save()
             l.msg(f'order_product.saved')
@@ -274,7 +281,10 @@ def productorder_detail(request, pk):
         initial_dict = set_initialDict4ConfirmOrderForm(productorder)
         form2 = ConfirmOrderForm(request.POST or None, initial=initial_dict)
 
-        context = {'form': form2, 'comment': productorder.comment, 'status': productorder.status}
+        context = {
+            'form': form2,
+            'comment': productorder.comment,
+            'status': productorder.status, }
         l.msg(f'{context=}')
         return render(request, 'tabletest/confirm_details.html', context)
 
