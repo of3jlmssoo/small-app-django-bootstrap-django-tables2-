@@ -25,13 +25,24 @@ class NumberColumn(tables.Column):
         return '{:0.0f}'.format(value)
 
 
+class TruncatedTextColumn(tables.Column):
+    def render(self, value):
+        if len(value) > 10:
+            return value[0:9] + '..'
+        return str(value)
+
+
 class Bootstrap4Table(tables.Table):
+
     id = tables.Column(linkify=True)
-    goods = tables.Column(attrs={
-        # "th": {"align": "justify"},
-        # "td": {"align": "center"},
-        # "th": {"align": "center"},
-    })
+    # goods = tables.Column(attrs={
+    #     # "th": {"align": "justify"},
+    #     # "td": {"align": "center"},
+    #     # "th": {"align": "center"},
+    # })
+    goods = TruncatedTextColumn(accessor='goods')
+    # goods = tables.TemplateColumn('<data-toggle="tooltip" title="{{record.goods}}">{{record.goods|truncatewords:5}}')
+
     alternative = tables.columns.BooleanColumn(yesno='有,無')
     updated_on = tables.columns.DateColumn(short=True)
 
@@ -54,3 +65,6 @@ class Bootstrap4Table(tables.Table):
 
     # def render_number(self, value):
     #     return '{:0.0f}'.format(value)
+
+    # def __init__(self, *args, **kwargs):
+    #     self.columns['goods'].column.attrs = {"td": {"style": "width:1%;"}}
