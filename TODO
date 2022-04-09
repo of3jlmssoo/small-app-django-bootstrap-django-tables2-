@@ -1,6 +1,7 @@
 
 Todo:yuu
   ✔ is logged in? @done(22-03-30 14:28)
+  ☐ 承認するとuser=承認者となってしまう
   ☐ approverの際のサイドメニューの申請をどうにかする
   ✔ 1. place_orderとconfirm_detailsのorder_product=ProductOrderのところは重複している @done(22-04-08 16:23)
   ✔ 2. productorder_details()内のinitial_dict=からform2=ConfirmOrderForm()のところは重複している @done(22-04-08 16:31)

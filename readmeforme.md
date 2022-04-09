@@ -1,10 +1,13 @@
-## 
+https://www.e-stat.go.jp/classifications/terms/30?search_method=keyword&search_word=&komokuSearchFlg_dummy=1&komokuSearchFlg=1&info1SearchFlg_dummy=1&info1SearchFlg=1&info2SearchFlg_dummy=1&info2SearchFlg=1&info3SearchFlg_dummy=1&info3SearchFlg=1&op=all_search&revision=01&search_kind=30&base_code=&form_id=main_form&searchboxShow1=1&searchboxShow2=0&searchboxShow3=0&page=&srchcndId=
+
+##
+
 /home/hiroshisakuma/projects/django-tables2/example/templates/index.html
 path("", index),
 /home/hiroshisakuma/projects/django-tables2/example/app/views.py
-同じviews.pyにmultipleあり
-    example1 = CountryTable(qs, prefix="1-")
-    RequestConfig(request, paginate=False).configure(example1)
+同じ views.py に multiple あり
+example1 = CountryTable(qs, prefix="1-")
+RequestConfig(request, paginate=False).configure(example1)
 
     example2 = CountryTable(qs, prefix="2-")
     RequestConfig(request, paginate={"per_page": 2}).configure(example2)
@@ -31,16 +34,15 @@ path("", index),
         },
     )
 
-
-
 ###
+
 tables.py
-    class CountryTable(tables.Table):
-        name = tables.Column()
-        population = tables.Column()
-        tz = tables.Column(verbose_name="time zone")
-        visits = tables.Column()
-        summary = tables.Column(order_by=("name", "population"))
+class CountryTable(tables.Table):
+name = tables.Column()
+population = tables.Column()
+tz = tables.Column(verbose_name="time zone")
+visits = tables.Column()
+summary = tables.Column(order_by=("name", "population"))
 
         class Meta:
             model = Country
@@ -49,41 +51,30 @@ tables.py
         class Meta:
             attrs = {"class": "paleblue"}
 
-
-
 /home/hiroshisakuma/projects/django-tables2/example/templates/multiple.html
-    <h3>via template tag</h3>
-    <pre>{% templatetag openblock %} load django_tables2 {% templatetag closeblock %}
-    {% templatetag openblock %} render_table example3 {% templatetag closeblock %}</pre>
-    {% load django_tables2 %}
-    {% render_table example3 %}
+<h3>via template tag</h3>
+<pre>{% templatetag openblock %} load django_tables2 {% templatetag closeblock %}
+{% templatetag openblock %} render_table example3 {% templatetag closeblock %}</pre>
+{% load django_tables2 %}
+{% render_table example3 %}
 
     <h2>Example 4 — QuerySet + pagination + paleblue theme</h2>
     <h3>via <tt>as_html()</tt></h3>
     <pre>{% templatetag openvariable %} example4.as_html {% templatetag closevariable %}</pre>
     {{ example4.as_html }}
 
+###
 
-
-
-
-
-### 
 /home/hiroshisakuma/projects/django-tables2/example/urls.py
 /home/hiroshisakuma/projects/django-tables2/example/app/views.py
-                (reverse("bootstrap4"), "template: Bootstrap 4 (bootstrap4.html)"),
+(reverse("bootstrap4"), "template: Bootstrap 4 (bootstrap4.html)"),
 /home/hiroshisakuma/projects/django-tables2/example/django-tables2/django_tables2/templates/django_tables2/bootstrap4.html
-
 
 /home/hiroshisakuma/projects/django-tables2/example/templates/bootstrap4_template.html was used!
 /home/hiroshisakuma/projects/django-tables2/example/app/tables.py
 
-
-
-
-
-
 ### table
+
     settings.py installed_appsで
         "django_tables2",
 
@@ -144,7 +135,7 @@ tables.py
         1,2,3,4,5
         next
         が設定される
-        
+
 
 ```text
 class OrderProduct(models.Model):
@@ -159,62 +150,68 @@ class OrderProduct(models.Model):
     )
     # id(PK) djangoに任せる
     goods = models.CharField(max_length=50, blank=False, null=False)
-    price = product_price = models.FloatField() 
+    price = product_price = models.FloatField()
     type_of_estimation = models.CharField(max_length=50, blank=False, null=False)
     type = models.CharField(max_length=1, choices=PRODUCT_TYPE, blank=False, null=False) # daily or luxury
     use =  models.CharField(max_length=1, choices=PRODUCT_USE, blank=False, null=False) # me, family or gift
     alternative = models.BooleanField()
 
     expected_purchase_date = models.DateTimeField()
-    
-    order_number = 
+
+    order_number =
     created_on = models.DateTimeField(auto_now_add=True)
     updated_on = models.DateTimeField(auto_now=True)
 
 class
 ```
 
-  COUNTRY = (
-        ('A', 'Japan'),  # (DB値, 読みやすい値)
-        ('B', 'America'),
-        ('C', 'China'),
-    )
-    
+COUNTRY = (
+('A', 'Japan'), # (DB 値, 読みやすい値)
+('B', 'America'),
+('C', 'China'),
+)
+
     country = models.CharField(max_length=1, choices=COUNTRY)
 
-
 ### 表示項目
-テーブル1   案件名(linkify) 更新日付　顧客名称　顧客ID　担当者
+
+テーブル 1 案件名(linkify) 更新日付　顧客名称　顧客 ID 　担当者
 ボタン 新規案件登録
-テーブル2   案件名(linkify) 申請日付　顧客名称　顧客ID　担当者
-テーブル3   案件名(linkify) 申請日付　顧客名称　顧客ID　担当者
+テーブル 2 案件名(linkify) 申請日付　顧客名称　顧客 ID 　担当者
+テーブル 3 案件名(linkify) 申請日付　顧客名称　顧客 ID 　担当者
 
 ### モデル
+
 案件名称
 更新日付
 作成日付
 顧客名称
-顧客ID
+顧客 ID
 担当者
 
 ### login by email
+
 python manage.py startapp accounts
 edit settings.py INSTALLED_APPS = ['accounts',]
 
-### exampleのメモ
+### example のメモ
+
 ![table2.drawio](table2.drawio.svg)
 
-Bootstrap4 templateでの表示項目
+Bootstrap4 template での表示項目
+
 ```text
 ID   Full name   Country    Continent
 ```
-Personはid,name,friendy, country(fk)
 
-linkifyでリンクになる。
+Person は id,name,friendy, country(fk)
+
+linkify でリンクになる。
 
 1. urls.py
    path("bootstrap4/", bootstrap4, name="bootstrap4"),
 1. views.py
+
 ```text
 def bootstrap4(request):
     """Demonstrate the use of the bootstrap4 template"""
@@ -226,7 +223,9 @@ def bootstrap4(request):
     return render(request, "bootstrap4_template.html", {"table": table})
 
 ```
+
 3. "table":table
+
 ```text
 class Bootstrap4Table(tables.Table):
     country = tables.Column(linkify=True)
@@ -238,43 +237,49 @@ class Bootstrap4Table(tables.Table):
         attrs = {"class": "table table-hover"}
         exclude = ("friendly",)
 ```
+
 4. templates/bootstrap4_template.html
+
 ```html
-{% load static %}
-{% load render_table from django_tables2 %}
-{% load bootstrap4 %}
-<!doctype html>
+{% load static %} {% load render_table from django_tables2 %} {% load bootstrap4
+%}
+<!DOCTYPE html>
 <html>
-<head>
+  <head>
     <title>django_tables2 with bootstrap 4 template example</title>
     {% bootstrap_css %}
-
-</head>
-<body>
+  </head>
+  <body>
     <div class="container">
-        {% block body %}
+      {% block body %}
 
-        <a href="https://getbootstrap.com/docs/4.0/content/tables/">Bootstrap 4 - tables docs</a> |
-        <a href="https://getbootstrap.com/docs/4.0/components/pagination/">Bootstrap 4 - pagination docs</a>
+      <a href="https://getbootstrap.com/docs/4.0/content/tables/"
+        >Bootstrap 4 - tables docs</a
+      >
+      |
+      <a href="https://getbootstrap.com/docs/4.0/components/pagination/"
+        >Bootstrap 4 - pagination docs</a
+      >
 
-        <h3>django_tables2 with <a href="https://getbootstrap.com/docs/4.0/">Bootstrap 4</a> template example</h3>
+      <h3>
+        django_tables2 with
+        <a href="https://getbootstrap.com/docs/4.0/">Bootstrap 4</a> template
+        example
+      </h3>
 
-
-        <div class="row">
-            {% if filter %}
-                <div class="col-sm-10">
-                    <form action="" method="get" class="form form-inline">
-                        {% bootstrap_form filter.form layout='inline' %}
-                        {% bootstrap_button 'filter' %}
-                    </form>
-                </div>
-            {% endif %}
-            <div class="col-sm-10">
-                {% render_table table %}
-            </div>
+      <div class="row">
+        {% if filter %}
+        <div class="col-sm-10">
+          <form action="" method="get" class="form form-inline">
+            {% bootstrap_form filter.form layout='inline' %} {% bootstrap_button
+            'filter' %}
+          </form>
         </div>
-        {% endblock %}
+        {% endif %}
+        <div class="col-sm-10">{% render_table table %}</div>
+      </div>
+      {% endblock %}
     </div>
-</body>
+  </body>
 </html>
 ```
