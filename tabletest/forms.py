@@ -103,3 +103,9 @@ class ViewOnlyOrderForm(forms.ModelForm):
             self.fields['expected_purchase_date'].widget.attrs['disabled'] = 'disabled'
             self.fields['orderid'].widget.attrs['disabled'] = 'disabled'
             self.fields['comment'].widget.attrs['disabled'] = 'disabled'
+
+
+class UploadFileForm(forms.Form):
+    title = forms.CharField(max_length=50)
+    file = forms.FileField()
+    # file_field = forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': True}))

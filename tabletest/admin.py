@@ -2,9 +2,26 @@ from django.contrib import admin
 from import_export import resources
 from import_export.admin import ImportExportModelAdmin
 
-from .models import ProductOrder
+from .models import Document, ProductOrder
 
 # Register your models here.
+
+
+class DocumentResource(resources.ModelResource):
+    class Meta:
+        model = Document
+
+
+class DocumentAdmin(ImportExportModelAdmin):
+    list_display = (
+        'title',
+        'file_field',
+        'dateTimeOfUpload',
+        'user',
+        'order',
+
+    )
+    resource_class = DocumentResource
 
 
 class ProductOrderResource(resources.ModelResource):
@@ -53,3 +70,4 @@ class ProductOrderAdmin(ImportExportModelAdmin):
 
 
 admin.site.register(ProductOrder, ProductOrderAdmin)
+admin.site.register(Document, DocumentAdmin)

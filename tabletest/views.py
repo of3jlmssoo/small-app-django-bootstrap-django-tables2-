@@ -1,11 +1,12 @@
 # from re import I
 import copy
 import logging
+import sys
 
 import django_filters
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.http import Http404, HttpResponse
+from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, render
 from django_filters.views import FilterView
 from django_tables2 import (MultiTableMixin, RequestConfig, SingleTableMixin,
@@ -14,8 +15,9 @@ from django_tables2.export.views import ExportMixin
 from django_tables2.paginators import LazyPaginator
 
 # Create your views here.
-from .forms import ConfirmOrderForm, ProductOrderForm, ViewOnlyOrderForm
-from .models import ProductOrder
+from .forms import (ConfirmOrderForm, ProductOrderForm, UploadFileForm,
+                    ViewOnlyOrderForm)
+from .models import Document, ProductOrder
 from .tables import Bootstrap4Table
 
 
@@ -326,3 +328,23 @@ def productorder_detail(request, pk):
 
             # messages.error(request, '入力が正常完了しませんでした。')
             # return redirect('/')
+
+
+def file_upload(request):
+    if request.method == 'POST':
+        form = UploadFileForm(request.POST, request.FILES)
+        if form.is_valid():
+            instance = Document(file_field=request.FILES['file'])
+            instance.title = form.cleaned_data['title']
+            instance.user = request.user
+            instance.save()
+            return HttpResponseRedirect('/tabletest/fup_success/')
+    else:
+        form = UploadFileForm()
+    return render(request, 'tabletest/file_upload.html', {'form': form})
+
+
+def fup_success(request):
+    str_out = "Success!<p />"
+    str_out += "成功<p />"
+    return HttpResponse(str_out)

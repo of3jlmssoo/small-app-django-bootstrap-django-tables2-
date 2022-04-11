@@ -172,3 +172,8 @@ db.sqlite3.backup
 tabletest/migrations/0004_productorder_status_alter_productorder_alternative_and_more.py
 tabletest/migrations/0005_productorder_comment.py
 readmeforme.md
+tabletest/migrations/0006_document.py
+tabletest/migrations/0007_remove_document_uploadedfile.py
+tabletest/migrations/0010_document_order_document_user.py
+tabletest/migrations/0009_rename_uploadedfile_document_file_field.py
+tabletest/migrations/0008_document_uploadedfile.py
