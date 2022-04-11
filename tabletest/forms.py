@@ -106,6 +106,6 @@ class ViewOnlyOrderForm(forms.ModelForm):
 
 
 class UploadFileForm(forms.Form):
-    title = forms.CharField(max_length=50)
+    title = forms.CharField(max_length=50, label='説明')
     # file = forms.FileField()
-    file_field = forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': True}))
+    file_field = forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': True}), label='選択')
