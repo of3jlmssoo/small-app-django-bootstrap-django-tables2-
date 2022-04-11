@@ -1,7 +1,7 @@
 
 Todo:yuu
   ✔ is logged in? @done(22-03-30 14:28)
-  ☐ 承認するとuser=承認者となってしまう
+  ✔ 承認するとuser=承認者となってしまう @done(22-04-11 18:00)
   ☐ approverの際のサイドメニューの申請をどうにかする
   ✔ 1. place_orderとconfirm_detailsのorder_product=ProductOrderのところは重複している @done(22-04-08 16:23)
   ✔ 2. productorder_details()内のinitial_dict=からform2=ConfirmOrderForm()のところは重複している @done(22-04-08 16:31)
@@ -47,3 +47,5 @@ Todo:yuu
   ✔ display html as read only @done(22-03-30 15:07)
   ✔ date created and date updated @done(22-03-22 13:18)
   ☐ PRODUCT_USE, PRODUCT_TYPEを外だし共通化する
+  ☐ file uploadのコンテントタイプチェック djangos validators and pillow image.open
+    https://stackoverflow.com/questions/32679589/how-to-get-the-format-of-image-with-pil

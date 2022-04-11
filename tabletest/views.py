@@ -8,6 +8,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, render
+from django.views.generic.edit import FormView
 from django_filters.views import FilterView
 from django_tables2 import (MultiTableMixin, RequestConfig, SingleTableMixin,
                             SingleTableView)
@@ -330,11 +331,12 @@ def productorder_detail(request, pk):
             # return redirect('/')
 
 
-def file_upload(request):
+def file_upload_single(request):
     if request.method == 'POST':
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
             instance = Document(file_field=request.FILES['file'])
+            print(f"=== 1 === {request.FILES['file']}")
             instance.title = form.cleaned_data['title']
             instance.user = request.user
             instance.save()
@@ -342,6 +344,28 @@ def file_upload(request):
     else:
         form = UploadFileForm()
     return render(request, 'tabletest/file_upload.html', {'form': form})
+
+
+class FileFieldFormView(FormView):
+    form_class = UploadFileForm
+    template_name = 'tabletest/file_upload.html'  # Replace with your template.
+    success_url = '/tabletest/fup_success/'  # Replace with your URL or reverse().
+
+    def post(self, request, *args, **kwargs):
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)
+        files = request.FILES.getlist('file_field')
+        if form.is_valid():
+            for f in files:
+                instance = Document(file_field=f)
+                instance.title = form.cleaned_data['title']
+                instance.file_field.name = f.name
+                instance.user = request.user
+                instance.save()
+
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
 
 
 def fup_success(request):
