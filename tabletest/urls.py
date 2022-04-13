@@ -11,7 +11,7 @@ urlpatterns = [
     path('confirm_details/', views.confirm_details, name='confirm_details'),
     path("bootstrap4/", views.bootstrap4, name="bootstrap4"),
     path("productorder_detail/<int:pk>/", views.productorder_detail, name="productorder_detail"),
-    # path('file_upload/', views.file_upload, name='file_upload'),
-    path('file_upload/', FileFieldFormView.as_view(), name='file_upload'),
+    # path('file_upload/', FileFieldFormView.as_view(), name='file_upload'),
+    path('modal_file_upload/', FileFieldFormView.as_view(), name='modal_file_upload'),
     path('fup_success/', views.fup_success, name='fup_success'),
 ]

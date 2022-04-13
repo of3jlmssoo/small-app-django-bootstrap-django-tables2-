@@ -4,6 +4,7 @@ import logging
 import sys
 
 import django_filters
+from bootstrap_modal_forms.generic import BSModalCreateView
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import Http404, HttpResponse, HttpResponseRedirect
@@ -16,8 +17,8 @@ from django_tables2.export.views import ExportMixin
 from django_tables2.paginators import LazyPaginator
 
 # Create your views here.
-from .forms import (ConfirmOrderForm, ProductOrderForm, UploadFileForm,
-                    ViewOnlyOrderForm)
+from .forms import (ConfirmOrderForm, ModalUploadFileForm, ProductOrderForm,
+                    UploadFileForm, ViewOnlyOrderForm)
 from .models import Document, ProductOrder
 from .tables import Bootstrap4Table
 
@@ -346,26 +347,49 @@ def file_upload_single(request):
     return render(request, 'tabletest/file_upload.html', {'form': form})
 
 
-class FileFieldFormView(FormView):
-    form_class = UploadFileForm
-    template_name = 'tabletest/file_upload.html'  # Replace with your template.
+# class FileFieldFormView(FormView):
+class FileFieldFormView(BSModalCreateView):
+    form_class = ModalUploadFileForm
+    template_name = 'tabletest/modal_file_upload.html'  # Replace with your template.
     success_url = '/tabletest/fup_success/'  # Replace with your URL or reverse().
 
-    def post(self, request, *args, **kwargs):
+    # def post(self, request, *args, **kwargs):
+    #     print(f'=== post =============================')
+    #     form_class = self.get_form_class()
+    #     form = self.get_form(form_class)
+    #     files = request.FILES.getlist('file_field')
+    #     if form.is_valid():
+    #         for f in files:
+    #             instance = Document(file_field=f)
+    #             instance.title = form.cleaned_data['title']
+    #             instance.file_field.name = f.name
+    #             instance.user = request.user
+    #             instance.save()
+
+    #         return self.form_valid(form)
+    #     else:
+    #         return self.form_invalid(form)
+
+    # def form_valid(self, form):
+    def form_valid(self, form):
         form_class = self.get_form_class()
         form = self.get_form(form_class)
-        files = request.FILES.getlist('file_field')
-        if form.is_valid():
+        files = self.request.FILES.getlist('file_field')
+        print(f'=== form_valid0 {type(files)=} {files=}')
+        if form.is_valid() and self.request.headers.get('x-requested-with') == 'XMLHttpRequest':
             for f in files:
                 instance = Document(file_field=f)
                 instance.title = form.cleaned_data['title']
                 instance.file_field.name = f.name
-                instance.user = request.user
+                instance.user = self.request.user
                 instance.save()
+                print(f'=== form_valid1 {f=}')
 
-            return self.form_valid(form)
-        else:
-            return self.form_invalid(form)
+        return redirect('index')
+        # return super().form_valid(form)
+        #     return self.form_valid(form)
+        # else:
+        #     return self.form_invalid(form)
 
 
 def fup_success(request):

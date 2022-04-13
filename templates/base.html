@@ -11,6 +11,17 @@
     <meta name="generator" content="Hugo 0.83.1" />
     <title>Dashboard Template · Bootstrap v5.0</title>
 
+    {% load static %} {% comment %}
+    <link rel="stylesheet" href="{% static 'assets/css/bootstrap.css' %}" />
+    {% endcomment %}
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+      crossorigin="anonymous"
+    />
+
     <link
       rel="canonical"
       href="https://getbootstrap.jp/docs/5.0/examples/dashboard/"
@@ -22,9 +33,16 @@
       integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
       crossorigin="anonymous"
     />
+    {% comment %}
     <script
       src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
       integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+      crossorigin="anonymous"
+    ></script>
+    {% endcomment %}
+    <script
+      src="https://code.jquery.com/jquery-3.6.0.js"
+      integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
       crossorigin="anonymous"
     ></script>
     <script>
@@ -33,6 +51,15 @@
           $("#message").remove();
         }
       }, 2000); // 2000 millisecond
+    </script>
+
+    <script src="{% static 'js/jquery.bootstrap.modal.forms.js' %}"></script>
+    <script type="text/javascript">
+      $(document).ready(function () {
+        $("#create-book").modalForm({
+          formURL: "{% url 'modal_file_upload' %}",
+        });
+      });
     </script>
 
     <script

@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'import_export',
     'bootstrap4',
     'django_filters',
+    'bootstrap_modal_forms',
 ]
 
 MIDDLEWARE = [
@@ -142,3 +143,5 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = env('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
+
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 3000
