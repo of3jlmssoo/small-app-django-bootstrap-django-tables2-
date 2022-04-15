@@ -129,7 +129,7 @@
     {% endif %}
 
     <div class="row form-group mt-0">
-        <div class='col-1'>
+        <div class='col-2'>
 
             <div class="modal fade" tabindex="-1" role="dialog" id="modal">
             <div class="modal-dialog" role="document">
@@ -138,20 +138,40 @@
             </div>
 
             <!-- Create book button -->
-            <button id="create-book" class="btn btn-link" type="button" name="button">見積根拠添付</button>
+            <button id="create-book" class="btn btn-link mb-0" type="button" name="button">見積根拠添付</button>
         </div>
-
-
-
-
-
-
-
-
-
-
     </div>
-    
+
+    {% if books %}
+        <table id="books-table" class="table table-borderless table-sm">
+            {% comment %} <thead>
+            <tr class="d-flex">
+                <th class="text-center col-1" scope="col">#</th>
+                <th class="text-center col-3" scope="col">Title</th>
+                <th class="text-center col-3" scope="col">Author</th>
+            </tr>
+            </thead> {% endcomment %}
+            <tbody>
+            {% for book in books %}
+                <tr class="d-flex">
+                {% comment %} <th class="text-center col-1" scope="row">{{ forloop.counter }}</th> {% endcomment %}
+                <td class="text-center col-1">{{ book.title }}</td>
+                <td class="text-center col-2">{{ book.file_name }}</td>
+                </tr>
+            {% endfor %}
+
+            </tbody>
+        </table>
+    {% endif %}
+
+
+
+
+
+
+
+
+
 
 
 

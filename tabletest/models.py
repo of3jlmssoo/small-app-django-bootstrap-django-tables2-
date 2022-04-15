@@ -74,3 +74,4 @@ class Document(models.Model):
     dateTimeOfUpload = models.DateTimeField(auto_now=True)
     order = models.ForeignKey(ProductOrder, on_delete=models.CASCADE, null=True)
     user = models.ForeignKey(Account, on_delete=models.SET_NULL, null=True, verbose_name="申請者")
+    file_name = models.CharField(max_length=200, null=True)

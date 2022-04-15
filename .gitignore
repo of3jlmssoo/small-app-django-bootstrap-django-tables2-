@@ -179,3 +179,4 @@ tabletest/migrations/0009_rename_uploadedfile_document_file_field.py
 tabletest/migrations/0008_document_uploadedfile.py
 tabletest/migrations/0011_rename_document_priceinfoattachment.py
 tabletest/migrations/0012_rename_priceinfoattachment_document.py
+tabletest/migrations/0013_document_file_name.py

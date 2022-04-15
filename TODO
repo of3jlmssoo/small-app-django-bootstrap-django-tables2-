@@ -8,7 +8,7 @@ Todo:yuu
   ✔ 3. initial_dictの中身が違うがplace_orderのところも同様の構成になっている @done(22-04-08 16:58)
   ☐ ログ機能(更新ログ)
   ✔ django logger。細かいメッセージが出すぎるので利用を断念。pythonのloggingを使う。ただし、native pythonで問題のないdiabled機能が働かない。ただし、関数名表示が楽なので使う @done(22-04-07 11:35)
-  ☐ code cleaning
+  ✔ code cleaning @done(22-04-14 00:58)
   ✔ 指しもどし理由カラム追加 @done(22-04-07 11:35)
       ✔ approverの承認済み表示時は全てROとする @done(22-04-03 15:32)
       ✔ nonapproverの承認済み表示時は全てROとする @done(22-04-03 15:15)
@@ -22,7 +22,8 @@ Todo:yuu
       ✔ モデル追加 @done(22-03-30 18:50)
   ✔ ProductOrder Modelカラム追加。status 0 : saved, 1 : processing, 2 : done @done(22-03-30 18:50)
   ☐ django ファイルアップロード
-  ☐ django ポップアップウィンドウ
+    ☐ index.htmlにuser==申請者、Order未設定 or order==orderidのものをリストする
+  ✔ django ポップアップウィンドウ @done(22-04-14 01:00)
   ☐ bootstrap dynamicall change pull down menu
   ✔ 購入予定時期 @done(22-03-22 13:18)
   ✔ email login and authentication @done(22-03-16 10:19)
@@ -32,7 +33,7 @@ Todo:yuu
     ✔ 組み込み @done(22-03-27 14:08)
     ✔ データカラムの選択(created or updateどちらか) @done(22-03-29 10:03)
     ✔ テーブルページのヘッダーとか修正 @done(22-03-28 23:10)
-    ☐ データカラムの属性変更(幅)
+    ✔ データカラムの属性変更(幅) => 文字数制限 @done(22-04-14 01:00)
     ✔ データカラムの属性変更(alternativeの表示チェックマーク、バツマーク) @done(22-03-29 10:03)
     ✔ データカラムの属性変更(left/center/rigth) @done(22-03-29 10:04)
     ✔ ヘッダー表示日本語化 @done(22-03-28 23:10)

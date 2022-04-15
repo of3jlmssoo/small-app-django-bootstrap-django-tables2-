@@ -45,6 +45,14 @@ class Logger():
         Logger.logger.debug(self.funcname + ' : ' + message)
 
 
+def set_unrelated_documents(request):
+    return Document.objects.filter(order__isnull=True, user=request.user)
+
+
+def set_related_documents(request, id):
+    return Document.objects.filter(order=id, user=request.user)
+
+
 def display_POST_key_value(request):
     l = Logger('display_POST_key_value')
     for item in request.POST:
@@ -152,7 +160,19 @@ def place_order(request):
         initial_dict = set_initialDict4ConfirmOrderForm(form.cleaned_data)
 
         form2 = ConfirmOrderForm(request.POST or None, initial=initial_dict)
-        context = {'form': form2, 'comment': form.cleaned_data['comment']}
+
+        books = set_related_documents(request, form.cleaned_data["orderid"])
+        if not books:
+            books = set_unrelated_documents(request)
+            # for book in books:
+            #     book.order = form.cleaned_data['orderid']
+            #     book.save()
+
+        context = {
+            'form': form2,
+            'comment': form.cleaned_data['comment'],
+            'books': books,
+        }
         l.msg(f'{context=}')
         return render(request, 'tabletest/confirm_details.html', context)
 
@@ -205,6 +225,13 @@ def confirm_details(request):
                 order_product.comment = form.cleaned_data['comment']
                 order_product.user = productorder.user
 
+            if not len(set_related_documents(request, form.cleaned_data["orderid"])):
+                books = set_unrelated_documents(request)
+                for book in books:
+                    book.order = order_product
+                    l.msg(f'book.order was set to {book.order}')
+                    book.save()
+
             order_product.save()
             l.msg(f'order_product.saved')
         else:
@@ -215,14 +242,28 @@ def confirm_details(request):
     return redirect('/')
 
 
-@login_required(redirect_field_name='accounts/login')
+@ login_required(redirect_field_name='accounts/login')
 def index(request):
 
+    l = Logger('index')
+
     form = ProductOrderForm()
-    return render(request, 'tabletest/index.html', {'form': form})
+    # return render(request, 'tabletest/index.html', {'form': form})
+
+    # lsts = Document.objects.filter(order__isnull=True, user=request.user)
+    lsts = set_unrelated_documents(request)
+
+    context = {
+        'form': form,
+        # 'books': docs,
+        'books': lsts,
+    }
+    # 'comment': productorder.comment,
+    # 'status': productorder.status, }
+    return render(request, 'tabletest/index.html', context)
 
 
-@login_required(redirect_field_name='accounts/login')
+@ login_required(redirect_field_name='accounts/login')
 def bootstrap4(request):
     """Demonstrate the use of the bootstrap4 template"""
 
@@ -310,6 +351,13 @@ def productorder_detail(request, pk):
         else:
             # non-approverがダッシュボードからIDをクリックした場合、編集画面に行く。そこで中身を編集するかしないで申請か保存を選ぶことになる。
             # 編集する可能性があるのでplace_orderにいく
+
+            l.msg(f'{productorder.id=}')
+            l.msg(f'{set_related_documents(request, productorder.id)=}')
+            lsts = set_related_documents(request, productorder.id)
+            if len(lsts) == 0:
+                lsts = set_unrelated_documents(request)
+
             form = ProductOrderForm(instance=productorder)
             l.msg(f'{form=}')
             context = {
@@ -317,6 +365,7 @@ def productorder_detail(request, pk):
                 "expected_purchase_date": productorder.expected_purchase_date.strftime("%Y-%m-%d"),
                 'orderid': productorder.id,
                 'comment': productorder.comment,
+                'books': lsts,
             }
 
             # set_checkbox_choicesでcontextに第二引数以降のエントリーを追加する
@@ -375,15 +424,18 @@ class FileFieldFormView(BSModalCreateView):
         form_class = self.get_form_class()
         form = self.get_form(form_class)
         files = self.request.FILES.getlist('file_field')
-        print(f'=== form_valid0 {type(files)=} {files=}')
+        # 同じファイルが2度ほぞんされてしまう問題へself.request.headers.get() ==で対応
+        # djangoでis_ajax()がなくなったことに対応
         if form.is_valid() and self.request.headers.get('x-requested-with') == 'XMLHttpRequest':
             for f in files:
                 instance = Document(file_field=f)
                 instance.title = form.cleaned_data['title']
                 instance.file_field.name = f.name
                 instance.user = self.request.user
+                instance.file_name = self.request.upload_handlers[0].file_name
                 instance.save()
-                print(f'=== form_valid1 {f=}')
+                print(f'{self.request.upload_handlers[0].file_name=}')
+                # print(f'=== form_valid1 {f=}')
 
         return redirect('index')
         # return super().form_valid(form)

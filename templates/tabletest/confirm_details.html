@@ -88,16 +88,42 @@
         </div>
         
         <div class="d-inline">
-            <button type="submit" class="btn btn-secondary" onClick="window.history.back();return false;">戻る</button>
+            <button type="submit" class="btn btn-secondary mt-1" onClick="window.history.back();return false;">戻る</button>
         </div>
     </div>
 
     {% else %}
     <div class="row form-group mt-5">
+        <h6>見積もり根拠</h6>
+        {% if books %}
+            <table id="books-table" class="table table-borderless table-sm">
+                {% comment %} <thead>
+                <tr class="d-flex">
+                    <th class="text-center col-1" scope="col">#</th>
+                    <th class="text-center col-3" scope="col">Title</th>
+                    <th class="text-center col-3" scope="col">Author</th>
+                </tr>
+                </thead> {% endcomment %}
+                <tbody>
+                {% for book in books %}
+                    <tr class="d-flex">
+                    {% comment %} <th class="text-center col-1" scope="row">{{ forloop.counter }}</th> {% endcomment %}
+                    <td class="text-center col-1">{{ book.title }}</td>
+                    <td class="text-center col-2">{{ book.file_name }}</td>
+                    </tr>
+                {% endfor %}
+
+                </tbody>
+            </table>
+        {% endif %}
+
+
+    </div>
+    <div class="row form-group mt-5">
 
 
         {% if status != 'A' %}
-        <div class="d-inline pr-1">
+        <div class="d-inline pr-1 mb-1">
             <button type="submit" class="btn btn-primary">申請</button>
         </div>
         {% endif %}
@@ -113,7 +139,7 @@
 
 
 
-
+    
 </form>
 <script>
 $('form').submit(function(e) {

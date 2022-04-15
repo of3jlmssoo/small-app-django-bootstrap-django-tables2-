@@ -37,6 +37,6 @@
 
 ## その他
 
-django, bootstrap, django-tables2 を使っている。物品名については e-Stat の『日本標準商品分類(平成 2 年[1990 年]6 月改定)』のデータをダウンロードし(FEK_download.csv)、その中からランダムに商品名を表示するプログラムを作り参考にしている。
-
+django、bootstrap、django-tables2、django-bootstrap-modal-forms を使っている。
+物品名については e-Stat の『日本標準商品分類(平成 2 年[1990 年]6 月改定)』のデータをダウンロードし(FEK_download.csv)、その中からランダムに商品名を表示するプログラムを作り参考にしている。
 最初に bootstrap で画面を作成し、イメージができたところで django 機能を組み込んだ。
