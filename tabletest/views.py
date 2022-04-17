@@ -45,12 +45,15 @@ class Logger():
         Logger.logger.debug(self.funcname + ' : ' + message)
 
 
-def set_unrelated_documents(request):
+def set_unrelated_documents(request, user):
     return Document.objects.filter(order__isnull=True, user=request.user)
 
 
-def set_related_documents(request, id):
-    return Document.objects.filter(order=id, user=request.user)
+def set_related_documents(request, user, id=None):
+    if id is None:
+        return Document.objects.filter(order__isnull=True, user=request.user)
+    else:
+        return Document.objects.filter(order=id, user=user)
 
 
 def display_POST_key_value(request):
@@ -161,9 +164,10 @@ def place_order(request):
 
         form2 = ConfirmOrderForm(request.POST or None, initial=initial_dict)
 
-        books = set_related_documents(request, form.cleaned_data["orderid"])
+        books = set_related_documents(request, request.user, form.cleaned_data["orderid"])
         if not books:
-            books = set_unrelated_documents(request)
+            # books = set_unrelated_documents(request, request.user)
+            books = set_related_documents(request, request.user)
             # for book in books:
             #     book.order = form.cleaned_data['orderid']
             #     book.save()
@@ -225,8 +229,8 @@ def confirm_details(request):
                 order_product.comment = form.cleaned_data['comment']
                 order_product.user = productorder.user
 
-            if not len(set_related_documents(request, form.cleaned_data["orderid"])):
-                books = set_unrelated_documents(request)
+            if not len(set_related_documents(request, productorder.user, form.cleaned_data["orderid"])):
+                books = set_related_documents(request, productorder.user)
                 for book in books:
                     book.order = order_product
                     l.msg(f'book.order was set to {book.order}')
@@ -251,7 +255,7 @@ def index(request):
     # return render(request, 'tabletest/index.html', {'form': form})
 
     # lsts = Document.objects.filter(order__isnull=True, user=request.user)
-    lsts = set_unrelated_documents(request)
+    lsts = set_related_documents(request, request.user)
 
     context = {
         'form': form,
@@ -321,6 +325,14 @@ def productorder_detail(request, pk):
         raise Http404("No MyModel matches the given query. productorder_detail()")
 
     l.msg(f'{type(productorder)=}')
+
+    lsts = set_related_documents(request, productorder.user, productorder.id)
+    if len(lsts) == 0:
+        lsts = set_related_documents(request, request.user)
+
+    print(f'============= {productorder.id}')
+    print(f'============= {lsts}')
+
     if request.user.is_approver:
 
         initial_dict = set_initialDict4ConfirmOrderForm(productorder)
@@ -329,7 +341,9 @@ def productorder_detail(request, pk):
         context = {
             'form': form2,
             'comment': productorder.comment,
-            'status': productorder.status, }
+            'status': productorder.status,
+            'books': lsts,
+        }
         l.msg(f'{context=}')
         return render(request, 'tabletest/confirm_details.html', context)
 
@@ -343,7 +357,7 @@ def productorder_detail(request, pk):
 
             form2 = ConfirmOrderForm(request.POST or None, initial=initial_dict)
 
-            context = {'form': form2, 'comment': productorder.comment, 'status': productorder.status}
+            context = {'form': form2, 'comment': productorder.comment, 'status': productorder.status, 'books': lsts}
 
             l.msg(f'not approver readonly {context=}')
             return render(request, 'tabletest/confirm_details.html', context)
@@ -353,10 +367,10 @@ def productorder_detail(request, pk):
             # 編集する可能性があるのでplace_orderにいく
 
             l.msg(f'{productorder.id=}')
-            l.msg(f'{set_related_documents(request, productorder.id)=}')
-            lsts = set_related_documents(request, productorder.id)
+            l.msg(f'{set_related_documents(request, productorder.user, productorder.id)=}')
+            lsts = set_related_documents(request, productorder.user, productorder.id)
             if len(lsts) == 0:
-                lsts = set_unrelated_documents(request)
+                lsts = set_related_documents(request, request.user)
 
             form = ProductOrderForm(instance=productorder)
             l.msg(f'{form=}')

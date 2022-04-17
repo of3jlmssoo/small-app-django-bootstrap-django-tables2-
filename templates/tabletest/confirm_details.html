@@ -77,6 +77,34 @@
         {% endif %}
     </div>    
 
+    <div class="row form-group mt-0">
+        <h6>見積もり根拠</h6>
+        {% if books %}
+            <table id="books-table" class="table table-borderless table-sm">
+                {% comment %} <thead>
+                <tr class="d-flex">
+                    <th class="text-center col-1" scope="col">#</th>
+                    <th class="text-center col-3" scope="col">Title</th>
+                    <th class="text-center col-3" scope="col">Author</th>
+                </tr>
+                </thead> {% endcomment %}
+                <tbody>
+                {% for book in books %}
+                    <tr class="d-flex">
+                    {% comment %} <th class="text-center col-1" scope="row">{{ forloop.counter }}</th> {% endcomment %}
+                    <td class="text-center col-1">{{ book.title }}</td>
+                    <td class="text-center col-2">{{ book.file_name }}</td>
+                    </tr>
+                {% endfor %}
+
+                </tbody>
+            </table>
+        {% endif %}
+
+
+    </div>
+
+
     {% if user.is_approver and status == "P" %}
     <div class="row form-group mt-1 mb-0">
         <p class="text-secondary mb-0">内容を確認して、承認するか差戻してください。差戻しの場合コメントを入力してください。コメント欄以外は編集できません</p>
@@ -93,6 +121,8 @@
     </div>
 
     {% else %}
+
+    <!--
     <div class="row form-group mt-5">
         <h6>見積もり根拠</h6>
         {% if books %}
@@ -119,6 +149,7 @@
 
 
     </div>
+    -->
     <div class="row form-group mt-5">
 
 
