@@ -14,6 +14,7 @@ class DocumentResource(resources.ModelResource):
 
 class DocumentAdmin(ImportExportModelAdmin):
     list_display = (
+        'id',
         'title',
         'file_field',
         'dateTimeOfUpload',
