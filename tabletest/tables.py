@@ -41,6 +41,7 @@ class Bootstrap4Table(tables.Table):
     #     # "th": {"align": "center"},
     # })
     goods = TruncatedTextColumn(accessor='goods')
+    type_of_estimation = TruncatedTextColumn(accessor='type_of_estimation')
     # goods = tables.TemplateColumn('<data-toggle="tooltip" title="{{record.goods}}">{{record.goods|truncatewords:5}}')
 
     alternative = tables.columns.BooleanColumn(yesno='有,無')
