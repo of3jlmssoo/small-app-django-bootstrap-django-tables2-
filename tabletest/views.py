@@ -330,9 +330,6 @@ def productorder_detail(request, pk):
     if len(lsts) == 0:
         lsts = set_related_documents(request, request.user)
 
-    print(f'============= {productorder.id}')
-    print(f'============= {lsts}')
-
     if request.user.is_approver:
 
         initial_dict = set_initialDict4ConfirmOrderForm(productorder)
@@ -400,7 +397,6 @@ def file_upload_single(request):
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
             instance = Document(file_field=request.FILES['file'])
-            print(f"=== 1 === {request.FILES['file']}")
             instance.title = form.cleaned_data['title']
             instance.user = request.user
             instance.save()
@@ -417,7 +413,6 @@ class FileFieldFormView(BSModalCreateView):
     success_url = '/tabletest/fup_success/'  # Replace with your URL or reverse().
 
     # def post(self, request, *args, **kwargs):
-    #     print(f'=== post =============================')
     #     form_class = self.get_form_class()
     #     form = self.get_form(form_class)
     #     files = request.FILES.getlist('file_field')
@@ -448,8 +443,6 @@ class FileFieldFormView(BSModalCreateView):
                 instance.user = self.request.user
                 instance.file_name = self.request.upload_handlers[0].file_name
                 instance.save()
-                print(f'{self.request.upload_handlers[0].file_name=}')
-                # print(f'=== form_valid1 {f=}')
 
         return redirect('index')
         # return super().form_valid(form)
