@@ -1,5 +1,4 @@
-from bootstrap_modal_forms.forms import CreateUpdateAjaxMixin
-from bootstrap_modal_forms.forms import BSModalModelForm
+from bootstrap_modal_forms.forms import BSModalModelForm, CreateUpdateAjaxMixin
 from django import forms
 
 from .models import Document, ProductOrder
@@ -114,6 +113,18 @@ class UploadFileForm(forms.Form):
 
 
 class ModalUploadFileForm(BSModalModelForm):
+
+    # class ModalUploadFileForm(CreateUpdateAjaxMixin):
+    title = forms.CharField(max_length=50, label='説明')
+    # file = forms.FileField()
+    file_field = forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': True}), label='選択')
+
+    class Meta:
+        model = Document
+        fields = ['title', 'file_field']
+
+
+class ModalShowDeleteFileForm(BSModalModelForm):
 
     # class ModalUploadFileForm(CreateUpdateAjaxMixin):
     title = forms.CharField(max_length=50, label='説明')

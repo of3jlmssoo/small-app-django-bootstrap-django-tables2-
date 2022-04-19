@@ -4,12 +4,13 @@ import logging
 import sys
 
 import django_filters
-from bootstrap_modal_forms.generic import BSModalCreateView
+from bootstrap_modal_forms.generic import BSModalCreateView, BSModalReadView
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.generic.edit import FormView
+from django.views.generic.list import ListView
 from django_filters.views import FilterView
 from django_tables2 import (MultiTableMixin, RequestConfig, SingleTableMixin,
                             SingleTableView)
@@ -17,8 +18,9 @@ from django_tables2.export.views import ExportMixin
 from django_tables2.paginators import LazyPaginator
 
 # Create your views here.
-from .forms import (ConfirmOrderForm, ModalUploadFileForm, ProductOrderForm,
-                    UploadFileForm, ViewOnlyOrderForm)
+from .forms import (ConfirmOrderForm, ModalShowDeleteFileForm,
+                    ModalUploadFileForm, ProductOrderForm, UploadFileForm,
+                    ViewOnlyOrderForm)
 from .models import Document, ProductOrder
 from .tables import Bootstrap4Table
 
@@ -455,3 +457,40 @@ def fup_success(request):
     str_out = "Success!<p />"
     str_out += "成功<p />"
     return HttpResponse(str_out)
+
+
+# class FileShowDeleteFormView(BSModalCreateView):
+# class FileShowDeleteFormView(BSModalReadView):
+class FileShowDeleteFormView(ListView):
+    form_class = ModalShowDeleteFileForm
+    template_name = 'tabletest/modal_file_showdelete.html'  # Replace with your template.
+    success_url = '/tabletest/fup_success/'  # Replace with your URL or reverse().
+
+    def form_valid(self, form):
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)
+        files = self.request.FILES.getlist('file_field')
+        # 同じファイルが2度ほぞんされてしまう問題へself.request.headers.get() ==で対応
+        # djangoでis_ajax()がなくなったことに対応
+        if form.is_valid() and self.request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            for f in files:
+                instance = Document(file_field=f)
+                instance.title = form.cleaned_data['title']
+                instance.file_field.name = f.name
+                instance.user = self.request.user
+                instance.file_name = self.request.upload_handlers[0].file_name
+                instance.save()
+
+        return redirect('index')
+
+    def get_queryset(self):
+        if self.request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            # print(f"=========== {self.kwargs['orderid']=}")
+            # query_result = Document.objects.filter(order__isnull=True)
+            if self.kwargs['orderid'] != 0:
+                query_result = Document.objects.filter(order=self.kwargs['orderid'], user=self.request.user)
+                print(f"----------- {self.request.user=} {query_result=}")
+            else:
+                query_result = Document.objects.filter(order__isnull=True, user=self.request.user)
+                print(f"=========== {self.request.user=} {query_result=}")
+            return query_result

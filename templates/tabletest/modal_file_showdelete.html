@@ -1,0 +1,60 @@
+<!-- form method="post" action=""> -->
+
+<form
+  action="{% url 'modal_file_upload' %}"
+  method="POST"
+  class="pop-up-form__form"
+  enctype="multipart/form-data"
+>
+  {% csrf_token %}
+
+  <div class="modal-header">
+    <h5 class="modal-title">Create new Book</h5>
+    {{ orderid }}
+    <h5 class="modal-title">Create new Book</h5>
+    <button type="button" class="close" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
+  <div class="modal-body">
+    {% for field in form %}
+      {% comment %} <div class="form-group{% if field.errors %} invalid{% endif %}">
+        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+        {{ field }} {% for error in field.errors %}
+        <p class="help-block">{{ error }}</p>
+        {% endfor %}
+      </div> {% endcomment %}
+      {{ field }}
+    {% endfor %}
+
+    {% for article in object_list %}
+    <li>{{ article.file_name }}</li>
+    {% endfor %}
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default">Close</button>
+    <button type="submit" class="btn btn-primary">添付</button>
+  </div>
+  {% comment %} modalを表示後modalでsubmitした際、元の画面のbootstrap field
+  validationの機能(入力が必要です)が
+  働いてしまう。これを回避するためのスクリプト {% endcomment %}
+  <script>
+    $(document).on("submit", "#add_item", function () {
+      $.ajax({
+        type: $(this).attr("method"),
+        url: this.action,
+        data: $(this).serialize(),
+        context: this,
+        success: function (data, status) {
+          location.reload();
+        },
+        error: function (request, type, errorThrown) {
+          $("#add_item").html(request.responseText);
+        },
+      });
+      return false;
+    });
+  </script>
+</form>
