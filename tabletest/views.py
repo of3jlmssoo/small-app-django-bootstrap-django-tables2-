@@ -4,11 +4,13 @@ import logging
 import sys
 
 import django_filters
-from bootstrap_modal_forms.generic import BSModalCreateView, BSModalReadView
+from bootstrap_modal_forms.generic import (BSModalCreateView,
+                                           BSModalDeleteView, BSModalReadView)
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse, reverse_lazy
 from django.views.generic.edit import FormView
 from django.views.generic.list import ListView
 from django_filters.views import FilterView
@@ -408,11 +410,25 @@ def file_upload_single(request):
     return render(request, 'tabletest/file_upload.html', {'form': form})
 
 
+class RedirectToPreviousMixin:
+
+    default_redirect = '/'
+
+    def get(self, request, *args, **kwargs):
+        request.session['previous_page'] = request.META.get('HTTP_REFERER', self.default_redirect)
+        print(f"--------------{request.session['previous_page']=}")
+        return super().get(request, *args, **kwargs)
+
+    def get_success_url(self):
+        print(f"=============={self.request.session['previous_page']=}")
+        return self.request.session['previous_page']
+
+
 # class FileFieldFormView(FormView):
-class FileFieldFormView(BSModalCreateView):
+class FileFieldFormView(RedirectToPreviousMixin, BSModalCreateView):
     form_class = ModalUploadFileForm
     template_name = 'tabletest/modal_file_upload.html'  # Replace with your template.
-    success_url = '/tabletest/fup_success/'  # Replace with your URL or reverse().
+    # success_url = '/tabletest/fup_success/'  # Replace with your URL or reverse().
 
     # def post(self, request, *args, **kwargs):
     #     form_class = self.get_form_class()
@@ -439,6 +455,7 @@ class FileFieldFormView(BSModalCreateView):
         # djangoでis_ajax()がなくなったことに対応
         if form.is_valid() and self.request.headers.get('x-requested-with') == 'XMLHttpRequest':
             for f in files:
+                print(f"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
                 instance = Document(file_field=f)
                 instance.title = form.cleaned_data['title']
                 instance.file_field.name = f.name
@@ -446,11 +463,12 @@ class FileFieldFormView(BSModalCreateView):
                 instance.file_name = self.request.upload_handlers[0].file_name
                 instance.save()
 
-        return redirect('index')
+        # return redirect('index')
         # return super().form_valid(form)
         #     return self.form_valid(form)
         # else:
         #     return self.form_invalid(form)
+        return super().form_valid(form)
 
 
 def fup_success(request):
@@ -461,10 +479,13 @@ def fup_success(request):
 
 # class FileShowDeleteFormView(BSModalCreateView):
 # class FileShowDeleteFormView(BSModalReadView):
-class FileShowDeleteFormView(ListView):
+
+
+class FileShowDeleteFormView(RedirectToPreviousMixin, ListView):
+    # class FileShowDeleteFormView(RedirectToPreviousMixin, FormView):
     form_class = ModalShowDeleteFileForm
     template_name = 'tabletest/modal_file_showdelete.html'  # Replace with your template.
-    success_url = '/tabletest/fup_success/'  # Replace with your URL or reverse().
+    # success_url = '/tabletest/fup_success/'  # Replace with your URL or reverse().
 
     def form_valid(self, form):
         form_class = self.get_form_class()
@@ -481,16 +502,38 @@ class FileShowDeleteFormView(ListView):
                 instance.file_name = self.request.upload_handlers[0].file_name
                 instance.save()
 
-        return redirect('index')
+        # return redirect('index')
+
+        return super().form_valid(form)
 
     def get_queryset(self):
         if self.request.headers.get('x-requested-with') == 'XMLHttpRequest':
-            # print(f"=========== {self.kwargs['orderid']=}")
-            # query_result = Document.objects.filter(order__isnull=True)
             if self.kwargs['orderid'] != 0:
                 query_result = Document.objects.filter(order=self.kwargs['orderid'], user=self.request.user)
-                print(f"----------- {self.request.user=} {query_result=}")
+                if not query_result:
+                    query_result = Document.objects.filter(order__isnull=True, user=self.request.user)
             else:
                 query_result = Document.objects.filter(order__isnull=True, user=self.request.user)
-                print(f"=========== {self.request.user=} {query_result=}")
             return query_result
+
+
+class DocumentDeleteView(RedirectToPreviousMixin, BSModalDeleteView):
+    model = Document
+    template_name = 'tabletest/delete_book.html'
+    success_message = 'Success: Book was deleted.'
+    # success_url = reverse_lazy('index')
+    # success_url = reverse_lazy('tabletest/productorder_detail/77/')
+
+    # def post(self, request, *args, **kwargs):
+    #     self.object = self.get_object()
+    #     context = self.get_context_data(object=self.object)
+    #     return self.render_to_response(context)
+
+    def form_valid(self, form):
+        # Here, we would record the user's interest using the message
+        # passed in form.cleaned_data['message']
+        return super().form_valid(form)
+
+    # def get_success_url(self):
+    #     # return reverse('productorder_detail/77/', kwargs={'pk': self.kwargs['orderid']})
+    #     return redirect('index')

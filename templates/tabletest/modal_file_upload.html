@@ -1,18 +1,15 @@
 <!-- form method="post" action=""> -->
 
-<form
-  action="{% url 'modal_file_upload' %}"
-  method="POST"
-  class="pop-up-form__form"
-  enctype="multipart/form-data"
->
+<form action="{% url 'modal_file_upload' %}" method="POST" class="pop-up-form__form" enctype="multipart/form-data" >
   {% csrf_token %}
 
   <div class="modal-header">
-    <h5 class="modal-title">Create new Book</h5>
+    <h5 class="modal-title">ファイルを添付</h5>
+{% comment %}     
     <button type="button" class="close" aria-label="Close">
       <span aria-hidden="true">&times;</span>
     </button>
+     {% endcomment %}
   </div>
 
   <div class="modal-body">

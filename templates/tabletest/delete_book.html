@@ -1,0 +1,27 @@
+<script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous" ></script>
+
+{% load widget_tweaks %}
+
+<form method="post" action="">
+  {% csrf_token %}
+
+  <div class="modal-header">
+    <h3 class="modal-title">添付ファイルを削除</h3>
+{% comment %} 
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+     {% endcomment %}
+  </div>
+
+  <div class="modal-body">
+    <p class="delete-text">本当に削除しますか？
+      {% comment %} <strong>{{ article.pk }}</strong>? {% endcomment %}
+    </p>
+  </div>
+
+  <div class="modal-footer">
+    <button type="submit" id="delete-btn" class="btn btn-danger">削除</button>
+  </div>
+
+</form>

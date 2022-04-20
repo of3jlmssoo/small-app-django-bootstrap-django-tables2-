@@ -41,27 +41,10 @@
       crossorigin="anonymous"
     ></script>
     {% endcomment %}
-    <script
-      src="https://code.jquery.com/jquery-3.6.0.js"
-      integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
-      crossorigin="anonymous"
-    ></script>
-    <script>
-      setTimeout(function () {
-        if ($("#message").length >= 0) {
-          $("#message").remove();
-        }
-      }, 2000); // 2000 millisecond
-    </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous" ></script>
+    <script> setTimeout(function () { if ($("#message").length >= 0) { $("#message").remove(); } }, 2000); // 2000 millisecond </script>
 
-    <script src="{% static 'js/jquery.bootstrap.modal.forms.js' %}"></script>
-    <script type="text/javascript">
-      $(document).ready(function () {
-        $("#create-book").modalForm({
-          formURL: "{% url 'modal_file_upload' %}",
-        });
-      });
-    </script>
+    <script src="{% static 'js/jquery.bootstrap.modal.forms.js' %}"></script> <script type="text/javascript"> $(document).ready(function () { $("#create-book").modalForm({ formURL: "{% url 'modal_file_upload' %}", }); }); </script>
 
     {% comment %}
     <script type="text/javascript">

@@ -69,8 +69,9 @@ class ProductOrder(models.Model):
 
 class Document(models.Model):
     title = models.CharField(max_length=200)
-    # uploadedFile = models.FileField(upload_to="media/documents/")
+    # file_field = models.FileField(upload_to="static/")
     file_field = models.FileField(upload_to="media/documents/")
+    # file_field = models.ImageField(upload_to="media/documents/")
     dateTimeOfUpload = models.DateTimeField(auto_now=True)
     order = models.ForeignKey(ProductOrder, on_delete=models.CASCADE, null=True)
     user = models.ForeignKey(Account, on_delete=models.SET_NULL, null=True, verbose_name="申請者")

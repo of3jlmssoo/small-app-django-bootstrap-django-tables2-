@@ -129,7 +129,7 @@
     {% endif %}
 
     <div class="row form-group mt-0">
-        <div class='col-2'>
+        <div class='col-4'>
 
             <div class="modal fade" tabindex="-1" role="dialog" id="modal">
             <div class="modal-dialog" role="document">
@@ -138,19 +138,23 @@
             </div>
 
             <!-- Create book button -->
-            <button id="create-book" class="btn btn-link my-0 create-book" type="button" name="button">見積根拠添付</button>
+            <div class="btn-toolbar">
+            <div class="btn-group">
+            <button id="create-book" class="btn btn-link my-0 create-book text-muted" type="button" name="button">見積根拠添付</button>
             {% if orderid %}
-                <button id="showdelete-book" class="read-book btn btn-link my-0" type="button" name="button" data-form-url="{% url 'modal_file_showdelete' orderid %}">見積根拠表示</button>
+                <button id="showdelete-book" class="read-book btn btn-link my-0 text-muted" type="button" name="button" data-form-url="{% url 'modal_file_showdelete' orderid %}">見積根拠表示</button>
             {% else %}
                 {% comment %} <h3>XXX</h3> {% endcomment %}
-                <button id="showdelete-book" class="read-book btn btn-link my-0" type="button" name="button" data-form-url="{% url 'modal_file_showdelete' 0 %}">見積根拠添付</button>
+                <button id="showdelete-book" class="read-book btn btn-link my-0 text-muted" type="button" name="button" data-form-url="{% url 'modal_file_showdelete' 0 %}">見積根拠添付</button>
             {% endif %}            
+            </div>
+            </div>
 
 
         </div>
     </div>
 
-
+    {% block extrascripts %}
     <script type="text/javascript">
         $(function () {
             // Create book asynchronous button
@@ -186,6 +190,13 @@
                 "<\/script>"
             ].join("");
 
+            function deleteBookModalForm() {
+                $(".delete-book").each(function () {
+                    console.log("========================delete")
+                    $(this).modalForm({formURL: $(this).data("form-url"), isDeleteForm: true});
+                });
+            }
+            deleteBookModalForm();
 
             // Read book buttons
             function readBookModalForm() {
@@ -197,12 +208,13 @@
 
             function reinstantiateModalForms() {
                 readBookModalForm();
+                deleteBookModalForm();
             }
 
 
         });
     </script>
-
+    {% endblock extrascripts %}
 
 
     {% if books %}
