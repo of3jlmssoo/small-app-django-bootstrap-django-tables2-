@@ -78,29 +78,16 @@
     </div>    
 
     <div class="row form-group mt-0">
-        <h6>見積もり根拠</h6>
+        <div class="col-12">
+        
+        <label>見積もり根拠</label>
         {% if books %}
-            <table id="books-table" class="table table-borderless table-sm">
-                {% comment %} <thead>
-                <tr class="d-flex">
-                    <th class="text-center col-1" scope="col">#</th>
-                    <th class="text-center col-3" scope="col">Title</th>
-                    <th class="text-center col-3" scope="col">Author</th>
-                </tr>
-                </thead> {% endcomment %}
-                <tbody>
-                {% for book in books %}
-                    <tr class="d-flex">
-                    {% comment %} <th class="text-center col-1" scope="row">{{ forloop.counter }}</th> {% endcomment %}
-                    <td class="text-center col-1">{{ book.title }}</td>
-                    <td class="text-center col-4">{{ book.file_name }}</td>
-                    </tr>
-                {% endfor %}
-
-                </tbody>
-            </table>
+            {% for book in books %}            
+                {% comment %} <p class="text-right col-12 text-muted my-0">{{ book.file_name }}</p> {% endcomment %}
+                <a class="text-right col-12 text-muted my-0" href="{{book.file_field.url}}" download>{{book.file_name}}</a>
+            {% endfor %}
         {% endif %}
-
+        </div>
 
     </div>
 
