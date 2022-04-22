@@ -1,8 +1,12 @@
 
-Todo:yuu
+  ☐ 申請画面途中で添付ファイルを添付して戻ると元の状態になる
+      ☐ テンポラリー用モデル作成
+      ☐ index.htmlへボタン作成
+      ☐ restore確認
+      ☐ ボタンをフローに組み込み
   ☐ django ファイルアップロード
     ✔ index.htmlにuser==申請者、Order未設定 or order==orderidのものをリストする @done(22-04-17 10:33)
-    ☐ 添付されたファイルの削除
+    ✔ 添付されたファイルの削除 @done(22-04-20 23:33)
     ☐ 添付されたファイルの表示をmodal化
   ☐ approverの際のサイドメニューの申請をどうにかする
   ☐ bootstrap dynamicall change pull down menu
@@ -16,7 +20,7 @@ Todo:yuu
   ✔ django logger。細かいメッセージが出すぎるので利用を断念。pythonのloggingを使う。ただし、native pythonで問題のないdiabled機能が働かない。ただし、関数名表示が楽なので使う @done(22-04-07 11:35)
   ✔ code cleaning @done(22-04-14 00:58)
   ✔ 指しもどし理由カラム追加 @done(22-04-07 11:35)
-      ✔ approverの承認済み表示時は全てROとする @done(22-04-03 15:32)
+      ✔ appr123overの承認済み表示時は全てROとする @done(22-04-03 15:32)
       ✔ nonapproverの承認済み表示時は全てROとする @done(22-04-03 15:15)
       ✔ 申請者ではここだけRO表示 @done(22-04-03 15:32)
       ✔ 承認者はここだけRW表示 @done(22-04-03 15:32)
