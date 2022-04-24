@@ -127,7 +127,7 @@
     {% if user.is_approver %}
     <h4>Your are a approver</h4>
     {% endif %}
-
+{% comment %} 
     <div class="row form-group mt-0">
         <div class='col-5'>
 
@@ -137,14 +137,12 @@
             </div>
             </div>
 
-            <!-- Create book button -->
             <div class="btn-toolbar">
             <div class="btn-group">
             <button id="create-book" class="btn btn-link my-0 create-book text-muted" type="button" name="button">見積根拠添付</button>
             {% if orderid %}
                 <button id="showdelete-book" class="read-book btn btn-link my-0 text-muted" type="button" name="button" data-form-url="{% url 'modal_file_showdelete' orderid %}">見積根拠確認(ダウンロード・削除)</button>
             {% else %}
-                {% comment %} <h3>XXX</h3> {% endcomment %}
                 <button id="showdelete-book" class="read-book btn btn-link my-0 text-muted" type="button" name="button" data-form-url="{% url 'modal_file_showdelete' 0 %}">見積根拠確認(ダウンロード・削除)</button>
             {% endif %}            
             </div>
@@ -153,68 +151,7 @@
 
         </div>
     </div>
-
-    {% block extrascripts %}
-    <script type="text/javascript">
-        $(function () {
-            // Create book asynchronous button
-            // message
-            var asyncSuccessMessageCreate = [
-                "<div ",
-                "style='position:fixed;top:0;z-index:10000;width:100%;border-radius:0;' ",
-                "class='alert alert-icon alert-success alert-dismissible fade show mb-0' role='alert'>",
-                "Success: Book was created.",
-                "<button type='button' class='close' data-dismiss='alert' aria-label='Close'>",
-                "<span aria-hidden='true'>&times;</span>",
-                "</button>",
-                "</div>",
-                "<script>",
-                "$('.alert').fadeTo(2000, 500).slideUp(500, function () {$('.alert').slideUp(500).remove();});",
-                "<\/script>"
-            ].join("");
-
-            
-            // Update book asynchronous button
-            // message
-            var asyncSuccessMessageUpdate = [
-                "<div ",
-                "style='position:fixed;top:0;z-index:10000;width:100%;border-radius:0;' ",
-                "class='alert alert-icon alert-success alert-dismissible fade show mb-0' role='alert'>",
-                "Success: Book was updated.",
-                "<button type='button' class='close' data-dismiss='alert' aria-label='Close'>",
-                "<span aria-hidden='true'>&times;</span>",
-                "</button>",
-                "</div>",
-                "<script>",
-                "$('.alert').fadeTo(2000, 500).slideUp(500, function () {$('.alert').slideUp(500).remove();});",
-                "<\/script>"
-            ].join("");
-
-            function deleteBookModalForm() {
-                $(".delete-book").each(function () {
-                    console.log("========================delete")
-                    $(this).modalForm({formURL: $(this).data("form-url"), isDeleteForm: true});
-                });
-            }
-            deleteBookModalForm();
-
-            // Read book buttons
-            function readBookModalForm() {
-                $(".read-book").each(function () {
-                    $(this).modalForm({formURL: $(this).data("form-url")});
-                });
-            }
-            readBookModalForm();
-
-            function reinstantiateModalForms() {
-                readBookModalForm();
-                deleteBookModalForm();
-            }
-
-
-        });
-    </script>
-    {% endblock extrascripts %}
+ {% endcomment %}
 
 {% comment %} 
     {% if books %}
@@ -230,18 +167,6 @@
         </table>
     {% endif %}
  {% endcomment %}
-
-
-
-
-
-
-
-
-
-
-
-
 
 </form>
 

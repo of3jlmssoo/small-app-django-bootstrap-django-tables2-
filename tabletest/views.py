@@ -89,6 +89,7 @@ def set_initialDict4ConfirmOrderForm(productorder):
 
     if isinstance(productorder, ProductOrder):
 
+        l.msg(f'{productorder.id=} set to orderid')
         return {
             'orderid': productorder.id,
             'goods': productorder.goods,
@@ -143,30 +144,72 @@ def place_order(request):
             messages.error(request, '入力が正常完了しませんでした。')
             return redirect('index')
 
+        l.msg(f'{form.fields["goods"]=}')
+        l.msg(f'{form.cleaned_data["orderid"]=}')
+        # 共通データ
+        order_product = createProductOrder(form.cleaned_data, request.user)
+        order_product.status = "S"
+        order_product.comment = form.cleaned_data['comment']
+
+        # 既存レコードの場合
+        if form.cleaned_data["orderid"]:
+            productorder = ProductOrder.objects.get(pk=form.cleaned_data['orderid'])
+            order_product.created_on = productorder.created_on
+
+        # 保存用save()
+        l.msg(f'---> {form.cleaned_data["orderid"]=}')
+        orderid = form.cleaned_data["orderid"]
+        if form.cleaned_data["orderid"] is None:
+            order_product.save()
+        else:
+            form = ProductOrderForm(request.POST)
+            if form.is_valid():
+                # order_product = ProductOrder.objects.get(pk=orderid)
+                order_product = ProductOrder.objects.get(pk=form.cleaned_data['orderid'])
+                order_product.id = form.cleaned_data['orderid']
+                order_product.goods = form.cleaned_data['goods']
+                order_product.product_price = form.cleaned_data['product_price']
+                order_product.type_of_estimation = form.cleaned_data['type_of_estimation']
+                order_product.product_type = form.cleaned_data['product_type']
+                order_product.product_use = form.cleaned_data['product_use']
+                order_product.alternative = form.cleaned_data['alternative']
+                order_product.expected_purchase_date = form.cleaned_data['expected_purchase_date']
+                order_product.user = request.user
+                order_product.save()
+
+        l.msg(f'order_product.saved as save_as_draft {order_product.id=}')
         if request.POST.get('submitsecondary') is not None:
             # お買い物申請フォームで保存ボタンが押された場合
 
-            l.msg(f'{form.cleaned_data["orderid"]=}')
-            # 共通データ
-            order_product = createProductOrder(form.cleaned_data, request.user)
-            order_product.status = "S"
-            order_product.comment = form.cleaned_data['comment']
+            # l.msg(f'{form.cleaned_data["orderid"]=}')
+            # # 共通データ
+            # order_product = createProductOrder(form.cleaned_data, request.user)
+            # order_product.status = "S"
+            # order_product.comment = form.cleaned_data['comment']
 
-            # 既存レコードの場合
-            if form.cleaned_data["orderid"]:
-                productorder = ProductOrder.objects.get(pk=form.cleaned_data['orderid'])
-                order_product.created_on = productorder.created_on
+            # # 既存レコードの場合
+            # if form.cleaned_data["orderid"]:
+            #     productorder = ProductOrder.objects.get(pk=form.cleaned_data['orderid'])
+            #     order_product.created_on = productorder.created_on
 
-            # 保存用save()
-            order_product.save()
-            l.msg(f'order_product.saved as save_as_draft ')
+            # # 保存用save()
+            # order_product.save()
+            # l.msg(f'order_product.saved as save_as_draft ')
             return redirect('bootstrap4')
 
         # 申請時処理
         l.msg(f'{type(form.cleaned_data)=}')
         initial_dict = set_initialDict4ConfirmOrderForm(form.cleaned_data)
 
-        form2 = ConfirmOrderForm(request.POST or None, initial=initial_dict)
+        # saved_product = ProductOrder.objects.get(id=order_product.id)
+
+        try:
+            productorder = get_object_or_404(ProductOrder, pk=order_product.id)
+        except ProductOrder.DoesNotExist:
+            raise Http404("place_order get_object_or_404 failed")
+
+        l.msg(f'===> {productorder=}')
+        form2 = ConfirmOrderForm(instance=productorder)
 
         books = set_related_documents(request, request.user, form.cleaned_data["orderid"])
         if not books:
@@ -180,11 +223,14 @@ def place_order(request):
             'form': form2,
             'comment': form.cleaned_data['comment'],
             'books': books,
+            # 'orderid': form.cleaned_data['orderid']
+            'orderid': order_product.id,
         }
         l.msg(f'{context=}')
         return render(request, 'tabletest/confirm_details.html', context)
 
     messages.error(request, '入力が正常完了しませんでした。')
+
     return redirect('/')
 
 
@@ -233,8 +279,10 @@ def confirm_details(request):
                 order_product.comment = form.cleaned_data['comment']
                 order_product.user = productorder.user
 
-            if not len(set_related_documents(request, productorder.user, form.cleaned_data["orderid"])):
-                books = set_related_documents(request, productorder.user)
+            # if not len(set_related_documents(request, productorder.user, form.cleaned_data["orderid"])):
+            #     books = set_related_documents(request, productorder.user)
+            if not len(set_related_documents(request, request.user, form.cleaned_data["orderid"])):
+                books = set_related_documents(request, request.user)
                 for book in books:
                     book.order = order_product
                     l.msg(f'book.order was set to {book.order}')
@@ -318,6 +366,43 @@ def set_checkbox_choices(context, product_type, product_use, alternative):
     return new_context
 
 
+def reconfirm(request, pk):
+    l = Logger('reconfirm')
+    l.msg(f'called {pk=}')
+
+    try:
+        productorder = get_object_or_404(ProductOrder, pk=pk)
+        # obj = MyModel.objects.get(pk=1)
+    except ProductOrder.DoesNotExist:
+        raise Http404("No MyModel matches the given query. productorder_detail()")
+
+    l.msg(f'{productorder=}')
+    lsts = set_related_documents(request, productorder.user, productorder.id)
+    if len(lsts) == 0:
+        lsts = set_related_documents(request, request.user)
+
+    l.msg(f'{lsts=}')
+    if not request.user.is_approver:
+
+        initial_dict = set_initialDict4ConfirmOrderForm(productorder)
+        formx = ConfirmOrderForm(request.POST or None, initial=initial_dict)
+
+        context = {
+            'form': formx,
+            'comment': productorder.comment,
+            'status': productorder.status,
+            'books': lsts,
+            'orderid': pk,
+        }
+        # l.msg(f'{form.fields["goods"]=}')
+        # l.msg(f'{form.fields["orderid"]=}')
+        l.msg(f'{context=}')
+        return render(request, 'tabletest/confirm_details.html', context)
+
+    l.msg(f'return 2 productorder_detail')
+    return redirect('productorder_detail', pk)
+
+
 def productorder_detail(request, pk):
     # ダッシュボードでIDをクリックした際にコールされる
     l = Logger('productorder_detail')
@@ -326,7 +411,7 @@ def productorder_detail(request, pk):
         productorder = get_object_or_404(ProductOrder, pk=pk)
         # obj = MyModel.objects.get(pk=1)
     except ProductOrder.DoesNotExist:
-        raise Http404("No MyModel matches the given query. productorder_detail()")
+        raise Http404("productorder_detail get_object_or_404 failed")
 
     l.msg(f'{type(productorder)=}')
 
@@ -429,24 +514,9 @@ class FileFieldFormView(RedirectToPreviousMixin, BSModalCreateView):
     form_class = ModalUploadFileForm
     template_name = 'tabletest/modal_file_upload.html'  # Replace with your template.
     # success_url = '/tabletest/fup_success/'  # Replace with your URL or reverse().
-
-    # def post(self, request, *args, **kwargs):
-    #     form_class = self.get_form_class()
-    #     form = self.get_form(form_class)
-    #     files = request.FILES.getlist('file_field')
-    #     if form.is_valid():
-    #         for f in files:
-    #             instance = Document(file_field=f)
-    #             instance.title = form.cleaned_data['title']
-    #             instance.file_field.name = f.name
-    #             instance.user = request.user
-    #             instance.save()
-
-    #         return self.form_valid(form)
-    #     else:
-    #         return self.form_invalid(form)
-
+    success_url = "/productorder_detail/{id}/"
     # def form_valid(self, form):
+
     def form_valid(self, form):
         form_class = self.get_form_class()
         form = self.get_form(form_class)
@@ -455,20 +525,43 @@ class FileFieldFormView(RedirectToPreviousMixin, BSModalCreateView):
         # djangoでis_ajax()がなくなったことに対応
         if form.is_valid() and self.request.headers.get('x-requested-with') == 'XMLHttpRequest':
             for f in files:
-                print(f"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+                print(f"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! FileFieldFormView")
+                print(f"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! {self.kwargs['orderid']=}")
                 instance = Document(file_field=f)
                 instance.title = form.cleaned_data['title']
                 instance.file_field.name = f.name
                 instance.user = self.request.user
                 instance.file_name = self.request.upload_handlers[0].file_name
+                instance.order = ProductOrder.objects.get(id=self.kwargs['orderid'])
                 instance.save()
 
+        formx = ConfirmOrderForm(initial={'goods': 'ABC', 'orderid': 160})
+        # context = {
+        #     'form': formx
+        # }
+
+        return redirect('reconfirm', self.kwargs['orderid'])
+        return reverse_lazy('company', kwargs={'pk': companyid})
+
+        return redirect('productorder_detail', self.kwargs['orderid'])
+
+        # return redirect('confirm_details',form=formx)
+
+        return redirect(reverse('confirm_details', kwargs={'form': formx}))
+
+        # return reverse('productorder_detail', kwargs={'pk': 160})
+        # return render(self.request, 'tabletest/productorder_deltail.html', context)
+
+        # print(f"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! {get_success_url()=}")
+        # return render(self.request, 'tabletest/confirm_details.html', context)
         # return redirect('index')
+        # return HttpResponseRedirect(self.get_success_url())
+
         # return super().form_valid(form)
-        #     return self.form_valid(form)
-        # else:
-        #     return self.form_invalid(form)
-        return super().form_valid(form)
+        # return redirect(self.request.session['previous_page'])
+
+        # return render(request,      'tabletest/confirm_details.html', context)
+        # return redirect('confirm_details')
 
 
 def fup_success(request):

@@ -185,3 +185,4 @@ tabletest/migrations/0015_alter_document_file_field.py
 .gitignore
 tabletest/migrations/0016_alter_document_file_field.py
 tabletest/migrations/0017_alter_document_file_field.py
+tabletest/migrations/0*

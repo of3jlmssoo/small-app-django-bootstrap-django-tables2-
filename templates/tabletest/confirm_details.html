@@ -60,7 +60,8 @@
         </div>
         <div class="col-2">
             <label>申請ID</label>
-            <p class="text-muted">{{ form.orderid }}</p>
+            {% comment %} <p class="text-muted">{{ form.id }}</p> {% endcomment %}
+            <input readonly type="text" class="form-control" name="orderid" value="{{orderid}}" id="orderid"  ></input>
         </div>
 
         {% if user.is_approver and status == 'P' %}
@@ -80,13 +81,40 @@
     <div class="row form-group mt-0">
         <div class="col-12">
         
-        <label>見積もり根拠</label>
-        {% if books %}
-            {% for book in books %}            
-                {% comment %} <p class="text-right col-12 text-muted my-0">{{ book.file_name }}</p> {% endcomment %}
-                <a class="text-right col-12 text-muted my-0" href="{{book.file_field.url}}" download>{{book.file_name}}</a>
-            {% endfor %}
-        {% endif %}
+            <label>見積もり根拠</label>
+            {% comment %}         
+            {% if books %}
+                {% for book in books %}            
+                    <a class="text-right col-12 text-muted my-0" href="{{book.file_field.url}}" download>{{book.file_name}}</a>
+                {% endfor %}
+            {% endif %}
+            {% endcomment %}
+
+
+
+            <div class="modal fade" tabindex="-1" role="dialog" id="modal">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content"></div>
+            </div>
+            </div>
+
+            <div class="btn-toolbar">
+            <div class="btn-group">
+            {% if not user.is_approver and orderid != None %}
+                {% comment %} <button id="create-book" class="btn btn-link my-0 create-book text-muted" type="button" name="button" data-form-url="{% url 'modal_file_upload' orderid=form.orderid.data %}">見積根拠添付</button> {% endcomment %}
+                <button id="create-book" class="btn btn-link my-0 create-book text-muted" type="button" name="button" data-form-url="{% url 'modal_file_upload' orderid=orderid %}">見積根拠添付{{orderid}}</button>
+            {% endif%}
+            {% if orderid != None %}
+                {% comment %} <button id="showdelete-book" class="read-book btn btn-link my-0 text-muted" type="button" name="button" data-form-url="{% url 'modal_file_showdelete' orderid=form.orderid.data %}">見積根拠確認1(ダウンロード・削除) {{form.orderid.data}}XX</button> {% endcomment %}
+                <button id="showdelete-book" class="read-book btn btn-link my-0 text-muted" type="button" name="button" data-form-url="{% url 'modal_file_showdelete' orderid=orderid %}">見積根拠確認1(ダウンロード・削除) {{orderid}}</button>
+            {% comment %} {% else %}
+                <button id="showdelete-book" class="read-book btn btn-link my-0 text-muted" type="button" name="button" data-form-url="{% url 'modal_file_showdelete' 0 %}">見積根拠確認2(ダウンロード・削除)</button> {% endcomment %}
+            {% endif %}            
+            </div>
+            </div>
+
+
+                
         </div>
 
     </div>

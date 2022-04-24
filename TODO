@@ -1,58 +1,59 @@
-
-  ☐ 申請画面途中で添付ファイルを添付して戻ると元の状態になる
-      ☐ テンポラリー用モデル作成
-      ☐ index.htmlへボタン作成
-      ☐ restore確認
-      ☐ ボタンをフローに組み込み
-  ☐ django ファイルアップロード
-    ✔ index.htmlにuser==申請者、Order未設定 or order==orderidのものをリストする @done(22-04-17 10:33)
-    ✔ 添付されたファイルの削除 @done(22-04-20 23:33)
-    ☐ 添付されたファイルの表示をmodal化
-  ☐ approverの際のサイドメニューの申請をどうにかする
-  ☐ bootstrap dynamicall change pull down menu
-  ☐ file uploadのコンテントタイプチェック djangos validators and pillow image.open
-  ✔ is logged in? @done(22-03-30 14:28)
-  ✔ 承認するとuser=承認者となってしまう @done(22-04-11 18:00)
-  ✔ 1. place_orderとconfirm_detailsのorder_product=ProductOrderのところは重複している @done(22-04-08 16:23)
-  ✔ 2. productorder_details()内のinitial_dict=からform2=ConfirmOrderForm()のところは重複している @done(22-04-08 16:31)
-  ✔ 3. initial_dictの中身が違うがplace_orderのところも同様の構成になっている @done(22-04-08 16:58)
-  ✔ ログ機能(更新ログ) @done(22-04-17 10:33)
-  ✔ django logger。細かいメッセージが出すぎるので利用を断念。pythonのloggingを使う。ただし、native pythonで問題のないdiabled機能が働かない。ただし、関数名表示が楽なので使う @done(22-04-07 11:35)
-  ✔ code cleaning @done(22-04-14 00:58)
-  ✔ 指しもどし理由カラム追加 @done(22-04-07 11:35)
-      ✔ appr123overの承認済み表示時は全てROとする @done(22-04-03 15:32)
-      ✔ nonapproverの承認済み表示時は全てROとする @done(22-04-03 15:15)
-      ✔ 申請者ではここだけRO表示 @done(22-04-03 15:32)
-      ✔ 承認者はここだけRW表示 @done(22-04-03 15:32)
-      ✔ テンプレート修正。approver用画面 @done(22-04-03 15:32)
-        ✔  place_orderから分岐してaprrover用ファンクション @done(22-04-03 15:32)
-        ✔ approverとしては、コメントを書く、保存する、承認する、リジェクトする @done(22-04-03 15:32)
-        ✔ confirm_details.html修正 approverの場合コメント欄編集可能 @done(22-04-03 15:32)
-                                    non approverの場合、コメントあればROで表示
-      ✔ モデル追加 @done(22-03-30 18:50)
-  ✔ ProductOrder Modelカラム追加。status 0 : saved, 1 : processing, 2 : done @done(22-03-30 18:50)
-  ✔ django ポップアップウィンドウ @done(22-04-14 01:00)
-  ✔ 購入予定時期 @done(22-03-22 13:18)
-  ✔ email login and authentication @done(22-03-16 10:19)
-  ✔ bootstrap-datetimepicker @done(22-03-27 14:08)
-  ✔ django radio buttons @done(22-03-27 14:08)
-  ☐ tables
-    ✔ 組み込み @done(22-03-27 14:08)
-    ✔ データカラムの選択(created or updateどちらか) @done(22-03-29 10:03)
-    ✔ テーブルページのヘッダーとか修正 @done(22-03-28 23:10)
-    ✔ データカラムの属性変更(幅) => 文字数制限 @done(22-04-14 01:00)
-    ✔ データカラムの属性変更(alternativeの表示チェックマーク、バツマーク) @done(22-03-29 10:03)
-    ✔ データカラムの属性変更(left/center/rigth) @done(22-03-29 10:04)
-    ✔ ヘッダー表示日本語化 @done(22-03-28 23:10)
-    ✔ DateTimeFieldのDateのみ表示 @done(22-03-29 10:04)
-    ☐ bootstrap4以外のテーブル組み込み
-  ✔ ProductOrder.objects.get()してformで表示 @done(22-03-27 14:08)
-  ☐ 金額根拠欄修正(現物確認、インターネット通販、見積取得)
-  ☐ 金額根拠がインターネット通販だったらURLを入力するよう、見積取得であったらファイルをアップロードできるようにする
-   is_emp, is_mgr追加 @done(22-03-16 10:19)
-  ☐ unique ID if available
-  ☐ attribute of unique ID, emp id (see transID)
-  ✔ display html as read only @done(22-03-30 15:07)
-  ✔ date created and date updated @done(22-03-22 13:18)
-  ✔ PRODUCT_USE, PRODUCT_TYPEを外だし共通化する @done(22-04-17 10:34)
-    https://stackoverflow.com/questions/32679589/how-to-get-the-format-of-image-with-pil
+☐ Page not found (404)
+☐ 添付ファイルインターフェース修正
+✔ 申請画面途中で添付ファイルを添付して戻ると元の状態になる @done(22-04-24 22:37)
+    ✔ テンポラリー用モデル作成 早期save()に変更 @done(22-04-24 22:35)
+    ✔ index.htmlへボ 早期save()に変更タン作成 @done(22-04-24 22:35)
+    ✔ restore確認 早期save()に変更 @done(22-04-24 22:35)
+    ✔ ボタンをフローに組み込み 早期save()に変更 @done(22-04-24 22:35)
+☐ django ファイルアップロード
+  ✔ index.htmlにuser==申請者、Order未設定 or order==orderidのものをリストする @done(22-04-17 10:33)
+  ✔ 添付されたファイルの削除 @done(22-04-20 23:33)
+  ✔ 添付されたファイルの表示をmodal化 @done(22-04-24 22:37)
+☐ approverの際のサイドメニューの申請をどうにかする
+☐ bootstrap dynamicall change pull down menu
+☐ file uploadのコンテントタイプチェック djangos validators and pillow image.open
+✔ is logged in? @done(22-03-30 14:28)
+✔ 承認するとuser=承認者となってしまう @done(22-04-11 18:00)
+✔ 1. place_orderとconfirm_detailsのorder_product=ProductOrderのところは重複している @done(22-04-08 16:23)
+✔ 2. productorder_details()内のinitial_dict=からform2=ConfirmOrderForm()のところは重複している @done(22-04-08 16:31)
+✔ 3. initial_dictの中身が違うがplace_orderのところも同様の構成になっている @done(22-04-08 16:58)
+✔ ログ機能(更新ログ) @done(22-04-17 10:33)
+✔ django logger。細かいメッセージが出すぎるので利用を断念。pythonのloggingを使う。ただし、native pythonで問題のないdiabled機能が働かない。ただし、関数名表示が楽なので使う @done(22-04-07 11:35)
+✔ code cleaning @done(22-04-14 00:58)
+✔ 指しもどし理由カラム追加 @done(22-04-07 11:35)
+    ✔ appr123overの承認済み表示時は全てROとする @done(22-04-03 15:32)
+    ✔ nonapproverの承認済み表示時は全てROとする @done(22-04-03 15:15)
+    ✔ 申請者ではここだけRO表示 @done(22-04-03 15:32)
+    ✔ 承認者はここだけRW表示 @done(22-04-03 15:32)
+    ✔ テンプレート修正。approver用画面 @done(22-04-03 15:32)
+      ✔  place_orderから分岐してaprrover用ファンクション @done(22-04-03 15:32)
+      ✔ approverとしては、コメントを書く、保存する、承認する、リジェクトする @done(22-04-03 15:32)
+      ✔ confirm_details.html修正 approverの場合コメント欄編集可能 @done(22-04-03 15:32)
+                                  non approverの場合、コメントあればROで表示
+    ✔ モデル追加 @done(22-03-30 18:50)
+✔ ProductOrder Modelカラム追加。status 0 : saved, 1 : processing, 2 : done @done(22-03-30 18:50)
+✔ django ポップアップウィンドウ @done(22-04-14 01:00)
+✔ 購入予定時期 @done(22-03-22 13:18)
+✔ email login and authentication @done(22-03-16 10:19)
+✔ bootstrap-datetimepicker @done(22-03-27 14:08)
+✔ django radio buttons @done(22-03-27 14:08)
+☐ tables
+  ✔ 組み込み @done(22-03-27 14:08)
+  ✔ データカラムの選択(created or updateどちらか) @done(22-03-29 10:03)
+  ✔ テーブルページのヘッダーとか修正 @done(22-03-28 23:10)
+  ✔ データカラムの属性変更(幅) => 文字数制限 @done(22-04-14 01:00)
+  ✔ データカラムの属性変更(alternativeの表示チェックマーク、バツマーク) @done(22-03-29 10:03)
+  ✔ データカラムの属性変更(left/center/rigth) @done(22-03-29 10:04)
+  ✔ ヘッダー表示日本語化 @done(22-03-28 23:10)
+  ✔ DateTimeFieldのDateのみ表示 @done(22-03-29 10:04)
+  ☐ bootstrap4以外のテーブル組み込み
+✔ ProductOrder.objects.get()してformで表示 @done(22-03-27 14:08)
+☐ 金額根拠欄修正(現物確認、インターネット通販、見積取得)
+☐ 金額根拠がインターネット通販だったらURLを入力するよう、見積取得であったらファイルをアップロードできるようにする
+  is_emp, is_mgr追加 @done(22-03-16 10:19)
+☐ unique ID if available
+☐ attribute of unique ID, emp id (see transID)
+✔ display html as read only @done(22-03-30 15:07)
+✔ date created and date updated @done(22-03-22 13:18)
+✔ PRODUCT_USE, PRODUCT_TYPEを外だし共通化する @done(22-04-17 10:34)
+  https://stackoverflow.com/questions/32679589/how-to-get-the-format-of-image-with-pil
