@@ -115,7 +115,7 @@
                 {% if user.is_approver %}
                     <button type="submit" class="btn btn-secondary mt-1" name="approvertotables">戻る</button>
                 {% else %}
-                    <button type="submit" class="btn btn-secondary mt-1" onClick="window.history.back();return false;">戻る！</button>
+                    <button type="submit" class="btn btn-secondary mt-1" onClick="window.history.back();return false;">戻る</button>
                 {% endif %}
             </div>
         </div>
@@ -128,7 +128,7 @@
                 </div>
             {% endif %}
             <div class="d-inline">
-                <button type="submit" class="btn btn-secondary mt-1" name="approvertotables">戻る</button>
+                <button type="submit" class="btn btn-secondary mt-1" name="nonAPgoback">戻る</button>
             </div>
         </div>
     {% endif %}
