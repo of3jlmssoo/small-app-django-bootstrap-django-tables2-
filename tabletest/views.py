@@ -146,26 +146,27 @@ def place_order(request):
 
         l.msg(f'{form.fields["goods"]=}')
         l.msg(f'{form.cleaned_data["orderid"]=}')
+
         # 共通データ
         order_product = createProductOrder(form.cleaned_data, request.user)
         order_product.status = "S"
         order_product.comment = form.cleaned_data['comment']
 
         # 既存レコードの場合
-        if form.cleaned_data["orderid"]:
-            productorder = ProductOrder.objects.get(pk=form.cleaned_data['orderid'])
-            order_product.created_on = productorder.created_on
+        # if form.cleaned_data["orderid"]:
+        #     productorder = ProductOrder.objects.get(pk=form.cleaned_data['orderid'])
+        #     order_product.created_on = productorder.created_on
 
         # 保存。申請(IDを得るため)、保存(保存のため)いずれのケースもIDを保存する
         l.msg(f'---> {form.cleaned_data["orderid"]=}')
-        orderid = form.cleaned_data["orderid"]
+        # orderid = form.cleaned_data["orderid"]
         if form.cleaned_data["orderid"] is None:
             # 新規データ
             order_product.save()
         else:
             # 既存データ更新。一度保存されたーデータが変更されるケースに対応
-            form = ProductOrderForm(request.POST)
-            if form.is_valid():
+            # form = ProductOrderForm(request.POST)
+            # if form.is_valid():
                 # order_product = ProductOrder.objects.get(pk=orderid)
                 order_product = ProductOrder.objects.get(pk=form.cleaned_data['orderid'])
                 # order_product.id = form.cleaned_data['orderid']
@@ -188,31 +189,26 @@ def place_order(request):
             return redirect('bootstrap4')
 
         # 申請時処理
-        l.msg(f'{type(form.cleaned_data)=}')
-        initial_dict = set_initialDict4ConfirmOrderForm(form.cleaned_data)
+        # l.msg(f'{type(form.cleaned_data)=}')
+        # initial_dict = set_initialDict4ConfirmOrderForm(form.cleaned_data)
 
-        try:
-            productorder = get_object_or_404(ProductOrder, pk=order_product.id)
-        except ProductOrder.DoesNotExist:
-            raise Http404("place_order get_object_or_404 failed")
+        # try:
+        #     productorder = get_object_or_404(ProductOrder, pk=order_product.id)
+        # except ProductOrder.DoesNotExist:
+        #     raise Http404("place_order get_object_or_404 failed")
+        # l.msg(f'===> {productorder=}')
 
-        l.msg(f'===> {productorder=}')
-        form2 = ConfirmOrderForm(instance=productorder)
+        # form2 = ConfirmOrderForm(instance=productorder)
         form2 = ConfirmOrderForm(instance=order_product)
 
         books = set_related_documents(request, request.user, form.cleaned_data["orderid"])
         if not books:
-            # books = set_unrelated_documents(request, request.user)
             books = set_related_documents(request, request.user)
-            # for book in books:
-            #     book.order = form.cleaned_data['orderid']
-            #     book.save()
 
         context = {
             'form': form2,
             'comment': form.cleaned_data['comment'],
             'books': books,
-            # 'orderid': form.cleaned_data['orderid']
             'orderid': order_product.id,
         }
         l.msg(f'{context=}')
