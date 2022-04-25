@@ -126,10 +126,16 @@
                 <div class="d-inline pr-1 mb-1">
                     <button type="submit" class="btn btn-primary">申請</button>
                 </div>
+
+                <div class="d-inline">
+                    <button type="submit" class="btn btn-secondary mt-1" name="nonAPgoback">戻る</button>
+                </div>
+
+            {% else %}
+                <div class="d-inline">
+                    <button type="submit" class="btn btn-secondary mt-1" onClick="window.history.back();return false;">戻る</button>
+                </div>
             {% endif %}
-            <div class="d-inline">
-                <button type="submit" class="btn btn-secondary mt-1" name="nonAPgoback">戻る</button>
-            </div>
         </div>
     {% endif %}
 
