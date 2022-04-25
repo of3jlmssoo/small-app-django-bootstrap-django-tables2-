@@ -134,3 +134,5 @@ class ModalShowDeleteFileForm(BSModalModelForm):
     class Meta:
         model = Document
         fields = ['title', 'file_field']
+
+

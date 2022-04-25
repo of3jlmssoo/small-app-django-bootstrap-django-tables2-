@@ -7,7 +7,7 @@
   {% csrf_token %}
 
   <div class="modal-header">
-    <h5 class="modal-title">添付ファイルを削除{{status}}!!</h5>
+  <h5 class="modal-title">添付ファイル確認</h5>
     
 {% comment %} 
     <button type="button" class="close" aria-label="Close">
@@ -22,10 +22,8 @@
     <thead>
     <tr>
       <th class="text-center" scope="col">#</th>
-      {% comment %} <th class="text-center" scope="col">#</th> {% endcomment %}
-      <th class="text-center" scope="col">ファイル名
-      </th>
-      <th class="text-center" scope="col">削除</th>
+      <th class="text-center" scope="col">ファイル名</th>
+      {% comment %} <th class="text-center" scope="col">削除</th> {% endcomment %}
     </tr>
     </thead>
     <tbody>
@@ -51,12 +49,13 @@
           <td class="text-center">          
             <p><a href="{{article.file_field.url}}" download>{{article.file_name}}</a></p>
           </td> 
-
+{% comment %} 
           <td class="text-center">
             <button type="button" class="delete-book btn btn-sm btn-danger" data-form-url="{% url 'delete_book' article.pk %}">
               <span class="fa fa-trash"></span>
             </button>
           </td> 
+           {% endcomment %}
         </tr>
 
 
@@ -134,7 +133,7 @@
 
             function deleteBookModalForm() {
                 $(".delete-book").each(function () {
-                    console.log("modal_file_showdelete.html")
+                    console.log("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFf")
                     $(this).modalForm({formURL: $(this).data("form-url"), isDeleteForm: true});
                 });
             }

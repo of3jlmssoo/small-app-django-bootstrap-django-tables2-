@@ -1,11 +1,11 @@
 ☐ Page not found (404)
-☐ 添付ファイルインターフェース修正
+ 添付ファイルインターフェース修正
 ✔ 申請画面途中で添付ファイルを添付して戻ると元の状態になる @done(22-04-24 22:37)
     ✔ テンポラリー用モデル作成 早期save()に変更 @done(22-04-24 22:35)
     ✔ index.htmlへボ 早期save()に変更タン作成 @done(22-04-24 22:35)
     ✔ restore確認 早期save()に変更 @done(22-04-24 22:35)
     ✔ ボタンをフローに組み込み 早期save()に変更 @done(22-04-24 22:35)
-☐ django ファイルアップロード
+s☐ django ファイルアップロード
   ✔ index.htmlにuser==申請者、Order未設定 or order==orderidのものをリストする @done(22-04-17 10:33)
   ✔ 添付されたファイルの削除 @done(22-04-20 23:33)
   ✔ 添付されたファイルの表示をmodal化 @done(22-04-24 22:37)
@@ -57,3 +57,7 @@
 ✔ date created and date updated @done(22-03-22 13:18)
 ✔ PRODUCT_USE, PRODUCT_TYPEを外だし共通化する @done(22-04-17 10:34)
   https://stackoverflow.com/questions/32679589/how-to-get-the-format-of-image-with-pil
+
+
+☐ 申請者 お買い物申請フォーム そのまま
+☐ 申請者 確認：お買い物申請フォーム OK @started(22-04-25 15:50)

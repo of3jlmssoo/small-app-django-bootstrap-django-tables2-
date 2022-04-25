@@ -156,17 +156,19 @@ def place_order(request):
             productorder = ProductOrder.objects.get(pk=form.cleaned_data['orderid'])
             order_product.created_on = productorder.created_on
 
-        # 保存用save()
+        # 保存。申請(IDを得るため)、保存(保存のため)いずれのケースもIDを保存する
         l.msg(f'---> {form.cleaned_data["orderid"]=}')
         orderid = form.cleaned_data["orderid"]
         if form.cleaned_data["orderid"] is None:
+            # 新規データ
             order_product.save()
         else:
+            # 既存データ更新。一度保存されたーデータが変更されるケースに対応
             form = ProductOrderForm(request.POST)
             if form.is_valid():
                 # order_product = ProductOrder.objects.get(pk=orderid)
                 order_product = ProductOrder.objects.get(pk=form.cleaned_data['orderid'])
-                order_product.id = form.cleaned_data['orderid']
+                # order_product.id = form.cleaned_data['orderid']
                 order_product.goods = form.cleaned_data['goods']
                 order_product.product_price = form.cleaned_data['product_price']
                 order_product.type_of_estimation = form.cleaned_data['type_of_estimation']
@@ -180,28 +182,14 @@ def place_order(request):
         l.msg(f'order_product.saved as save_as_draft {order_product.id=}')
         if request.POST.get('submitsecondary') is not None:
             # お買い物申請フォームで保存ボタンが押された場合
-
-            # l.msg(f'{form.cleaned_data["orderid"]=}')
-            # # 共通データ
-            # order_product = createProductOrder(form.cleaned_data, request.user)
-            # order_product.status = "S"
-            # order_product.comment = form.cleaned_data['comment']
-
-            # # 既存レコードの場合
-            # if form.cleaned_data["orderid"]:
-            #     productorder = ProductOrder.objects.get(pk=form.cleaned_data['orderid'])
-            #     order_product.created_on = productorder.created_on
-
-            # # 保存用save()
-            # order_product.save()
-            # l.msg(f'order_product.saved as save_as_draft ')
+            order_product.status = "S"
+            order_product.save()
+            l.msg(f'order_product.saved as save_as_draft ')
             return redirect('bootstrap4')
 
         # 申請時処理
         l.msg(f'{type(form.cleaned_data)=}')
         initial_dict = set_initialDict4ConfirmOrderForm(form.cleaned_data)
-
-        # saved_product = ProductOrder.objects.get(id=order_product.id)
 
         try:
             productorder = get_object_or_404(ProductOrder, pk=order_product.id)
@@ -210,6 +198,7 @@ def place_order(request):
 
         l.msg(f'===> {productorder=}')
         form2 = ConfirmOrderForm(instance=productorder)
+        form2 = ConfirmOrderForm(instance=order_product)
 
         books = set_related_documents(request, request.user, form.cleaned_data["orderid"])
         if not books:
@@ -237,7 +226,7 @@ def place_order(request):
 def confirm_details(request):
     l = Logger('confirm_details')
 
-    l.msg(f'{request.POST.get("CDApprove")=} {request.POST.get("CDReturn")=}')
+    l.msg(f'{request.POST.get("CDApprove")=} {request.POST.get("CDReturn")=} {request.POST.get("nonAPgoback")=} {request.method=}')
     l.msg(f'{request.POST.keys()=}')
 
     if request.method == 'POST':
@@ -252,6 +241,12 @@ def confirm_details(request):
             # 承認者がアクションに応じてステータスをセット
             if request.user.is_approver:
 
+                l.msg(f'POST and approver')
+
+                if 'approvertotables' in request.POST.keys():
+                    l.msg(f'POST and approver aprrovertotables')
+                    return redirect('bootstrap4')
+
                 if 'CDApprove' in request.POST.keys():
                     status = 'A'
                 elif 'CDReturn' in request.POST.keys():
@@ -262,6 +257,12 @@ def confirm_details(request):
                 user = productorder.user
 
             else:
+
+                l.msg(f'nonAPgoback0')
+                if 'nonAPgoback' in request.POST.keys():
+                    l.msg(f'nonAPgoback1')
+                    return redirect('productorder_detail', form.cleaned_data['orderid'])
+
                 status = 'P'
                 user = request.user
             order_product = createProductOrder(form.cleaned_data, user)
@@ -429,6 +430,7 @@ def productorder_detail(request, pk):
             'comment': productorder.comment,
             'status': productorder.status,
             'books': lsts,
+            'orderid': productorder.id,
         }
         l.msg(f'{context=}')
         return render(request, 'tabletest/confirm_details.html', context)
@@ -443,7 +445,13 @@ def productorder_detail(request, pk):
 
             form2 = ConfirmOrderForm(request.POST or None, initial=initial_dict)
 
-            context = {'form': form2, 'comment': productorder.comment, 'status': productorder.status, 'books': lsts}
+            context = {
+                'form': form2,
+                'comment': productorder.comment,
+                'status': productorder.status,
+                'books': lsts,
+                'orderid': productorder.id,
+            }
 
             l.msg(f'not approver readonly {context=}')
             return render(request, 'tabletest/confirm_details.html', context)
@@ -574,13 +582,56 @@ def fup_success(request):
 # class FileShowDeleteFormView(BSModalReadView):
 
 
+class FileShowOnlyFormView(RedirectToPreviousMixin, ListView):
+    # class FileShowDeleteFormView(RedirectToPreviousMixin, FormView):
+    form_class = ModalShowDeleteFileForm
+    template_name = 'tabletest/modal_file_showonly.html'  # Replace with your template.
+    # success_url = '/tabletest/fup_success/'  # Replace with your URL or reverse().
+
+    #
+    def form_valid(self, form):
+        print(f'FileShowDeleteFormView form_valid()')
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)
+        files = self.request.FILES.getlist('file_field')
+        # 同じファイルが2度ほぞんされてしまう問題へself.request.headers.get() ==で対応
+        # djangoでis_ajax()がなくなったことに対応
+        if form.is_valid() and self.request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            for f in files:
+                instance = Document(file_field=f)
+                instance.title = form.cleaned_data['title']
+                instance.file_field.name = f.name
+                instance.user = self.request.user
+                instance.file_name = self.request.upload_handlers[0].file_name
+                instance.save()
+
+        # return redirect('index')
+
+        return super().form_valid(form)
+
+    def get_queryset(self):
+        order = ProductOrder.objects.get(id=self.kwargs['orderid'])
+        user = order.user
+        print(f"====================== {user} =========================")
+        if self.request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            if self.kwargs['orderid'] != 0:
+                query_result = Document.objects.filter(order=self.kwargs['orderid'], user=user)
+                if not query_result:
+                    query_result = Document.objects.filter(order__isnull=True, user=user)
+            else:
+                query_result = Document.objects.filter(order__isnull=True, user=user)
+            return query_result
+
+
 class FileShowDeleteFormView(RedirectToPreviousMixin, ListView):
     # class FileShowDeleteFormView(RedirectToPreviousMixin, FormView):
     form_class = ModalShowDeleteFileForm
     template_name = 'tabletest/modal_file_showdelete.html'  # Replace with your template.
     # success_url = '/tabletest/fup_success/'  # Replace with your URL or reverse().
 
+    #
     def form_valid(self, form):
+        print(f'FileShowDeleteFormView form_valid()')
         form_class = self.get_form_class()
         form = self.get_form(form_class)
         files = self.request.FILES.getlist('file_field')

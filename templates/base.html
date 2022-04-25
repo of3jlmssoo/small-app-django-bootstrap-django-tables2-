@@ -383,8 +383,20 @@
             }
             readBookModalForm();
 
+
+            // Read book buttons
+            function readOnlyBookModalForm() {
+                $(".read-only-book").each(function () {
+                    $(this).modalForm({formURL: $(this).data("form-url")});
+                });
+            }
+            readOnlyBookModalForm();
+
+            
+
             function reinstantiateModalForms() {
                 createBookModalForm();
+                readOnlyBookModalForm();
                 readBookModalForm();
                 deleteBookModalForm();
             }
