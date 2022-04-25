@@ -230,7 +230,6 @@ def confirm_details(request):
         display_POST_key_value(request)
 
         form = ConfirmOrderForm(request.POST)
-
         if form.is_valid():
             l.msg(f'{form.cleaned_data["orderid"]=} {form.cleaned_data["comment"]=}')
 
@@ -252,7 +251,7 @@ def confirm_details(request):
                 productorder = ProductOrder.objects.get(pk=form.cleaned_data['orderid'])
                 user = productorder.user
 
-            else:
+            else: # 申請者
 
                 l.msg(f'nonAPgoback0')
                 if 'nonAPgoback' in request.POST.keys():
@@ -261,6 +260,8 @@ def confirm_details(request):
 
                 status = 'P'
                 user = request.user
+               
+            # 一旦新規、既存にかかわらずProductOrderオブジェクトを作成し、既存の場合id等を上書きしてsave()
             order_product = createProductOrder(form.cleaned_data, user)
             # order_product = createProductOrder(form.cleaned_data, form.cleaned_data['user'])
             order_product.status = status
@@ -485,18 +486,18 @@ def productorder_detail(request, pk):
             # return redirect('/')
 
 
-def file_upload_single(request):
-    if request.method == 'POST':
-        form = UploadFileForm(request.POST, request.FILES)
-        if form.is_valid():
-            instance = Document(file_field=request.FILES['file'])
-            instance.title = form.cleaned_data['title']
-            instance.user = request.user
-            instance.save()
-            return HttpResponseRedirect('/tabletest/fup_success/')
-    else:
-        form = UploadFileForm()
-    return render(request, 'tabletest/file_upload.html', {'form': form})
+# def file_upload_single(request):
+#     if request.method == 'POST':
+#         form = UploadFileForm(request.POST, request.FILES)
+#         if form.is_valid():
+#             instance = Document(file_field=request.FILES['file'])
+#             instance.title = form.cleaned_data['title']
+#             instance.user = request.user
+#             instance.save()
+#             return HttpResponseRedirect('/tabletest/fup_success/')
+#     else:
+#         form = UploadFileForm()
+#     return render(request, 'tabletest/file_upload.html', {'form': form})
 
 
 class RedirectToPreviousMixin:
