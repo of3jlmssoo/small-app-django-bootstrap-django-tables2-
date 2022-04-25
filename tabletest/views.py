@@ -167,18 +167,18 @@ def place_order(request):
             # 既存データ更新。一度保存されたーデータが変更されるケースに対応
             # form = ProductOrderForm(request.POST)
             # if form.is_valid():
-                # order_product = ProductOrder.objects.get(pk=orderid)
-                order_product = ProductOrder.objects.get(pk=form.cleaned_data['orderid'])
-                # order_product.id = form.cleaned_data['orderid']
-                order_product.goods = form.cleaned_data['goods']
-                order_product.product_price = form.cleaned_data['product_price']
-                order_product.type_of_estimation = form.cleaned_data['type_of_estimation']
-                order_product.product_type = form.cleaned_data['product_type']
-                order_product.product_use = form.cleaned_data['product_use']
-                order_product.alternative = form.cleaned_data['alternative']
-                order_product.expected_purchase_date = form.cleaned_data['expected_purchase_date']
-                order_product.user = request.user
-                order_product.save()
+            # order_product = ProductOrder.objects.get(pk=orderid)
+            order_product = ProductOrder.objects.get(pk=form.cleaned_data['orderid'])
+            # order_product.id = form.cleaned_data['orderid']
+            order_product.goods = form.cleaned_data['goods']
+            order_product.product_price = form.cleaned_data['product_price']
+            order_product.type_of_estimation = form.cleaned_data['type_of_estimation']
+            order_product.product_type = form.cleaned_data['product_type']
+            order_product.product_use = form.cleaned_data['product_use']
+            order_product.alternative = form.cleaned_data['alternative']
+            order_product.expected_purchase_date = form.cleaned_data['expected_purchase_date']
+            order_product.user = request.user
+            order_product.save()
 
         l.msg(f'order_product.saved as save_as_draft {order_product.id=}')
         if request.POST.get('submitsecondary') is not None:
@@ -529,8 +529,7 @@ class FileFieldFormView(RedirectToPreviousMixin, BSModalCreateView):
         # djangoでis_ajax()がなくなったことに対応
         if form.is_valid() and self.request.headers.get('x-requested-with') == 'XMLHttpRequest':
             for f in files:
-                print(f"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! FileFieldFormView")
-                print(f"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! {self.kwargs['orderid']=}")
+                print(f"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! FileFieldFormView {self.kwargs['orderid']=}")
                 instance = Document(file_field=f)
                 instance.title = form.cleaned_data['title']
                 instance.file_field.name = f.name
@@ -621,25 +620,25 @@ class FileShowDeleteFormView(RedirectToPreviousMixin, ListView):
     # success_url = '/tabletest/fup_success/'  # Replace with your URL or reverse().
 
     #
-    def form_valid(self, form):
-        print(f'FileShowDeleteFormView form_valid()')
-        form_class = self.get_form_class()
-        form = self.get_form(form_class)
-        files = self.request.FILES.getlist('file_field')
-        # 同じファイルが2度ほぞんされてしまう問題へself.request.headers.get() ==で対応
-        # djangoでis_ajax()がなくなったことに対応
-        if form.is_valid() and self.request.headers.get('x-requested-with') == 'XMLHttpRequest':
-            for f in files:
-                instance = Document(file_field=f)
-                instance.title = form.cleaned_data['title']
-                instance.file_field.name = f.name
-                instance.user = self.request.user
-                instance.file_name = self.request.upload_handlers[0].file_name
-                instance.save()
+    # def form_valid(self, form):
+    #     print(f'FileShowDeleteFormView form_valid()')
+    #     form_class = self.get_form_class()
+    #     form = self.get_form(form_class)
+    #     files = self.request.FILES.getlist('file_field')
+    #     # 同じファイルが2度ほぞんされてしまう問題へself.request.headers.get() ==で対応
+    #     # djangoでis_ajax()がなくなったことに対応
+    #     if form.is_valid() and self.request.headers.get('x-requested-with') == 'XMLHttpRequest':
+    #         for f in files:
+    #             instance = Document(file_field=f)
+    #             instance.title = form.cleaned_data['title']
+    #             instance.file_field.name = f.name
+    #             instance.user = self.request.user
+    #             instance.file_name = self.request.upload_handlers[0].file_name
+    #             instance.save()
 
-        # return redirect('index')
+    #     # return redirect('index')
 
-        return super().form_valid(form)
+    #     return super().form_valid(form)
 
     def get_queryset(self):
         if self.request.headers.get('x-requested-with') == 'XMLHttpRequest':
@@ -664,10 +663,10 @@ class DocumentDeleteView(RedirectToPreviousMixin, BSModalDeleteView):
     #     context = self.get_context_data(object=self.object)
     #     return self.render_to_response(context)
 
-    def form_valid(self, form):
-        # Here, we would record the user's interest using the message
-        # passed in form.cleaned_data['message']
-        return super().form_valid(form)
+    # def form_valid(self, form):
+    #     # Here, we would record the user's interest using the message
+    #     # passed in form.cleaned_data['message']
+    #     return super().form_valid(form)
 
     # def get_success_url(self):
     #     # return reverse('productorder_detail/77/', kwargs={'pk': self.kwargs['orderid']})
