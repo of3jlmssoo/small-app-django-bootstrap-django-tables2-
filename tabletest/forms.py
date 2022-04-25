@@ -5,7 +5,6 @@ from .models import Document, ProductOrder
 
 
 class ProductOrderForm(forms.ModelForm):
-    # goods = forms.CharField(max_length=50)
     alternative = forms.BooleanField(
         required=False,
         widget=forms.CheckboxInput(
@@ -15,14 +14,8 @@ class ProductOrderForm(forms.ModelForm):
 
     class Meta:
         model = ProductOrder
-        # fields = [
-        #     'product_type',
-        # ]
         fields = '__all__'
-        # exclude = ['user', 'status', 'comment']
         exclude = ['user', 'status', ]
-
-    # apply bootstrap to django form
 
     def __init__(self, *args, **kwargs):
         super(ProductOrderForm, self).__init__(*args, **kwargs)
@@ -40,19 +33,12 @@ class ConfirmOrderForm(forms.ModelForm):
             attrs={
                 'style': 'width:20px;height:20px;'}))
     orderid = forms.IntegerField(required=False)
-    # comment = forms.CharField(required=False)
 
     class Meta:
         model = ProductOrder
-        # fields = [
-        #     'product_type',
-        # ]
         fields = '__all__'
-        # exclude = ['user', 'status', 'comment']
         exclude = ['user', 'status', ]
-        # exclude = ['user']
 
-    # apply bootstrap to django form
     def __init__(self, *args, **kwargs):
         super(ConfirmOrderForm, self).__init__(*args, **kwargs)
         for field in self.fields:
@@ -77,17 +63,11 @@ class ViewOnlyOrderForm(forms.ModelForm):
             attrs={
                 'style': 'width:20px;height:20px;'}))
     orderid = forms.IntegerField(required=False)
-    # comment = forms.CharField(required=False)
 
     class Meta:
         model = ProductOrder
-        # fields = [
-        #     'product_type',
-        # ]
         fields = '__all__'
-        # exclude = ['user', 'status', 'comment']
         exclude = ['user', 'status', ]
-        # exclude = ['user']
 
     # apply bootstrap to django form
     def __init__(self, *args, **kwargs):
@@ -108,15 +88,12 @@ class ViewOnlyOrderForm(forms.ModelForm):
 
 class UploadFileForm(forms.Form):
     title = forms.CharField(max_length=50, label='説明')
-    # file = forms.FileField()
     file_field = forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': True}), label='選択')
 
 
 class ModalUploadFileForm(BSModalModelForm):
 
-    # class ModalUploadFileForm(CreateUpdateAjaxMixin):
     title = forms.CharField(max_length=50, label='説明')
-    # file = forms.FileField()
     file_field = forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': True}), label='選択')
 
     class Meta:
@@ -126,13 +103,9 @@ class ModalUploadFileForm(BSModalModelForm):
 
 class ModalShowDeleteFileForm(BSModalModelForm):
 
-    # class ModalUploadFileForm(CreateUpdateAjaxMixin):
     title = forms.CharField(max_length=50, label='説明')
-    # file = forms.FileField()
     file_field = forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': True}), label='選択')
 
     class Meta:
         model = Document
         fields = ['title', 'file_field']
-
-

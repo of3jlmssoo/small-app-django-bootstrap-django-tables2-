@@ -1,19 +1,11 @@
 <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous" ></script>
 {% load static %}
-<!-- form method="post" action=""> -->
-
-{% comment %} <form action="{% url 'modal_file_showdelete'  %}" method="POST" class="pop-up-form__form" enctype="multipart/form-data" > {% endcomment %}
 <form  class="pop-up-form__form" enctype="multipart/form-data" >
   {% csrf_token %}
 
   <div class="modal-header">
   <h5 class="modal-title">添付ファイル確認</h5>
     
-{% comment %} 
-    <button type="button" class="close" aria-label="Close">
-      <span aria-hidden="true">&times;</span>
-    </button>
-     {% endcomment %}
   </div>
 
   <div class="modal-body">
@@ -23,43 +15,20 @@
     <tr>
       <th class="text-center" scope="col">#</th>
       <th class="text-center" scope="col">ファイル名</th>
-      {% comment %} <th class="text-center" scope="col">削除</th> {% endcomment %}
     </tr>
     </thead>
     <tbody>
 
-    {% comment %} {% for field in form %} {% endcomment %}
-      {% comment %} <div class="form-group{% if field.errors %} invalid{% endif %}">
-        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-        {{ field }} {% for error in field.errors %}
-        <p class="help-block">{{ error }}</p>
-        {% endfor %}
-      </div> {% endcomment %}
-
-
-      {% comment %} {{ field }}  {% endcomment %}
-    {% comment %} {% endfor %} {% endcomment %}
 
     {% for article in object_list %}
         <tr>
           <th class="text-center" scope="row">{{ forloop.counter }}</th>
-          {% comment %} <th class="text-center" scope="row">{{ article.pk }} </th> {% endcomment %}
-          {% comment %} <td class="text-center">{{ article.file_name }}</td> {% endcomment %}
-          {% comment %} <td class="text-center">{{ article.image.url  }}</td> {% endcomment %}
           <td class="text-center">          
             <p><a href="{{article.file_field.url}}" download>{{article.file_name}}</a></p>
           </td> 
-{% comment %} 
-          <td class="text-center">
-            <button type="button" class="delete-book btn btn-sm btn-danger" data-form-url="{% url 'delete_book' article.pk %}">
-              <span class="fa fa-trash"></span>
-            </button>
-          </td> 
-           {% endcomment %}
         </tr>
 
 
-    {% comment %} <li>{{ article.file_name }}</li> {% endcomment %}
     {% endfor %}
     </tbody>
     </table>
@@ -67,12 +36,6 @@
     <p class="text-muted my-0">削除：赤ボタンをクリック</p>
   </div>
 
-{% comment %}   
-  <div class="modal-footer">
-    <button type="button" class="btn btn-default">Close</button>
-    <button type="submit" class="btn btn-primary">添付</button>
-  </div>
- {% endcomment %}
 
   {% comment %} modalを表示後modalでsubmitした際、元の画面のbootstrap field
   validationの機能(入力が必要です)が
@@ -98,8 +61,6 @@
     {% block extrascripts %}
     <script type="text/javascript">
         $(function () {
-            // Create book asynchronous button
-            // message
             var asyncSuccessMessageCreate = [
                 "<div ",
                 "style='position:fixed;top:0;z-index:10000;width:100%;border-radius:0;' ",
@@ -115,8 +76,6 @@
             ].join("");
 
             
-            // Update book asynchronous button
-            // message
             var asyncSuccessMessageUpdate = [
                 "<div ",
                 "style='position:fixed;top:0;z-index:10000;width:100%;border-radius:0;' ",

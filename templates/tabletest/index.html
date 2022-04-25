@@ -1,6 +1,5 @@
 {% extends 'base.html' %}
 {% block content %}
-<!-- <h2 class="mt-3">Section title from base.html</h2> -->
 
 {% load static %}
 
@@ -13,17 +12,14 @@
     <div class="row form-group">
         <div class="col-md-4">
             <label for="inputProduct" class="form-label">物品</label>
-            <!-- <input type="text" class="form-control" name="inputProduct" id="inputProduct"> -->
             {{ form.goods }}
         </div>    
         <div class="col-md-4">
             <label for="inputPrice" class="form-label">金額</label>
-            <!-- <input type="text" class="form-control" name="inputPrice" id="inputPrice"> -->
             {{ form.product_price }}
         </div>    
         <div class="col-md-4">
             <label for="inputPriceEst" class="form-label">金額根拠</label>
-            <!-- <input type="text" class="form-control" name="inputPriceEst" id="inputPriceEst"> -->
             {{ form.type_of_estimation }}
         </div>    
     
@@ -42,7 +38,6 @@
                     <div class="form-check form-check-inline">
                         <input class="form-check-input" type="radio" name="product_type" id="product_type" required value="L" {{ luxury_goods }}/>
                         <label class="form-check-label" for="luxury"> 贅沢品 </label>
-                        {% comment %} <div class="invalid-feedback">More example invalid feedback text</div> {% endcomment %}
                     </div>    
             </div>
         </div>
@@ -64,13 +59,6 @@
             </div>
         </div>
 
-
-        <!--
-        <div class="col-2">
-            {{ form.alternative }}
-        </div>
-    -->
-
         <div class="col-2">
             <div class="btn-group-vertical" role="group" aria-label="Basic checkbox toggle button group">    
                 代替 : 
@@ -91,8 +79,6 @@
     <div class="row form-group mt-1 mb-0">
         <div class="col-2">
             <label>購入予定日 : </label>
-            <!-- <input type="text" class="form-control" name="expected_purchase_date" id="date_sample" value={{form.expected_purchase_date}}>{{form.expected_purchase_date}} -->
-
             <input type="text" class="form-control" name="expected_purchase_date" value="{{expected_purchase_date}}" id="date_sample"  ></input>
         </div>
         <div class="col-2">
@@ -139,7 +125,7 @@
             <div class="btn-toolbar">
             <div class="btn-group">
             {% if orderid %}
-                <button id="create-book" class="btn btn-link my-0 create-book text-muted" type="button" name="button" data-form-url="{% url 'modal_file_upload' orderid=orderid %}">見積根拠添付{{orderid}}</button>
+                <button id="create-book" class="btn btn-link my-0 create-book text-muted" type="button" name="button" data-form-url="{% url 'modal_file_upload' orderid=orderid %}">見積根拠添付</button>
                 <button id="showdelete-book" class="read-book btn btn-link my-0 text-muted" type="button" name="button" data-form-url="{% url 'modal_file_showdelete' orderid %}">見積根拠確認(ダウンロード・削除)</button>
             {% else %}
                 {% if books%}    
@@ -152,21 +138,6 @@
 
         </div>
     </div>
-
-{% comment %} 
-    {% if books %}
-        <table id="books-table" class="table table-borderless table-sm">
-            <tbody>
-            {% for book in books %}
-                <tr class="d-flex">
-                <td class="text-center col-2">{{ book.file_name }}</td>
-                </tr>
-            {% endfor %}
-
-            </tbody>
-        </table>
-    {% endif %}
- {% endcomment %}
 
 </form>
 

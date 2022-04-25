@@ -2,7 +2,6 @@
 
 {% extends 'base.html' %}
 {% block content %}
-<!-- <h2 class="mt-3">Section title from base.html</h2> -->
 
 {% load static %}
 
@@ -14,23 +13,17 @@
 <form action="{% url 'confirm_details' %}" method="POST">
     {% csrf_token %}
 
-
-
-
     <div class="row form-group">
         <div class="col-md-4">
             <label  for="inputProduct" class="form-label">物品</label>
-            <!-- <input type="text" class="form-control" name="inputProduct" id="inputProduct"> -->
             <p class="text-muted">{{ form.goods }}</p>
         </div>    
         <div class="col-md-4">
             <label for="inputPrice" class="form-label">金額</label>
-            <!-- <input type="text" class="form-control" name="inputPrice" id="inputPrice"> -->
             <p class="text-muted">{{ form.product_price }} </p>
         </div>    
         <div class="col-md-4">
             <label for="inputPriceEst" class="form-label">金額根拠</label>
-            <!-- <input type="text" class="form-control" name="inputPriceEst" id="inputPriceEst"> -->
             <p class="text-muted">{{ form.type_of_estimation }}</p>
         </div>    
     
@@ -51,19 +44,15 @@
             <p class="text-muted">{{ form.alternative }}</p>
         </div>
 
-
-
     </div>    
 
     <div class="row form-group mt-1 mb-0">
         <div class="col-2">
             <label>購入予定日 : </label>
             <p class="text-muted">{{ form.expected_purchase_date }}</p>
-            <!-- <p>2022-02-22</p> -->
         </div>
         <div class="col-2">
             <label>申請ID</label>
-            {% comment %} <p class="text-muted">{{ form.id }}</p> {% endcomment %}
             <input readonly type="text" class="form-control" name="orderid" value="{{orderid}}" id="orderid"  ></input>
         </div>
 
@@ -72,7 +61,6 @@
             <label>コメント RW</label>
             <input type="text" class="form-control" name="comment" value="{{comment}}" id="comment"  ></input>
         </div>
-        {% comment %} <p>you're an approver!</p> {% endcomment %}
         {% else %}
         <div class="col-4">
             <label>コメント RO</label>
@@ -85,16 +73,6 @@
         <div class="col-12">
         
             <label>見積もり根拠</label>
-            {% comment %}         
-            {% if books %}
-                {% for book in books %}            
-                    <a class="text-right col-12 text-muted my-0" href="{{book.file_field.url}}" download>{{book.file_name}}</a>
-                {% endfor %}
-            {% endif %}
-            {% endcomment %}
-
-
-
             <div class="modal fade" tabindex="-1" role="dialog" id="modal">
             <div class="modal-dialog" role="document">
                 <div class="modal-content"></div>
@@ -102,105 +80,59 @@
             </div>
 
             <div class="btn-toolbar">
-            <div class="btn-group">
-            {% if not user.is_approver and orderid != None and status != "A" %}
-                {% comment %} <button id="create-book" class="btn btn-link my-0 create-book text-muted" type="button" name="button" data-form-url="{% url 'modal_file_upload' orderid=form.orderid.data %}">見積根拠添付</button> {% endcomment %}
-                <button id="create-book" class="btn btn-link my-0 create-book text-muted" type="button" name="button" data-form-url="{% url 'modal_file_upload' orderid=orderid %}">見積根拠添付</button>
-            {% endif%}
-            {% if orderid != None and status != "A" %}
-                {% if user.is_approver %}
-                    <button id="showdelete-book" class="read-only-book btn btn-link my-0 text-muted" type="button" name="button" data-form-url="{% url 'modal_file_showonly' orderid=orderid %}">見積根拠確認(ダウンロード) </button>
-                {% else %}
-                    <button id="showdelete-book" class="read-book btn btn-link my-0 text-muted" type="button" name="button" data-form-url="{% url 'modal_file_showdelete' orderid=orderid %}">見積根拠確認(ダウンロード・削除)</button>
-                {% endif %}
-            {% else %}
-                {% comment %} <button id="showdelete-book" class="read-book btn btn-link my-0 text-muted" type="button" name="button" data-form-url="{% url 'modal_file_showdelete' orderid=orderid %}">見積根拠確認1(ダウンロード) {{orderid}}</button> {% endcomment %}
-                <button id="showdelete-book" class="read-only-book btn btn-link my-0 text-muted" type="button" name="button" data-form-url="{% url 'modal_file_showonly' orderid=orderid %}">見積根拠確認(ダウンロード) </button>
-            {% endif %} 
-            
+                <div class="btn-group">
+                    {% if not user.is_approver and orderid != None and status != "A" %}
+                        <button id="create-book" class="btn btn-link my-0 create-book text-muted" type="button" name="button" data-form-url="{% url 'modal_file_upload' orderid=orderid %}">見積根拠添付</button>
+                    {% endif%}
+                    {% if orderid != None and status != "A" %}
+                        {% if user.is_approver %}
+                            <button id="showdelete-book" class="read-only-book btn btn-link my-0 text-muted" type="button" name="button" data-form-url="{% url 'modal_file_showonly' orderid=orderid %}">見積根拠確認(ダウンロード) </button>
+                        {% else %}
+                            <button id="showdelete-book" class="read-book btn btn-link my-0 text-muted" type="button" name="button" data-form-url="{% url 'modal_file_showdelete' orderid=orderid %}">見積根拠確認(ダウンロード・削除)</button>
+                        {% endif %}
+                    {% else %}
+                        <button id="showdelete-book" class="read-only-book btn btn-link my-0 text-muted" type="button" name="button" data-form-url="{% url 'modal_file_showonly' orderid=orderid %}">見積根拠確認(ダウンロード) </button>
+                    {% endif %} 
 
-            </div>
+                </div>
             </div>
 
-
-                
         </div>
-
     </div>
 
 
     {% if user.is_approver and status == "P" %}
-    <div class="row form-group mt-1 mb-0">
-        <p class="text-secondary mb-0">内容を確認して、承認するか差戻してください。差戻しの場合コメントを入力してください。コメント欄以外は編集できません</p>
-    </div>
-    <div class="row form-group mt-3">
-        <div class="d-inline pr-1">
-            <button type="submit" class="btn btn-primary" name="CDApprove">承認</button>
-            <button type="submit" class="btn btn-primary" name="CDReturn">差戻</button>
+        <div class="row form-group mt-1 mb-0">
+            <p class="text-secondary mb-0">内容を確認して、承認するか差戻してください。差戻しの場合コメントを入力してください。コメント欄以外は編集できません</p>
         </div>
-        
-        <div class="d-inline">
-            {% if user.is_approver %}
-                <button type="submit" class="btn btn-secondary mt-1" name="approvertotables">戻る</button>
-            {% else %}
-                <button type="submit" class="btn btn-secondary mt-1" onClick="window.history.back();return false;">戻る！</button>
-            {% endif %}
+        <div class="row form-group mt-3">
+            <div class="d-inline pr-1">
+                <button type="submit" class="btn btn-primary" name="CDApprove">承認</button>
+                <button type="submit" class="btn btn-primary" name="CDReturn">差戻</button>
+            </div>
+            
+            <div class="d-inline">
+                {% if user.is_approver %}
+                    <button type="submit" class="btn btn-secondary mt-1" name="approvertotables">戻る</button>
+                {% else %}
+                    <button type="submit" class="btn btn-secondary mt-1" onClick="window.history.back();return false;">戻る！</button>
+                {% endif %}
+            </div>
         </div>
-    </div>
 
     {% else %}
-
-    <!--
-    <div class="row form-group mt-5">
-        <h6>見積もり根拠</h6>
-        {% if books %}
-            <table id="books-table" class="table table-borderless table-sm">
-                {% comment %} <thead>
-                <tr class="d-flex">
-                    <th class="text-center col-1" scope="col">#</th>
-                    <th class="text-center col-3" scope="col">Title</th>
-                    <th class="text-center col-3" scope="col">Author</th>
-                </tr>
-                </thead> {% endcomment %}
-                <tbody>
-                {% for book in books %}
-                    <tr class="d-flex">
-                    {% comment %} <th class="text-center col-1" scope="row">{{ forloop.counter }}</th> {% endcomment %}
-                    <td class="text-center col-1">{{ book.title }}</td>
-                    <td class="text-center col-2">{{ book.file_name }}</td>
-                    </tr>
-                {% endfor %}
-
-                </tbody>
-            </table>
-        {% endif %}
-
-
-    </div>
-    -->
-    <div class="row form-group mt-5">
-
-
-        {% if status != 'A' %}
-            <div class="d-inline pr-1 mb-1">
-                <button type="submit" class="btn btn-primary">申請</button>
+        <div class="row form-group mt-5">
+            {% if status != 'A' %}
+                <div class="d-inline pr-1 mb-1">
+                    <button type="submit" class="btn btn-primary">申請</button>
+                </div>
+            {% endif %}
+            <div class="d-inline">
+                <button type="submit" class="btn btn-secondary mt-1" name="approvertotables">戻る</button>
             </div>
-        {% endif %}
-
-        <div class="d-inline">
-            {% comment %} <button type="submit" class="btn btn-secondary" onClick="window.history.back();return false;">戻る</button> {% endcomment %}
-            <button type="submit" class="btn btn-secondary mt-1" name="approvertotables">戻る</button>
-            {% comment %} <button type="submit" class="btn btn-secondary" name="nonAPgoback">戻る</button> {% endcomment %}
         </div>
-    </div>
     {% endif %}
 
-    
-
-
-
-
-    
 </form>
 <script>
 $('form').submit(function(e) {
