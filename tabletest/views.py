@@ -1,30 +1,34 @@
 # from re import I
 import copy
 import logging
-import sys
 
-import django_filters
-from bootstrap_modal_forms.generic import (BSModalCreateView,
-                                           BSModalDeleteView, BSModalReadView)
+# import django_filters
+# from bootstrap_modal_forms.generic import (BSModalCreateView, BSModalDeleteView, BSModalReadView)
+from bootstrap_modal_forms.generic import BSModalCreateView, BSModalDeleteView
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.http import Http404, HttpResponse, HttpResponseRedirect
+# from django.http import Http404, HttpResponse, HttpResponseRedirect
+from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
-from django.urls import reverse, reverse_lazy
+# from django.urls import reverse, reverse_lazy
 from django.views.generic.edit import FormView
 from django.views.generic.list import ListView
-from django_filters.views import FilterView
-from django_tables2 import (MultiTableMixin, RequestConfig, SingleTableMixin,
-                            SingleTableView)
-from django_tables2.export.views import ExportMixin
-from django_tables2.paginators import LazyPaginator
+# from django_filters.views import FilterView
+# from django_tables2 import (MultiTableMixin, RequestConfig, SingleTableMixin, SingleTableView)
+from django_tables2 import RequestConfig
 
 # Create your views here.
+# from .forms import (ConfirmOrderForm, ModalShowDeleteFileForm, ModalUploadFileForm, ProductOrderForm, UploadFileForm, ViewOnlyOrderForm)
 from .forms import (ConfirmOrderForm, ModalShowDeleteFileForm,
-                    ModalUploadFileForm, ProductOrderForm, UploadFileForm,
-                    ViewOnlyOrderForm)
+                    ModalUploadFileForm, ProductOrderForm)
 from .models import Document, ProductOrder
 from .tables import Bootstrap4Table
+
+# from django_tables2.export.views import ExportMixin
+# from django_tables2.paginators import LazyPaginator
+
+
+# import sys
 
 
 class Logger():
@@ -159,7 +163,6 @@ def place_order(request):
 
         # 保存。申請(IDを得るため)、保存(保存のため)いずれのケースもIDを保存する
         l.msg(f'---> {form.cleaned_data["orderid"]=}')
-        # orderid = form.cleaned_data["orderid"]
         if form.cleaned_data["orderid"] is None:
             # 新規データ
             order_product.save()
@@ -169,7 +172,6 @@ def place_order(request):
             # if form.is_valid():
             # order_product = ProductOrder.objects.get(pk=orderid)
             order_product = ProductOrder.objects.get(pk=form.cleaned_data['orderid'])
-            # order_product.id = form.cleaned_data['orderid']
             order_product.goods = form.cleaned_data['goods']
             order_product.product_price = form.cleaned_data['product_price']
             order_product.type_of_estimation = form.cleaned_data['type_of_estimation']
@@ -192,13 +194,6 @@ def place_order(request):
         # l.msg(f'{type(form.cleaned_data)=}')
         # initial_dict = set_initialDict4ConfirmOrderForm(form.cleaned_data)
 
-        # try:
-        #     productorder = get_object_or_404(ProductOrder, pk=order_product.id)
-        # except ProductOrder.DoesNotExist:
-        #     raise Http404("place_order get_object_or_404 failed")
-        # l.msg(f'===> {productorder=}')
-
-        # form2 = ConfirmOrderForm(instance=productorder)
         form2 = ConfirmOrderForm(instance=order_product)
 
         books = set_related_documents(request, request.user, form.cleaned_data["orderid"])
@@ -251,7 +246,7 @@ def confirm_details(request):
                 productorder = ProductOrder.objects.get(pk=form.cleaned_data['orderid'])
                 user = productorder.user
 
-            else: # 申請者
+            else:  # 申請者
 
                 l.msg(f'nonAPgoback0')
                 if 'nonAPgoback' in request.POST.keys():
@@ -260,25 +255,19 @@ def confirm_details(request):
 
                 status = 'P'
                 user = request.user
-               
+
             # 一旦新規、既存にかかわらずProductOrderオブジェクトを作成し、既存の場合id等を上書きしてsave()
             order_product = createProductOrder(form.cleaned_data, user)
-            # order_product = createProductOrder(form.cleaned_data, form.cleaned_data['user'])
             order_product.status = status
 
             # 既存レコードの場合、orderid等をセットする
             if form.cleaned_data["orderid"]:
                 productorder = ProductOrder.objects.get(pk=form.cleaned_data['orderid'])
-                # id=form.cleaned_data["orderid"],
-                # created_on=productorder.created_on,
-                # comment=form.cleaned_data['comment'],
                 order_product.id = form.cleaned_data["orderid"]
                 order_product.created_on = productorder.created_on
                 order_product.comment = form.cleaned_data['comment']
                 order_product.user = productorder.user
 
-            # if not len(set_related_documents(request, productorder.user, form.cleaned_data["orderid"])):
-            #     books = set_related_documents(request, productorder.user)
             if not len(set_related_documents(request, request.user, form.cleaned_data["orderid"])):
                 books = set_related_documents(request, request.user)
                 for book in books:
@@ -302,18 +291,13 @@ def index(request):
     l = Logger('index')
 
     form = ProductOrderForm()
-    # return render(request, 'tabletest/index.html', {'form': form})
 
-    # lsts = Document.objects.filter(order__isnull=True, user=request.user)
     lsts = set_related_documents(request, request.user)
 
     context = {
         'form': form,
-        # 'books': docs,
         'books': lsts,
     }
-    # 'comment': productorder.comment,
-    # 'status': productorder.status, }
     return render(request, 'tabletest/index.html', context)
 
 
@@ -324,7 +308,6 @@ def bootstrap4(request):
     table_saved = Bootstrap4Table(ProductOrder.objects.filter(status="S"), order_by="-updated_on")
     RequestConfig(request, paginate={"per_page": 2}).configure(table_saved)
 
-    # table_proc = Bootstrap4Table(ProductOrder.objects.filter(status='P'), order_by="-goods", prefix="2-")
     table_proc = Bootstrap4Table(ProductOrder.objects.filter(status='P'), order_by="-updated_on", prefix="2-")
     RequestConfig(request, paginate={"per_page": 2}).configure(table_proc)
 
@@ -370,7 +353,6 @@ def reconfirm(request, pk):
 
     try:
         productorder = get_object_or_404(ProductOrder, pk=pk)
-        # obj = MyModel.objects.get(pk=1)
     except ProductOrder.DoesNotExist:
         raise Http404("No MyModel matches the given query. productorder_detail()")
 
@@ -392,8 +374,6 @@ def reconfirm(request, pk):
             'books': lsts,
             'orderid': pk,
         }
-        # l.msg(f'{form.fields["goods"]=}')
-        # l.msg(f'{form.fields["orderid"]=}')
         l.msg(f'{context=}')
         return render(request, 'tabletest/confirm_details.html', context)
 
@@ -404,10 +384,8 @@ def reconfirm(request, pk):
 def productorder_detail(request, pk):
     # ダッシュボードでIDをクリックした際にコールされる
     l = Logger('productorder_detail')
-    # productorder = get_object_or_404(ProductOrder, pk=pk)
     try:
         productorder = get_object_or_404(ProductOrder, pk=pk)
-        # obj = MyModel.objects.get(pk=1)
     except ProductOrder.DoesNotExist:
         raise Http404("productorder_detail get_object_or_404 failed")
 
@@ -482,23 +460,6 @@ def productorder_detail(request, pk):
             l.msg(f'non-approver {context=}')
             return render(request, "tabletest/index.html", context)
 
-            # messages.error(request, '入力が正常完了しませんでした。')
-            # return redirect('/')
-
-
-# def file_upload_single(request):
-#     if request.method == 'POST':
-#         form = UploadFileForm(request.POST, request.FILES)
-#         if form.is_valid():
-#             instance = Document(file_field=request.FILES['file'])
-#             instance.title = form.cleaned_data['title']
-#             instance.user = request.user
-#             instance.save()
-#             return HttpResponseRedirect('/tabletest/fup_success/')
-#     else:
-#         form = UploadFileForm()
-#     return render(request, 'tabletest/file_upload.html', {'form': form})
-
 
 class RedirectToPreviousMixin:
 
@@ -506,21 +467,16 @@ class RedirectToPreviousMixin:
 
     def get(self, request, *args, **kwargs):
         request.session['previous_page'] = request.META.get('HTTP_REFERER', self.default_redirect)
-        print(f"--------------{request.session['previous_page']=}")
         return super().get(request, *args, **kwargs)
 
     def get_success_url(self):
-        print(f"=============={self.request.session['previous_page']=}")
         return self.request.session['previous_page']
 
 
-# class FileFieldFormView(FormView):
 class FileFieldFormView(RedirectToPreviousMixin, BSModalCreateView):
     form_class = ModalUploadFileForm
     template_name = 'tabletest/modal_file_upload.html'  # Replace with your template.
-    # success_url = '/tabletest/fup_success/'  # Replace with your URL or reverse().
     success_url = "/productorder_detail/{id}/"
-    # def form_valid(self, form):
 
     def form_valid(self, form):
         form_class = self.get_form_class()
@@ -530,7 +486,6 @@ class FileFieldFormView(RedirectToPreviousMixin, BSModalCreateView):
         # djangoでis_ajax()がなくなったことに対応
         if form.is_valid() and self.request.headers.get('x-requested-with') == 'XMLHttpRequest':
             for f in files:
-                print(f"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! FileFieldFormView {self.kwargs['orderid']=}")
                 instance = Document(file_field=f)
                 instance.title = form.cleaned_data['title']
                 instance.file_field.name = f.name
@@ -540,32 +495,13 @@ class FileFieldFormView(RedirectToPreviousMixin, BSModalCreateView):
                 instance.save()
 
         formx = ConfirmOrderForm(initial={'goods': 'ABC', 'orderid': 160})
-        # context = {
-        #     'form': formx
-        # }
 
         return redirect('reconfirm', self.kwargs['orderid'])
-        return reverse_lazy('company', kwargs={'pk': companyid})
+        # return reverse_lazy('company', kwargs={'pk': companyid})
 
-        return redirect('productorder_detail', self.kwargs['orderid'])
+        # return redirect('productorder_detail', self.kwargs['orderid'])
 
-        # return redirect('confirm_details',form=formx)
-
-        return redirect(reverse('confirm_details', kwargs={'form': formx}))
-
-        # return reverse('productorder_detail', kwargs={'pk': 160})
-        # return render(self.request, 'tabletest/productorder_deltail.html', context)
-
-        # print(f"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! {get_success_url()=}")
-        # return render(self.request, 'tabletest/confirm_details.html', context)
-        # return redirect('index')
-        # return HttpResponseRedirect(self.get_success_url())
-
-        # return super().form_valid(form)
-        # return redirect(self.request.session['previous_page'])
-
-        # return render(request,      'tabletest/confirm_details.html', context)
-        # return redirect('confirm_details')
+        # return redirect(reverse('confirm_details', kwargs={'form': formx}))
 
 
 def fup_success(request):
@@ -574,32 +510,10 @@ def fup_success(request):
     return HttpResponse(str_out)
 
 
-# class FileShowDeleteFormView(BSModalCreateView):
-# class FileShowDeleteFormView(BSModalReadView):
-
-
 class FileShowOnlyFormView(RedirectToPreviousMixin, ListView):
     form_class = ModalShowDeleteFileForm
     template_name = 'tabletest/modal_file_showonly.html'  # Replace with your template.
     # success_url = '/tabletest/fup_success/'  # Replace with your URL or reverse().
-
-    # def form_valid(self, form):
-    #     print(f'FileShowDeleteFormView form_valid()')
-    #     form_class = self.get_form_class()
-    #     form = self.get_form(form_class)
-    #     files = self.request.FILES.getlist('file_field')
-    #     # 同じファイルが2度ほぞんされてしまう問題へself.request.headers.get() ==で対応
-    #     # djangoでis_ajax()がなくなったことに対応
-    #     if form.is_valid() and self.request.headers.get('x-requested-with') == 'XMLHttpRequest':
-    #         for f in files:
-    #             instance = Document(file_field=f)
-    #             instance.title = form.cleaned_data['title']
-    #             instance.file_field.name = f.name
-    #             instance.user = self.request.user
-    #             instance.file_name = self.request.upload_handlers[0].file_name
-    #             instance.save()
-
-    #     return super().form_valid(form)
 
     def get_queryset(self):
         order = ProductOrder.objects.get(id=self.kwargs['orderid'])
@@ -615,31 +529,8 @@ class FileShowOnlyFormView(RedirectToPreviousMixin, ListView):
 
 
 class FileShowDeleteFormView(RedirectToPreviousMixin, ListView):
-    # class FileShowDeleteFormView(RedirectToPreviousMixin, FormView):
     form_class = ModalShowDeleteFileForm
     template_name = 'tabletest/modal_file_showdelete.html'  # Replace with your template.
-    # success_url = '/tabletest/fup_success/'  # Replace with your URL or reverse().
-
-    #
-    # def form_valid(self, form):
-    #     print(f'FileShowDeleteFormView form_valid()')
-    #     form_class = self.get_form_class()
-    #     form = self.get_form(form_class)
-    #     files = self.request.FILES.getlist('file_field')
-    #     # 同じファイルが2度ほぞんされてしまう問題へself.request.headers.get() ==で対応
-    #     # djangoでis_ajax()がなくなったことに対応
-    #     if form.is_valid() and self.request.headers.get('x-requested-with') == 'XMLHttpRequest':
-    #         for f in files:
-    #             instance = Document(file_field=f)
-    #             instance.title = form.cleaned_data['title']
-    #             instance.file_field.name = f.name
-    #             instance.user = self.request.user
-    #             instance.file_name = self.request.upload_handlers[0].file_name
-    #             instance.save()
-
-    #     # return redirect('index')
-
-    #     return super().form_valid(form)
 
     def get_queryset(self):
         if self.request.headers.get('x-requested-with') == 'XMLHttpRequest':
@@ -656,19 +547,3 @@ class DocumentDeleteView(RedirectToPreviousMixin, BSModalDeleteView):
     model = Document
     template_name = 'tabletest/delete_book.html'
     success_message = 'Success: Book was deleted.'
-    # success_url = reverse_lazy('index')
-    # success_url = reverse_lazy('tabletest/productorder_detail/77/')
-
-    # def post(self, request, *args, **kwargs):
-    #     self.object = self.get_object()
-    #     context = self.get_context_data(object=self.object)
-    #     return self.render_to_response(context)
-
-    # def form_valid(self, form):
-    #     # Here, we would record the user's interest using the message
-    #     # passed in form.cleaned_data['message']
-    #     return super().form_valid(form)
-
-    # def get_success_url(self):
-    #     # return reverse('productorder_detail/77/', kwargs={'pk': self.kwargs['orderid']})
-    #     return redirect('index')
